@@ -56,3 +56,6 @@ coverage/
 
 # Temp
 /tmp/
+
+# Buku belajar PDF — jangan push, kirim via Telegram saja
+docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.pdf
