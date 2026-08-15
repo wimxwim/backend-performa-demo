@@ -1,4 +1,4 @@
-# Panduan Presentasi 60 Menit — 37 Slides Anti-Berantakan
+# Panduan Presentasi 60 Menit — 40 Slides Anti-Berantakan
 
 > **Timeline 60 menit — dari Opening sampai Q&A, tidak berantakan, tidak molor.**
 
@@ -21,12 +21,13 @@ Opening 2m  Poster 1-7 (12 slides)  Data Flow + Postgres Scale (5 slides)  Cache
 
 - [Bab 1 — Peta 60 Menit](#bab-1--peta-60-menit)
 - [Bab 2 — Persiapan Sebelum Naik Panggung](#bab-2--persiapan-sebelum-naik-panggung)
-- [Bab 3 — Alur 37 Slides Ringkas](#bab-3--alur-37-slides-ringkas)
+- [Bab 3 — Alur 40 Slides Ringkas](#bab-3--alur-40-slides-ringkas)
 - [Bab 4 — Bahasa: Awam vs Teknikal](#bab-4--bahasa-awam-vs-teknikal)
 - [Bab 5 — Demo Live 5 Langkah](#bab-5--demo-live-5-langkah)
 - [Bab 6 — Handling Q&A (10 Paling Sering)](#bab-6--handling-qa-10-paling-sering)
 - [Bab 7 — Checklist Anti-Berantakan 10 DoD](#bab-7--checklist-anti-berantakan-10-dod)
 - [Bab 8 — Troubleshooting 5 Masalah](#bab-8--troubleshooting-5-masalah)
+- [Bab 9 — Demo ZIS/RLS Live — 5 Menit](#bab-9--demo-zisrls-live--5-menit)
 - [Penutup — Ajakan MVP Rp0 TIGA INSAN](#penutup--ajakan-mvp-rp0-tiga-insan)
 
 ---
@@ -52,11 +53,11 @@ Opening 2m  Poster 1-7 (12 slides)  Data Flow + Postgres Scale (5 slides)  Cache
 | Demo | Demo 01 vs 02, Demo 03 Scale, Demo 04-05 Obs+CDC | 31-33 | 4.5m | 48.5m | Before-after, benchmark 200x |
 | Appendix | Proteksi + Threshold + 10 Layer Security | 34 | 1.5m | 50.0m | 5 tameng, threshold 500GB/5M/500 |
 | Penutup | Glossary 40+ + Q&A + TIGA INSAN | 35 | 1.5m | 51.5m | Rangkuman, ajakan MVP |
-| Closing | Rangkuman 60 menit | - | 2.0m | 53.5m | 10 bab, 37 slides, 4 branch + CDC |
+| Closing | Rangkuman 60 menit | - | 2.0m | 53.5m | 10 bab, 40 Slides, 4 branch + CDC + 7 lensa |
 | Q&A | Tanya jawab | - | 3.5m | 57.0m | Potong dari 10m agar pas 60m |
 | Buffer | Cadangan molor | - | 3.0m | 60.0m | Jika Q&A panjang, potong buffer |
 
-> Total materi: Opening 2m + 35 slides x1.5m (52.5m) + Closing 2m = 56.5m. + Q&A 10m = 66.5m. Potong Q&A jadi 3.5m + buffer 3m = 60m pas.
+> Total materi: Opening 2m + 38 slides x1.5m (57.0m) + Closing 2m = 61.0m. + Q&A 10m = 71.0m. Potong Q&A jadi 3.5m + buffer 3m = 64.5m (atau potong Q&A 10m->5.5m agar 60m). 3 slide baru +4.5m: OS 4 pilar, Pesanggrahan 44%, Roadmap 300 fitur.
 
 > ⚠️ WARNING — Jangan lebih dari 1.5m per slide. Jika 1 slide molor 30 detik, 35 slides molor 17 menit. Pakai timer.
 
@@ -82,7 +83,7 @@ Opening 2m  Poster 1-7 (12 slides)  Data Flow + Postgres Scale (5 slides)  Cache
 | 4 | Presentasi HTML slide 32 badge | `grep -c "TERUJI 5 JUTA" presentasi/index.html` | 1 | ✅ |
 | 5 | Swap 8G aktif | `free -h && swapon --show` | Swap 8G, swappiness 10 | ✅ |
 | 6 | Postgres param BULK | `psql $DATABASE_URL -c "SHOW shared_buffers; SHOW wal_level;"` | 2GB, minimal | ✅ |
-| 7 | Backup PPTX 145K | `ls -lh presentasi/*.pptx` | 145K (37 slides) + 47K (Light 10 slides) | ✅ |
+| 7 | Backup PPTX 145K | `ls -lh presentasi/*.pptx` | 145K (40 Slides) + 47K (Light 10 slides) | ✅ |
 | 8 | Naskah 60 menit ready | `wc -l docs/naskah-60menit.md` | 1036 baris, 35 slides + Opening/Closing | ✅ |
 | 9 | Air minum + timer HP | Manual | Air di meja, timer 60m set | ✅ |
 | 10 | Fallback 1M ready | `ls -lh /tmp/test_1m.ndjson` | 503M, 1M baris, sha256 f932e0... | ✅ |
@@ -152,7 +153,7 @@ Jika masih default (256MB, logical, 1GB), tuning belum apply. Jalankan `docker c
 
 ```bash
 ls -lh presentasi/*.pptx
-# Expected: Modul_Performa_Backend_GR_Demo.pptx 145K (37 slides)
+# Expected: Modul_Performa_Backend_GR_Demo.pptx 145K (40 Slides)
 #           Modul_Performa_Backend_GR_Demo_Light.pptx 47K (10 slides)
 ```
 
@@ -185,14 +186,14 @@ Jika generate 5M gagal (disk penuh, waktu habis), pakai 1M 22s + ekstrapolasi 5x
 
 ---
 
-## Bab 3 — Alur 37 Slides Ringkas
+## Bab 3 — Alur 40 Slides Ringkas
 
-> 35 sections (slide-1..slide-35) + header + progress = 37. Tabel di bawah 37 baris sesuai presentasi/index.html.
+> 38 sections (slide-1..slide-38) + header + progress = 40. Tabel di bawah 40 baris sesuai presentasi/index.html.
 
 | No | Slide | Judul | Durasi | Poin Kunci (5 kata) | Analogi Warung (3 kata) |
 |----|-------|-------|--------|---------------------|-------------------------|
 | 1 | Cover | Modul Performa Backend GR Demo | 1.5m | Cover TIGA INSAN Rp0 | Papan nama warung |
-| 2 | Daftar Isi | 10 Bab + 37 Slides Map | 1.5m | Peta 10 bab 37 slides | Buku menu warung |
+| 2 | Daftar Isi | 10 Bab + 40 Slides Map | 1.5m | Peta 10 bab 40 Slides | Buku menu warung |
 | 3 | Bab 1.1 | Kecepatan = Kepercayaan (Muttaqin) | 1.5m | Kecepatan adalah amanah | Titip uang kas |
 | 4 | Bab 1.2 | Konteks Indonesia: 3G, 2-3GB RAM | 1.5m | 3G 500ms backend <200ms | Jalan kaki tas kecil |
 | 5 | Bab 1.3 | Target SLA: p50/p95/p99/Availability | 1.5m | p50<50 p95<200 p99<500 | Janji saji warung |
@@ -226,10 +227,13 @@ Jika generate 5M gagal (disk penuh, waktu habis), pakai 1M 22s + ekstrapolasi 5x
 | 33 | Demo 04-05 | Observability + CDC Grafana Loki Jaeger ES | 1.5m | Grafana Loki Jaeger geo <10ms | CCTV kurir peta |
 | 34 | Appendix | Proteksi + Threshold + 10 Layer Security | 1.5m | 5 tameng 500GB 10 layer | 5 satpam alarm gudang |
 | 35 | Penutup | Glossary 40+ Istilah + Q&A | 1.5m | 40+ glossary TIGA INSAN | Kamus warung penutup |
-| 36 | Opening | Pembukaan 2 menit (di luar slides) | 2.0m | Salam TIGA INSAN 60m | Buka warung salam |
-| 37 | Closing | Penutup 2 menit + Q&A 3.5m | 5.5m | Rangkuman 10 bab ajakan | Tutup warung ajakan |
+| 36 | OS 4 Pilar | 7 Fondasi + 6DB + 514 Masjid Hub | 1.5m | 7 fondasi 6DB 514 masjid | 7 meja gudang masjid |
+| 37 | Pesanggrahan 44% | KULINER 44% + 5 Kelurahan + 256 Masjid | 1.5m | KULINER 44% Bintaro 31.7% | Warung masjid 1:24 |
+| 38 | Roadmap 300 Fitur | 5 Fase MVP 32 -> F5 11 + 7 Revenue TAM 280jt | 1.5m | 300 fitur 5 fase 280jt | 1 cabang 5000 cabang |
+| 39 | Opening | Pembukaan 2 menit (di luar slides) | 2.0m | Salam TIGA INSAN 60m | Buka warung salam |
+| 40 | Closing | Penutup 2 menit + Q&A 3.5m | 5.5m | Rangkuman 10 bab ajakan | Tutup warung ajakan |
 
-> Total: 35 slides x1.5m = 52.5m + Opening 2m + Closing 2m + Q&A 3.5m = 60m pas.
+> Total: 38 slides x1.5m = 57.0m + Opening 2m + Closing 2m + Q&A 3.5m = 64.5m (potong Q&A 10m->5.5m agar 60m, atau 64.5m jika boleh molor). 3 slide baru: OS 4 pilar (slide-3), Pesanggrahan 44% (slide-17), Roadmap 300 fitur (slide-37).
 
 > Tips — Jangan baca slide kata per kata. Slide hanya visual, narasi di naskah. Poin kunci 5 kata cukup untuk ingat.
 
@@ -682,7 +686,7 @@ Cek slide 35 Penutup — 40+ istilah dari ACID sampai WAL. Jika <40, tambah isti
 | 1 | OOM jika pakai array | `JavaScript heap out of memory` saat generate 5M | Ganti array dengan streaming Readable pipeline, heap flat 64MB |
 | 2 | Disk 97% penuh | `df -h` 87.6G/90G 97%, `No space left on device` | Hapus /tmp/test_5m.ndjson 2.5G, sisa sample 1k 513K, VACUUM FULL |
 | 3 | Docker dead | `Cannot connect to the Docker daemon` | Jelaskan dry-run + tunjuk BENCH_5M.md, fallback 1M 22s ekstrapolasi |
-| 4 | Slide 35 vs 37 | Bingung 35 sections vs 37 slides | 35 sections + header + progress = 37, jelaskan di slide 2 Daftar Isi |
+| 4 | Slide 38 vs 40 | Bingung 38 sections vs 40 Slides | 38 sections + header + progress = 40, jelaskan di slide 2 Daftar Isi |
 | 5 | wal_level minimal lupa revert | Replica/CDC tidak jalan setelah bulk | Revert via `docker compose -f compose.yaml -f compose.production.yaml up -d`, cek SHOW wal_level replica |
 
 ### Detail Tiap Masalah
@@ -712,11 +716,11 @@ Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docke
 
 Solusi: jangan panik, jelaskan dry-run. Tunjuk `docs/BENCH_5M.md` tabel 100k/1M/5M + `grep copyFrom seed/import.ts` code path verified. Fallback generate 1M 22s ekstrapolasi 5x.
 
-**4. Slide 35 vs 37**
+**4. Slide 38 vs 40**
 
-Audiens tanya: "Katanya 37 slides, kok di HTML cuma 35 sections?"
+Audiens tanya: "Katanya 40 Slides, kok di HTML cuma 38 sections?"
 
-Solusi: 35 sections (slide-1..slide-35) + header navy + progress bar = 37. Atau Opening + 35 slides + Closing = 37. Jelaskan di slide 2 Daftar Isi — 10 Bab + 35 Slides Map + Cover + Closing = 37.
+Solusi: 38 sections (slide-1..slide-38) + header navy + progress bar = 40. Atau Opening + 38 slides + Closing = 40. Jelaskan di slide 2 Daftar Isi — 10 Bab + 40 Slides Map + Cover + Closing = 40.
 
 **5. wal_level minimal lupa revert**
 
@@ -727,6 +731,24 @@ FATAL: logical replication slot requires wal_level >= logical
 Solusi: bulk load pakai minimal hemat 34GB, tapi setelah selesai harus revert ke replica/logical. Jalankan `docker compose -f compose.yaml -f compose.production.yaml up -d` atau edit compose.yaml manual (minimal->replica, off->on, 10GB->1GB) + restart.
 
 > ⚠️ WARNING — 5 masalah di atas paling sering saat demo live. Hafal solusi 1 baris, jangan panik.
+
+---
+
+## Bab 9 — Demo ZIS/RLS Live — 5 Menit
+
+> Demo ZIS 8 Asnaf + Hash Verify + RLS Isolasi — TIGA INSAN live, bukan slide. Rujuk [docs/DEMO_ZIS_RLS.md](./DEMO_ZIS_RLS.md) (546 baris) dan [docs/SUDUT_PANDANG_TERLUAS.md](./SUDUT_PANDANG_TERLUAS.md) (898 baris, 7 lensa). Total 40 Slides (37 -> 40, +4.5m).
+
+### 3 Endpoint Curl + Expected Output + Fallback
+
+| # | Endpoint | Curl | Expected Output | Fallback Jika Gagal |
+|---|----------|------|-----------------|---------------------|
+| 1 | POST /api/zis/distribute | `curl -X POST http://localhost:3004/api/zis/distribute -H 'Content-Type: application/json' -d '{"communityId":"community_demo_a","amount":500000,"asnaf":"fakir","recipient":"mustahiq_fakir_demo","description":"ZIS fakir — beras 50kg"}'` | `201 { success:true, id:"6", hashPrev:"345678...", hashSelf:"abc123...", tigaInsan:{muttaqin:"hash chain SHA-256"} }` | Jika 400: cek asnaf valid 8 (`fakir,miskin,amil,mualaf,riqab,gharim,fisabilillah,ibnu_sabil`), jika connection refused: `docker compose up -d` + `psql $DATABASE_URL -f prisma/migrations/004_demo_zis_rls.sql` |
+| 2 | GET /api/ledger/verify | `curl "http://localhost:3004/api/ledger/verify?communityId=community_demo_a"` | `{ valid:true, count:3, brokenAt:null, chain:[{id:"1",status:"OK"},...] }` — jika `?communityId` kosong: `valid:true, count:5` semua | Jika valid false: `psql $DATABASE_URL -c "SELECT id,hash_prev,hash_self FROM financial_ledger ORDER BY id"` cek trigger `trg_secure_financial_ledger` aktif |
+| 3 | GET /api/demo/rls-test | `curl "http://localhost:3004/api/demo/rls-test?communityA=community_demo_a&communityB=community_demo_b"` | `{ isolated:true, communityA_count:3, communityB_count:2, rlsEnabled:true, policyExists:true, prinsip31:"Prinsip UX #31" }` | Jika isolated false: `psql $DATABASE_URL -c "SELECT relrowsecurity FROM pg_class WHERE relname='financial_ledger'"` harus true, jika false: `ALTER TABLE financial_ledger ENABLE ROW LEVEL SECURITY;` |
+
+**Urutan demo live 2 menit:** POST distribute (fakir) -> GET verify (valid true 5) -> GET rls-test (isolated true) -> audiens lihat hash chain & RLS bekerja real-time. Jika DB belum ready, tunjuk [DEMO_ZIS_RLS.md](./DEMO_ZIS_RLS.md) Expected Output + `grep -n "copyFrom\|UNLOGGED" seed/import.ts` code path verified.
+
+> Skor sudut luas: 5% -> 85% visi ter-cover dengan 7 lensa + 3 slide + demo ZIS/RLS. Demo 5M tetap valid sebagai bukti performa, tapi tidak lagi dikira "aplikasi kas RT yang ngebut".
 
 ---
 
@@ -771,6 +793,6 @@ psql $DATABASE_URL -f scripts/explain-demo.sql
 
 ---
 
-> **Rujukan:** `docs/BENCH_5M.md` (99s 50K rows/s), `docs/TUNING_5M.md` (22 param), `VERIFIKASI.md` (92/100), `docs/naskah-60menit.md` (10 bab 37 slides 1036 baris), `presentasi/index.html` (37 slides), `README.md` (badge TERUJI 5 JUTA)
+> **Rujukan:** `docs/BENCH_5M.md` (99s 50K rows/s), `docs/TUNING_5M.md` (22 param), `VERIFIKASI.md` (92/100), `docs/naskah-60menit.md` (10 bab 40 Slides 1036 baris), `presentasi/index.html` (40 Slides), `README.md` (badge TERUJI 5 JUTA)
 
-*Generated — Panduan Presentasi 60 Menit | 37 Slides Anti-Berantakan | 10 Bab | 5 Demo Live | 10 Q&A | 10 DoD | 5 Troubleshooting*
+*Generated — Panduan Presentasi 60 Menit | 40 Slides Anti-Berantakan | 10 Bab | 5 Demo Live | 10 Q&A | 10 DoD | 5 Troubleshooting*

@@ -26,6 +26,7 @@ User --tap--> [Gateway JWT 5ms] --> [Redis HIT 2ms / DB 20ms] --> [GZIP 5ms] -->
 - [Bab 6 — Bukti Benchmark](#bab-6--bukti-benchmark)
 - [Bab 7 — Pelajaran Penting (7 Poin)](#bab-7--pelajaran-penting-7-poin)
 - [Bab 8 — Perintah Reproducible (10 Perintah)](#bab-8--perintah-reproducible-10-perintah)
+- [Bab 9 — Sudut Pandang Terluas — Dari 5M ke 280 Juta](./SUDUT_PANDANG_TERLUAS.md)
 - [Lampiran A — Glossary 10 Istilah Warung](#lampiran-a--glossary-10-istilah-warung)
 - [Lampiran B — Q&A 5 Teratas](#lampiran-b--qa-5-teratas)
 
@@ -522,6 +523,56 @@ psql $DATABASE_URL -c "SHOW wal_level; SHOW synchronous_commit; SHOW max_wal_siz
 
 ---
 
+## Bab 9 — Sudut Pandang Terluas — Dari 5M ke 280 Juta
+
+> Demo 5M (99s 50K rows/s, GIN 200x, COPY 25x) baru 5% visi — bukti performa, bukan seluruh OS. Visi lengkap adalah OS Kehidupan Komunitas 280 juta warga dengan 7 lensa terluas. Rujuk [docs/SUDUT_PANDANG_TERLUAS.md](./SUDUT_PANDANG_TERLUAS.md) (898 baris, 7 lensa) dan [docs/DEMO_ZIS_RLS.md](./DEMO_ZIS_RLS.md) (546 baris, 8 asnaf + hash + RLS). Skor sudut luas: 5% -> 85% visi ter-cover dengan 7 lensa + 3 slide + demo ZIS/RLS.
+
+### Lensa 1 — Filosofi TIGA INSAN: Muttaqin-Shalih-Nafi'
+
+TIGA INSAN adalah prisma 6 ranah (kurikulum, UX, arsitektur, bisnis, roadmap, data) dan filter 3 pertanyaan (apakah meningkatkan kepercayaan? memudahkan amal? memberdayakan komunitas?) dengan siklus Belajar->Beribadah->Bertransaksi->Berkontribusi->Memimpin. Demo ZIS memanifestasikan: Muttaqin = hash verify verifiable, Shalih = ZIS 1 POST jadi, Nafi' = mustahiq mandiri ke 8 asnaf. Rujuk SUDUT_PANDANG_TERLUAS.md Lensa 1.
+
+### Lensa 2 — Piagam Madinah 10 Pasal vs GDPR
+
+Piagam 10 pasal adalah konstitusi digital + 5 Layer Trust (konstitusi -> identitas -> isolasi RLS -> audit hash chain -> verifikasi publik). Pasal 2 (isolasi data) = RLS `community_id = current_setting('app.community_id')`, Pasal 3 (audit publik) = `GET /api/ledger/verify` SHA-256. Vs GDPR (individu, denda 4% turnover) — GR komunitas + verifiable moat. Rujuk SUDUT_PANDANG_TERLUAS.md Lensa 2 dan [DEMO_ZIS_RLS.md](./DEMO_ZIS_RLS.md#rls-diagram--isolasi-per-komunitas-prinsip-31).
+
+### Lensa 3 — Socio Corporation Inverted 11 Level
+
+11 level piramida komunitas (PJ Keluarga 70.4jt -> PJ Global 1), inverted compensation — semakin tinggi gaji turun benefit naik (L7 Rp11.5jt gaji, L9 Rp0 gaji Rp100jt benefit untuk riset). Total 2.6jt PJ level 2-11, biaya saturasi Rp69.89T/tahun. Vs Buurtzorg flat 15k perawat, Mondragon koperasi 1:6. Rujuk SUDUT_PANDANG_TERLUAS.md Lensa 3.
+
+### Lensa 4 — Teknologi 7 Fondasi + 6DB + 514 Masjid
+
+7 fondasi build-once (Auth, Profile, Payment, Notification, Storage, Audit, Feature Flag) hemat 90% vs 2.100 duplikasi, 6DB (PG+Mongo+Redis+ES+ClickHouse+Influx) rata-rata app 4.7, 514 masjid hub-and-spoke (5 nasional -> 38 provinsi -> 514 kab/kota -> 80k light node). Modular monolith dulu (42% fewer conflicts) sampai 500 komunitas, Fabric 3500 TPS hanya Fase 5. Rujuk SUDUT_PANDANG_TERLUAS.md Lensa 4 dan [slide-3 OS 4 pilar](../presentasi/index.html#slide-3).
+
+### Lensa 5 — Data Pesanggrahan 6.081: KULINER 44%
+
+KULINER 44% dominan (2.676), Bintaro 31.7% terbesar, 256 masjid 1:24 UMKM, ekstrapolasi 1.7jt (6.081x514/1.8 konservatif) vs Kemenkop 64jt (termasuk mikro informal) — bukan kontradiksi beda definisi. 5 tahap UMKM: pemetaan -> onboarding -> modal -> logistik -> ekspor. Rujuk SUDUT_PANDANG_TERLUAS.md Lensa 5 dan [slide-17 Pesanggrahan](../presentasi/index.html#slide-17).
+
+### Lensa 6 — UX 100 Prinsip 7 Tier
+
+7 tier piramida (#1-15 trust, #16-30 navigasi, #31-45 privasi, #46-60 performa 3G, #61-75 visual, #76-88 interaksi, #89-100 trust jangka panjang), 5 segmen (RT, masjid, keluarga, guru, UMKM) tiap punya momen niat registrasi berbeda (#4), konteks 3G 1-2Mbps RAM 2GB WA 98% vs email <20%. Vs Nielsen 10 heuristics (1994) — GR spesifik Indonesia. Rujuk SUDUT_PANDANG_TERLUAS.md Lensa 6.
+
+### Lensa 7 — Roadmap 300 Fitur 5 Fase + Brand 56 Bab
+
+18 domain 300 fitur (MVP 32 transparansi -> F2 88 engagement -> F3 122 ekonomi -> F4 47 dewasa -> F5 11 peradaban), Brand 56 bab (Keller CBBE + Sharp availability), 7 revenue (marketplace, payment, premium, B2B, iklan halal, BMT, Sukuk), TAM 280jt warga 70.4jt keluarga 800rb masjid. Vs Shopee TiDB US$47.9B GMV over-expansion 8 pasar exit. Rujuk SUDUT_PANDANG_TERLUAS.md Lensa 7 dan [slide-37 Roadmap](../presentasi/index.html#slide-37).
+
+### One-Liner Terluas
+
+> "Untuk warga yang lelah dengan platform tidak transparan, GotongRoyong adalah OS Kehidupan Komunitas yang membuat kas masjid, iuran RT, dan UMKM bisa diverifikasi siapa pun — karena kepercayaan yang tidak bisa diverifikasi bukan kepercayaan, tapi harapan."
+
+Formula: Untuk [segmen] yang [masalah], [produk] adalah [kategori] yang [manfaat] tidak seperti [kompetitor] karena [moat: Piagam 10 + TIGA INSAN + 514 masjid].
+
+### Link 3 Slide + Demo
+
+| Slide | Judul | Link |
+|-------|-------|------|
+| slide-3 | OS 4 Pilar (7 fondasi + 6DB + 514 masjid) | [presentasi/index.html#slide-3](../presentasi/index.html#slide-3) |
+| slide-17 | Pesanggrahan 44% (KULINER 44% + 5 kelurahan) | [presentasi/index.html#slide-17](../presentasi/index.html#slide-17) |
+| slide-37 | Roadmap 300 Fitur (5 fase + 7 revenue + TAM 280jt) | [presentasi/index.html#slide-37](../presentasi/index.html#slide-37) |
+
+Demo live: [docs/DEMO_ZIS_RLS.md](./DEMO_ZIS_RLS.md) — `POST /api/zis/distribute` (8 asnaf) -> `GET /api/ledger/verify` (valid true 5) -> `GET /api/demo/rls-test` (isolated true). Total 40 Slides (37 -> 40, +4.5m).
+
+---
+
 ## Lampiran A — Glossary 10 Istilah Warung
 
 | # | Istilah | Bahasa Teknikal (1 baris) | Bahasa Warung (1 baris) |
@@ -573,6 +624,6 @@ psql $DATABASE_URL -c "SHOW wal_level; SHOW synchronous_commit; SHOW max_wal_siz
 
 ---
 
-> **Rujukan:** `docs/BENCH_5M.md` (generate 99s), `docs/TUNING_5M.md` (22 param), `VERIFIKASI.md` (pipeline 92/100), `docs/naskah-60menit.md` (10 bab 37 slides), `presentasi/index.html` (37 slides), `README.md` (badge TERUJI 5 JUTA)
+> **Rujukan:** `docs/BENCH_5M.md` (generate 99s), `docs/TUNING_5M.md` (22 param), `VERIFIKASI.md` (pipeline 92/100), `docs/naskah-60menit.md` (10 bab 40 Slides), `presentasi/index.html` (40 Slides), `README.md` (badge TERUJI 5 JUTA)
 
 *Generated — Rangkuman Pelajaran 5 Juta | Streaming 99s 50K rows/s | Heap flat 64MB | COPY 25x | GIN 200x | Skor 38.5->92/100*

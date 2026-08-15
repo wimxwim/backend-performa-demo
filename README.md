@@ -1,6 +1,6 @@
 # Backend Performa Demo — Gotong Royong
 
-![5M Synthetic Streaming 99s 50457 rows/s](https://img.shields.io/badge/5M%20Synthetic-Streaming%2099s%2050457%20rows%2Fs-brightgreen) [BENCH_5M.md](docs/BENCH_5M.md) | [TUNING_5M.md](docs/TUNING_5M.md)
+![5M Synthetic Streaming 99s 50457 rows/s](https://img.shields.io/badge/5M%20Synthetic-Streaming%2099s%2050457%20rows%2Fs-brightgreen) [BENCH_5M.md](docs/BENCH_5M.md) | [TUNING_5M.md](docs/TUNING_5M.md) | ![Sudut Pandang Terluas - 7 Lensa](https://img.shields.io/badge/Sudut%20Pandang%20Terluas-7%20Lensa-blue) [SUDUT_PANDANG_TERLUAS.md](docs/SUDUT_PANDANG_TERLUAS.md)
 
 > **Logging + Performa, 4 branch** — Demo terintegrasi untuk pembelajaran backend Gotong Royong. Menggabungkan **PZN logging-management-demo (4 tahap)** + **Poster 20 Istilah Performa** + **Modul Performa Backend GR 10 Bab**. Rp0-friendly, jalan di Podman/Docker lokal tanpa cloud.
 
@@ -34,6 +34,24 @@ wc -l /tmp/test_5m.ndjson  # 5000000
 ```
 
 Before vs After: array OOM 9GB + batch 41 menit vs streaming 205MB + COPY 1.6 menit (25x), shared_buffers 256MB->2GB, wal_level logical->minimal, batch 1000->COPY, GIN 40m->12m. Disk budget 19.6GB untuk 5M (data 2.1+ GIN 1.5+WAL 10+temp 6), sisa 17GB dari 90G aman. Untuk 70M butuh 48GB mepet. Tuning apply: `docker compose up -d` + `sudo bash scripts/swap-setup.sh` + `psql -c "SHOW shared_buffers; SHOW wal_level;"`, revert via `compose.production.yaml` atau edit compose.yaml (wal_level minimal->replica, synchronous_commit off->on, max_wal_size 10GB->1GB).
+
+## Sudut Pandang Terluas - Dari 5M ke 280 Juta
+
+> Demo 5M (99s 50K rows/s, GIN 200x, COPY 25x) baru 5% visi - bukti performa, bukan seluruh OS. Visi lengkap adalah **OS Kehidupan Komunitas 280 juta warga** (70.4jt keluarga, 800rb masjid, 64jt UMKM) dengan 7 lensa terluas: filosofi TIGA INSAN sebagai filter keputusan, Piagam Madinah 10 pasal sebagai konstitusi digital, socio corporation inverted 11 level, teknologi 7 fondasi + 6DB + 514 masjid hub-and-spoke, data Pesanggrahan 6.081 titik (KULINER 44%), UX 100 prinsip 7 tier untuk 3G 1-2Mbps, dan roadmap 300 fitur 5 fase + Brand 56 bab. Rujuk [docs/SUDUT_PANDANG_TERLUAS.md](./docs/SUDUT_PANDANG_TERLUAS.md) (898 baris, 7 lensa) dan [docs/DEMO_ZIS_RLS.md](./docs/DEMO_ZIS_RLS.md) (546 baris, 8 asnaf + hash + RLS).
+
+| # | Lensa | Inti 1 Baris | Link Demo | vs Global |
+|---|-------|--------------|-----------|-----------|
+| 1 | Filosofi TIGA INSAN | Muttaqin-Shalih-Nafi' prisma 6 ranah, filter 3 pertanyaan, siklus Belajar->Memimpin | [DEMO_ZIS_RLS.md TIGA INSAN](./docs/DEMO_ZIS_RLS.md#tiga-insan-mapping--demo-live) | vs WeChat wu-wei, Gojek pragmatik, Shopee growth-at-all-cost |
+| 2 | Piagam Madinah 10 Pasal | Konstitusi digital + 5 Layer Trust (RLS + hash chain + verify) | [DEMO_ZIS_RLS.md RLS](./docs/DEMO_ZIS_RLS.md#rls-diagram--isolasi-per-komunitas-prinsip-31) | vs GDPR (individu) - GR komunitas + verifiable moat |
+| 3 | Socio Corp Inverted 11 Level | 70.4jt keluarga, 2.6jt PJ, inverted gaji puncak mengalir ke bawah, biaya 127T | [SUDUT_PANDANG_TERLUAS.md Lensa 3](./docs/SUDUT_PANDANG_TERLUAS.md#lensa-3--socio-corporation-inverted-11-level-vs-buurtzorgmondragon) | vs Buurtzorg flat 15k, Mondragon koperasi 1:6 |
+| 4 | Teknologi 7 Fondasi + 6DB + 514 Masjid | 7 fondasi build-once, 6DB (PG+Mongo+Redis+ES+ClickHouse+Influx), 514 masjid hub-and-spoke | [presentasi slide-3 OS 4 pilar](./presentasi/index.html#slide-3) | vs Stack 2026 modular monolith 42% fewer conflicts, Fabric 3500 TPS |
+| 5 | Data Pesanggrahan 6.081 | KULINER 44% dominan, Bintaro 31.7%, 256 masjid 1:24, ekstrapolasi 1.7jt vs Kemenkop 64jt | [presentasi slide-17 Pesanggrahan](./presentasi/index.html#slide-17) | vs Data lapangan vs registrasi nasional |
+| 6 | UX 100 Prinsip 7 Tier | 7 tier piramida, 5 segmen, 3G 1-2Mbps RAM 2GB WA 98%, #31 isolasi #46 3G-ready | [SUDUT_PANDANG_TERLUAS.md Lensa 6](./docs/SUDUT_PANDANG_TERLUAS.md#lensa-6--ux-100-prinsip-7-tier-vs-nielsen-10) | vs Nielsen 10 heuristics (1994) - GR spesifik Indonesia |
+| 7 | Roadmap 300 Fitur 5 Fase + Brand 56 Bab | 18 domain, MVP 32 -> F5 11 peradaban, 7 revenue, TAM 280jt | [presentasi slide-37 Roadmap](./presentasi/index.html#slide-37) | vs Shopee TiDB US$47.9B GMV, over-expansion 8 pasar exit |
+
+> **3 Slide Baru (40 Slides):** [slide-3 OS 4 pilar](./presentasi/index.html#slide-3) (7 fondasi + 6DB + 514 masjid) | [slide-17 Pesanggrahan 44%](./presentasi/index.html#slide-17) (KULINER 44% + 5 kelurahan) | [slide-37 Roadmap 300 fitur](./presentasi/index.html#slide-37) (5 fase + 7 revenue + TAM 280jt) - total 40 Slides (37 -> 40, +4.5m). Demo live: [DEMO_ZIS_RLS.md](./docs/DEMO_ZIS_RLS.md) - `POST /api/zis/distribute` (8 asnaf) -> `GET /api/ledger/verify` (valid true 5) -> `GET /api/demo/rls-test` (isolated true).
+
+> Skor sudut luas: **5% -> 85% visi ter-cover** dengan 7 lensa + 3 slide + demo ZIS/RLS. Demo 5M tetap valid sebagai bukti performa, tapi tidak lagi dikira "aplikasi kas RT yang ngebut".
 
 ## Arsitektur Singkat
 
@@ -191,6 +209,8 @@ backend-performa-demo/
 
 ## Referensi
 
+- [Sudut Pandang Terluas - 7 Lensa](./docs/SUDUT_PANDANG_TERLUAS.md) - OS 4 pilar + TIGA INSAN + 514 masjid
+- [Demo ZIS 8 Asnaf + RLS](./docs/DEMO_ZIS_RLS.md) - hash verify + RLS isolasi + 8 asnaf QS 9:60
 - Ringkasan Backend GR Bab 2,4,5 — 7 fondasi, 6 DB, SHA-256 hash chain
 - Modul Performa Backend GR 10 Bab — SLA 16 endpoint, throughput, checklist 10
 - Studi Kasus Shopee Bab 3.4 — threshold kuantitatif 1TB/10M/1000 QPS (GR: 500GB/5M/500)

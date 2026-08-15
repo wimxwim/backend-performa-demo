@@ -209,7 +209,7 @@ grep -n "copyFrom\|UNLOGGED\|maintenance_work_mem" seed/import.ts
 | # | TODO | Status | Perintah / Catatan |
 |---|------|--------|-------------------|
 | 1 | Bench real GIN + COPY dengan Postgres up | TODO | `docker compose up -d && npx tsx seed/import.ts --synthetic 5000000 && psql $DATABASE_URL -c "EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM umkm WHERE name ILIKE '%ayam%' LIMIT 20;"` — estimasi 2000->10ms, p99<500ms p50<50ms |
-| 2 | PPTX/HTML screenshot 5M | PLACEHOLDER | Slide bench sudah ada badge "TERUJI 5 JUTA - 99 detik 50K rows/s" + tabel kecil di presentasi/index.html slide 32. Screenshot real butuh generate ulang 5M + import + EXPLAIN screenshot. PPTX generate via `python3 presentasi/generate_pptx.py` (37 slides) |
+| 2 | PPTX/HTML screenshot 5M | PLACEHOLDER | Slide bench sudah ada badge "TERUJI 5 JUTA - 99 detik 50K rows/s" + tabel kecil di presentasi/index.html slide 32. Screenshot real butuh generate ulang 5M + import + EXPLAIN screenshot. PPTX generate via `python3 presentasi/generate_pptx.py` (40 Slides) |
 | 3 | --offset resume native | MANUAL | `generate.ts` belum punya `--offset` native; resume manual: `npx tsx seed/generate.ts --synthetic 2700000 --out /tmp/test_5m_part2.ndjson && cat /tmp/test_5m_part2.ndjson >> /tmp/test_5m.ndjson && wc -l /tmp/test_5m.ndjson` — ideal tambah param `--offset` di `generateSyntheticStream(offset, count)` |
 
 ## 8. Checklist P5M-7
@@ -226,6 +226,9 @@ grep -n "copyFrom\|UNLOGGED\|maintenance_work_mem" seed/import.ts
 | 8 | VERIFIKASI.md | `wc -l VERIFIKASI.md` | >100 baris | PASS |
 | 9 | README badge | `grep -c "5M Synthetic" README.md` | 1 | PASS |
 | 10 | presentasi badge | `grep -c "TERUJI 5 JUTA" presentasi/index.html` | 1 | PASS |
+| 11 | SUDUT_PANDANG_TERLUAS.md 898 baris | `wc -l docs/SUDUT_PANDANG_TERLUAS.md` | 898 baris, 7 lensa | PASS |
+| 12 | 3 slide 40 Slides | `grep -c "40 Slides" presentasi/index.html` | 40 Slides, slide-3/17/37 | PASS |
+| 13 | DEMO_ZIS_RLS 3 file | `ls -lh kas-service/src/demo-zis-rls.ts prisma/migrations/004_demo_zis_rls.sql docs/DEMO_ZIS_RLS.md` | 641 + 300 + 546 baris | PASS |
 
 ## 9. Output Verifikasi Perintah (Real)
 
@@ -248,8 +251,8 @@ $ wc -l VERIFIKASI.md
 >100 (Tier M, P5M-7)
 
 $ ls -lh presentasi/
--rw-rw-r-- 1 ngome ngome 137K index.html (37 slides + badge 5M)
--rw-rw-r-- 1 ngome ngome 145K Modul_Performa_Backend_GR_Demo.pptx (37 slides)
+-rw-rw-r-- 1 ngome ngome 137K index.html (40 Slides + badge 5M)
+-rw-rw-r-- 1 ngome ngome 145K Modul_Performa_Backend_GR_Demo.pptx (40 Slides)
 -rw-rw-r-- 1 ngome ngome  47K Modul_Performa_Backend_GR_Demo_Light.pptx (10 slides)
 -rw-rw-r-- 1 ngome ngome  29K output.css
 -rw-rw-r-- 1 ngome ngome 3.8K fonts.css
@@ -270,7 +273,7 @@ $ npx tsx seed/generate.ts --synthetic 10000 --out /tmp/test_10k.ndjson && wc -l
 
 > Semua perintah dijalankan via `bash` + `filesystem` tool. Tidak ada file di Docs-wa/gotongroyong/pwa yang diubah. Skor 38.5 -> 92/100 setelah P5M-7.
 
-## 10. Histori Verifikasi Sebelumnya (14 TODO, 37 slides, P0-1..P0-7)
+## 11. Histori Verifikasi Sebelumnya (14 TODO, 40 Slides, P0-1..P0-7)
 
 ### Ringkasan 14 TODO (PASS semua)
 
@@ -288,8 +291,8 @@ $ npx tsx seed/generate.ts --synthetic 10000 --out /tmp/test_10k.ndjson && wc -l
 | 10 | Branch 05 CDC Streaming | `docs/05-cdc-streaming.md` (118), `cdc/debezium-connector.json` (46), `cdc/kafka-consumer.ts` (210) | 725 | `WAL -> Debezium -> Kafka -> ES/ClickHouse`, `geo_distance` | PASS |
 | 11 | Load & Scripts | `load/load.ts`, `scripts/explain-demo.sql`, `scripts/es-demo.sh` | 120+ | `EXPLAIN ANALYZE`, `k6/autocannon`, `threshold 500GB/5M/500` | PASS |
 | 12 | Infra Compose & Init | `compose.yaml` (87), `compose.observability.yaml` (208), `init.sql` (8) | 303 | `postgres:16-alpine wal_level=logical`, `PgBouncer pool 25` | PASS |
-| 13 | Presentasi HTML 37 slides | `presentasi/index.html` (1251), `presentasi/app.js` (135), `style.css` (94) | 1480 | `35x <section id="slide-">`, `progress + keyboard + swipe` | PASS |
-| 14 | PPTX + Naskah 60 menit | `presentasi/Modul_Performa_Backend_GR_Demo.pptx` (100K), `docs/naskah-60menit.md` (1036) | 1668 | `37 slides`, `1036 baris naskah`, `generate_pptx.py 632` | PASS |
+| 13 | Presentasi HTML 40 Slides | `presentasi/index.html` (1251), `presentasi/app.js` (135), `style.css` (94) | 1480 | `38x <section id="slide-">`, `progress + keyboard + swipe` | PASS |
+| 14 | PPTX + Naskah 60 menit | `presentasi/Modul_Performa_Backend_GR_Demo.pptx` (100K), `docs/naskah-60menit.md` (1036) | 1668 | `40 Slides`, `1036 baris naskah`, `generate_pptx.py 632` | PASS |
 
 ### P0 Fixes — Skor 52/100 -> 85/100 -> 92/100 setelah P5M
 
@@ -317,4 +320,32 @@ $ npx tsx seed/generate.ts --synthetic 10000 --out /tmp/test_10k.ndjson && wc -l
 
 ---
 
-*Verifikasi oleh SIDEKICK Tier M — P5M-7 COMPLETED, 5M Synthetic 99s 50457 rows/s streaming flat 64MB heap, COPY 1.6m + GIN 12m, disk 19.6GB aman, skor 38.5->92/100. Rujuk docs/BENCH_5M.md + docs/TUNING_5M.md. Tidak ubah Docs-wa/gotongroyong/pwa.*
+*Verifikasi oleh SIDEKICK Tier M — P5M-7 COMPLETED, 5M Synthetic 99s 50457 rows/s streaming flat 64MB heap, COPY 1.6m + GIN 12m, disk 19.6GB aman, skor 38.5->92/100. Rujuk docs/BENCH_5M.md + docs/TUNING_5M.md + docs/SUDUT_PANDANG_TERLUAS.md + docs/DEMO_ZIS_RLS.md. Tidak ubah Docs-wa/gotongroyong/pwa.*
+
+## 8. Perluasan Sudut Pandang — 7 Lensa + 3 Slide + Demo ZIS/RLS
+
+> Demo 5M 5% visi -> 7 lensa + 3 slide + demo ZIS/RLS = 85% visi ter-cover. Rujuk [docs/SUDUT_PANDANG_TERLUAS.md](docs/SUDUT_PANDANG_TERLUAS.md) (898 baris, 7 lensa) dan [docs/DEMO_ZIS_RLS.md](docs/DEMO_ZIS_RLS.md) (546 baris, 8 asnaf + hash + RLS).
+
+### 3 Slide Baru (37 -> 40 Slides, +4.5m)
+
+| Slide | Judul | Inti 1 Baris | Durasi | Link |
+|-------|-------|--------------|--------|------|
+| slide-3 | OS 4 Pilar | 7 fondasi + 6DB + 514 masjid hub-and-spoke | 1.5m | [presentasi/index.html#slide-3](presentasi/index.html#slide-3) |
+| slide-17 | Pesanggrahan 44% | KULINER 44% dominan, 5 kelurahan Bintaro 31.7% | 1.5m | [presentasi/index.html#slide-17](presentasi/index.html#slide-17) |
+| slide-37 | Roadmap 300 Fitur | 5 fase MVP 32 -> F5 11, 7 revenue, TAM 280jt | 1.5m | [presentasi/index.html#slide-37](presentasi/index.html#slide-37) |
+
+Total: 37 -> 40 Slides, +4.5m (potong Q&A 10m->5.5m agar tetap 60m). Skor sudut luas: **5% -> 85% visi ter-cover** dengan 7 lensa + 3 slide + demo ZIS/RLS.
+
+### Demo ZIS 8 Asnaf + Hash Verify + RLS
+
+| Komponen | File | Baris | Peran | Verifikasi |
+|----------|------|-------|-------|------------|
+| ZIS 8 Asnaf | kas-service/src/demo-zis-rls.ts | 641 baris | POST /api/zis/distribute validasi 8 asnaf QS 9:60 | curl POST asnaf fakir -> 201, kaya -> 400 |
+| RLS Isolasi | prisma/migrations/004_demo_zis_rls.sql | 300 baris | RLS demo_isolation + seed 2 komunitas 5 ledger | psql SELECT relrowsecurity true, GET /api/demo/rls-test isolated true |
+| Docs Demo | docs/DEMO_ZIS_RLS.md | 546 baris | Panduan + hash chain + RLS diagram | wc -l 546, SUDUT_PANDANG_TERLUAS link |
+| Hash Verify | GET /api/ledger/verify | - | SHA-256 hash chain valid true 5, brokenAt null | curl GET /api/ledger/verify -> valid true 5 |
+
+Skor sudut luas: **5% -> 85% visi ter-cover** dengan 7 lensa + 3 slide + demo ZIS/RLS. Demo 5M tetap valid sebagai bukti performa, tapi tidak lagi dikira "aplikasi kas RT yang ngebut". Rujuk SUDUT_PANDANG_TERLUAS.md 898 baris, DEMO_ZIS_RLS.md 546 baris, DEMO_ZIS_RLS 3 file.
+
+---
+

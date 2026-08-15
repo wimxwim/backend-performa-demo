@@ -1,6 +1,6 @@
-// presentasi/app.js — 37 slides navigation, keyboard, hash, progress, fullscreen, poster interaktif
+// presentasi/app.js — 40 slides navigation, keyboard, hash, progress, fullscreen, poster interaktif
 (function () {
-  const TOTAL = 37;
+  const TOTAL = 40;
   let current = 1;
 
   const $ = (s, r = document) => r.querySelector(s);
