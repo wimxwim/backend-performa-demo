@@ -1,0 +1,58 @@
+# Node & Bun
+node_modules/
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+bun.lockb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data & volumes (jangan commit data lokal)
+pgdata/
+redisdata/
+loki-data/
+prometheus-data/
+grafana-data/
+esdata/
+clickhouse-data/
+kafka-data/
+zookeeper-data/
+
+# Compose overrides lokal
+compose.override.yaml
+
+# Load test output
+load/results/
+
+# Seed artefacts
+seed/*.dump
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Temp
+/tmp/

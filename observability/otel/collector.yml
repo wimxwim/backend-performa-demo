@@ -1,0 +1,59 @@
+# observability/otel-collector/config.yaml — OTEL Collector: receivers OTLP 4317/4318, processors batch, exporters Jaeger + Prometheus
+# Bahasa komentar: Indonesia
+# Spec: receivers otlp grpc 4317 http 4318, processors batch, exporters jaeger + prometheus, service pipelines traces/metrics
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 1s
+    send_batch_size: 512
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 256
+    spike_limit_mib: 64
+  resourcedetection:
+    detectors: [env, system]
+    system:
+      hostname_sources: [os]
+
+exporters:
+  # Jaeger — untuk trace flame graph di 16686
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+  # Prometheus — untuk metrics pipeline (opsional)
+  prometheus:
+    endpoint: 0.0.0.0:8889
+  # Logging — debug
+  logging:
+    verbosity: basic
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+service:
+  extensions: [health_check, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlp/jaeger, logging]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [prometheus, logging]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [logging]

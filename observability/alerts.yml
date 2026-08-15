@@ -1,0 +1,123 @@
+# observability/alerts.yml — Alert threshold exact Bab 8.4
+# Bahasa komentar: Indonesia
+# Threshold: p95>500 warning >1000 critical, error>1% warning >5% critical, DB>80% pool, disk>85%, CPU>80%, cache hit <80%
+
+groups:
+  - name: performa
+    interval: 15s
+    rules:
+      # ──────────────────────────────────────────────
+      # P95 latency — histogram_quantile 0.95
+      # warning >0.5s (500ms), critical >1.0s (1000ms)
+      # ──────────────────────────────────────────────
+      - alert: P95High
+        expr: histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m]))) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "P95 latency >500ms selama 5m"
+          description: "P95 {{ $value | humanizeDuration }} melebihi 500ms (warning). Cek pg_stat_statements + EXPLAIN ANALYZE. Threshold Bab 8.4."
+
+      - alert: P95Critical
+        expr: histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m]))) > 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "P95 latency >1000ms selama 5m - CRITICAL"
+          description: "P95 {{ $value | humanizeDuration }} melebihi 1000ms. Incident! Cek DB + Redis + bulkhead."
+
+      # ──────────────────────────────────────────────
+      # Error rate — 5xx / total
+      # warning >1% (0.01), critical >5% (0.05)
+      # ──────────────────────────────────────────────
+      - alert: ErrorRateHigh
+        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) > 0.01
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Error rate >1% selama 5m"
+          description: "Error rate {{ $value | humanizePercentage }} melebihi 1% (warning). Cek Loki logs + Jaeger traces."
+
+      - alert: ErrorRateCritical
+        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Error rate >5% selama 5m - CRITICAL"
+          description: "Error rate {{ $value | humanizePercentage }} melebihi 5%. Incident! Cek circuit breaker + bulkhead."
+
+      # ──────────────────────────────────────────────
+      # DB pool — pgbouncer client active / max >80%
+      # ──────────────────────────────────────────────
+      - alert: DBPoolHigh
+        expr: pgbouncer_pools_client_active_connections / pgbouncer_pools_client_max_connections * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "DB pool >80% selama 5m"
+          description: "PgBouncer pool {{ $value }}% penuh. Naikkan DEFAULT_POOL_SIZE 25->50 atau tambah replica."
+
+      # ──────────────────────────────────────────────
+      # Disk — node_filesystem >85%
+      # ──────────────────────────────────────────────
+      - alert: DiskUsageHigh
+        expr: (node_filesystem_size_bytes{fstype!~"tmpfs|overlay"} - node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"}) / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"} * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk >85% selama 5m"
+          description: "Disk usage {{ $value }}% melebihi 85%. Siapkan scale storage / archiving / sharding."
+
+      # ──────────────────────────────────────────────
+      # CPU — >80% selama 5m
+      # ──────────────────────────────────────────────
+      - alert: CPUHigh
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU >80% selama 5m"
+          description: "CPU {{ $value }}% melebihi 80%. Pertimbangkan vertical 2->4 vCPU atau horizontal +LB."
+
+      # ──────────────────────────────────────────────
+      # Cache hit rate — <80% selama 5m (warning)
+      # ──────────────────────────────────────────────
+      - alert: CacheHitLow
+        expr: sum(rate(cache_hit_total{hit="true"}[5m])) / sum(rate(cache_hit_total[5m])) * 100 < 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Cache hit rate <80% selama 5m"
+          description: "Cache hit {{ $value }}% di bawah 80%. Cek TTL + invalidate + Redis AOF."
+
+      # ──────────────────────────────────────────────
+      # Availability — up ==0 selama 2m (service down)
+      # ──────────────────────────────────────────────
+      - alert: ServiceDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.job }} DOWN selama 2m"
+          description: "Job {{ $labels.job }} instance {{ $labels.instance }} tidak scrape. Cek docker ps + logs."
+
+      # ──────────────────────────────────────────────
+      # Circuit breaker open >5m
+      # ──────────────────────────────────────────────
+      - alert: CircuitOpen
+        expr: circuit_state == 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Circuit breaker OPEN >5m ({{ $labels.service }} -> {{ $labels.target }})"
+          description: "Circuit OPEN 5m. Downstream {{ $labels.target }} bermasalah. Cek health + logs."

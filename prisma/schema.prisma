@@ -1,0 +1,264 @@
+// Prisma Schema — Backend Performa Demo Gotong Royong
+// Demo laboratorium performa: Postgres + Redis + pg_trgm + MatView + PgBouncer
+// Sumber: Ringkasan Backend Bab 2/4/5, spec-backend-performa.md (7 fondasi + 6 DB + SLA 16 endpoint)
+// Bahasa komentar: Indonesia
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────
+// ENUM — Tipe komunitas & peran RBAC
+// ──────────────────────────────────────────────
+
+enum CommunityType {
+  masjid
+  musholla
+  rt
+  rw
+  kelurahan
+  ormas
+  karang_taruna
+  market
+  family
+  laz
+  bmt
+  koperasi
+  other
+}
+
+enum MemberRole {
+  super_admin
+  admin_masjid
+  admin_market
+  admin_rw
+  bendahara
+  sekretaris
+  member
+  user
+}
+
+enum AsnafCategory {
+  fakir
+  miskin
+  amil
+  mualaf
+  riqab
+  gharim
+  fisabilillah
+  ibnu_sabil
+}
+
+// ──────────────────────────────────────────────
+// Community — Fondasi #2: User Profile & Community Service
+// Single Source of Truth untuk profil komunitas (masjid/RT/RW/UMKM hub)
+// Endpoint SLA: GET /api/komunitas/:id p50 <30ms (Redis TTL 10 menit)
+// ──────────────────────────────────────────────
+
+model Community {
+  id          String        @id @default(cuid())
+  slug        String        @unique // untuk GET /api/komunitas/:slug — index B-Tree
+  name        String
+  description String?       @db.Text
+  type        CommunityType @default(masjid)
+  kelurahan   String        // index untuk filter ?kelurahan=Bintaro
+  kecamatanId String        @default("3171040") // Pesanggrahan
+  alamat      String?       @db.Text
+  logoUrl     String?
+  memberCount Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relasi — tidak di-join berat di hot path, di-cache Redis
+  members       Membership[]
+  kasEntries    KasLedger[]    @relation("CommunityKas")
+  announcements Announcement[]
+
+  @@index([kelurahan])
+  @@index([type])
+  @@index([slug])
+  @@map("communities")
+}
+
+model Membership {
+  id          String     @id @default(cuid())
+  communityId String
+  profileId   String // FK ke profiles (Supabase Auth) — tidak enforce FK lintas DB di demo
+  role        MemberRole @default(member)
+  joinedAt    DateTime   @default(now())
+
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  @@index([communityId])
+  @@index([profileId])
+  @@unique([communityId, profileId])
+  @@map("memberships")
+}
+
+model Announcement {
+  id          String    @id @default(cuid())
+  communityId String
+  title       String
+  content     String    @db.Text
+  pinned      Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  // Index komposit untuk ORDER BY pinned DESC, created_at DESC LIMIT 20 (endpoint p50 <30ms)
+  @@index([communityId, pinned, createdAt(sort: Desc)])
+  @@map("announcements")
+}
+
+// ──────────────────────────────────────────────
+// UMKM — Data real 6.081 baris dari CSV Pesanggrahan
+// 23 kolom: line, product, dataId, name, dataLat, dataLng, alamat, telepon, provinsiId, kabupatenId, kecamatanId, desaId, Kelurahan, zipCode, image, category0, category1, ...
+// Distribusi real: Bintaro 31.7% (1931), Petukangan Utara 27.8% (1694), Petukangan Selatan 17.3% (1054), Ulujami 13.5% (821), Pesanggrahan 9.4% (577)
+// Index: kelurahan + kecamatanId + category0 + fullTextSearch (pg_trgm GIN di migration 001)
+// ──────────────────────────────────────────────
+
+model Umkm {
+  id           String  @id @default(cuid())
+  dataId       String  @unique // kolom dataId CSV — unique key
+  name         String // kolom name
+  lat          Float // dataLat
+  lng          Float // dataLng
+  alamat       String  @db.Text
+  telepon      String?
+  provinsiId   String  @default("31")
+  kabupatenId  String  @default("3171")
+  kecamatanId  String // 3171040 = Pesanggrahan
+  desaId       String?
+  kelurahan    String // Kelurahan (Bintaro / Pesanggrahan / Petukangan Selatan / Petukangan Utara / Ulujami)
+  zipCode      String
+  zipCodeChk   String?
+  image        String? @db.Text
+  category0    String // mis: KULINER, LAPAK, AYAM, WARUNG MAKAN
+  category1    String? // sub-kategori
+  product      String? // kolom product
+  line         Int? // kolom line (nomor baris asli)
+
+  createdAt DateTime @default(now())
+
+  @@index([kelurahan])
+  @@index([kecamatanId])
+  @@index([category0])
+  @@index([category1])
+  @@index([zipCode])
+  // Index geospasial sederhana (lat,lng) — untuk pencarian radius masjid terdekat
+  @@index([lat, lng])
+  @@map("umkm")
+}
+
+// ──────────────────────────────────────────────
+// Masjid — Data real 256 baris dari CSV Masjid (15 kolom efektif)
+// Kolom: No, name, Tipe (MASJID/MUSHOLLA), Kelurahan, Kode Pos, dataLat, dataLng, alamat, PIC, Tanggal, Jumlah jamaah, Laporan Keuangan, Kas Masjid
+// Tipe: MASJID vs MUSHOLLA — untuk filter
+// ──────────────────────────────────────────────
+
+model Masjid {
+  id        Int     @id // No dari CSV (1..256) — pakai Int agar stabil untuk FK
+  name      String  @db.Text
+  tipe      String? // MASJID / MUSHOLLA
+  kelurahan String // Bintaro / Pesanggrahan / Petukangan Selatan / Petukangan Utara / Ulujami
+  kodePos   String?
+  lat       Float
+  lng       Float
+  alamat    String  @db.Text
+  pic       String?
+  kasMasjid String? // Kas Masjid Terakhir (raw string, bisa "2500000" atau "Tidak diketahui")
+
+  createdAt DateTime @default(now())
+
+  @@index([kelurahan])
+  @@index([tipe])
+  @@index([lat, lng])
+  @@map("masjid")
+}
+
+// ──────────────────────────────────────────────
+// KasLedger — Fondasi #6: Audit & Logging Engine + Blockchain-like Ledger
+// Tabel: financial_ledger (SHA-256 hash chain, trigger BEFORE INSERT)
+// Spec exact dari Ringkasan Backend Bab 5:
+//   id BIGSERIAL, timestamp TIMESTAMPTZ, amount NUMERIC(15,2), description TEXT,
+//   recipient_id VARCHAR(255), actor_id VARCHAR(255), hash_prev VARCHAR(64), hash_self VARCHAR(64)
+// Trigger: secure_ledger_hash() — hitung SHA256(amount|description|recipient|actor|hash_prev)
+// Genesis: hash_prev = '0000...0000' (64 nol)
+// Endpoint: POST /api/kas (p50 <100ms), GET /api/ledger/verify (loop verifikasi chain)
+// ──────────────────────────────────────────────
+
+model KasLedger {
+  id          BigInt   @id @default(autoincrement())
+  timestamp   DateTime @default(now()) @db.Timestamptz
+  amount      Decimal  @db.Decimal(15, 2)
+  description String   @db.Text
+  recipientId String   @map("recipient_id") @db.VarChar(255)
+  actorId     String   @map("actor_id") @db.VarChar(255)
+  hashPrev    String   @map("hash_prev") @db.VarChar(64)
+  hashSelf    String   @map("hash_self") @db.VarChar(64)
+
+  // Opsional: kaitkan ke komunitas (untuk laporan kas per komunitas)
+  communityId String?
+  community   Community? @relation("CommunityKas", fields: [communityId], references: [id])
+
+  // Relasi ke distribusi ZIS (satu kas zakat bisa didistribusikan ke 8 asnaf)
+  zisDistributions ZisDistribution[]
+
+  @@index([communityId, timestamp(sort: Desc)])
+  @@index([actorId])
+  @@index([recipientId])
+  @@map("financial_ledger")
+}
+
+// ──────────────────────────────────────────────
+// ZisDistribution — Distribusi Zakat/Infaq/Shadaqah ke 8 Asnaf
+// Sumber: Ringkasan Backend Bab 6.2 — tabel zis_distribution
+// 8 asnaf: fakir, miskin, amil, mualaf, riqab, gharim, fisabilillah, ibnu_sabil
+// FK ke financial_ledger(id) — satu collection bisa dibagi ke banyak asnaf
+// ──────────────────────────────────────────────
+
+model ZisDistribution {
+  id                BigInt       @id @default(autoincrement())
+  zisCollectionId   BigInt       @map("zis_collection_id")
+  asnafCategory     AsnafCategory @map("asnaf_category")
+  percentage        Decimal      @db.Decimal(5, 2)
+  allocatedAmount   Decimal      @map("allocated_amount") @db.Decimal(15, 2)
+  distributedStatus Boolean      @default(false) @map("distributed_status")
+  distributedAt     DateTime?    @map("distributed_at") @db.Timestamptz
+
+  collection KasLedger @relation(fields: [zisCollectionId], references: [id], onDelete: Cascade)
+
+  @@index([zisCollectionId])
+  @@index([asnafCategory])
+  @@map("zis_distribution")
+}
+
+// ──────────────────────────────────────────────
+// AuditLog — Fondasi #6: Audit Engine (non-financial)
+// Mencatat create/update/delete/access dengan old_data/new_data JSON
+// Untuk audit umum (bukan hash chain — hash chain hanya untuk financial_ledger)
+// ──────────────────────────────────────────────
+
+model AuditLog {
+  id        BigInt   @id @default(autoincrement())
+  actorId   String   @map("actor_id") @db.VarChar(255)
+  action    String   @db.VarChar(50) // create | update | delete | access
+  entity    String   @db.VarChar(100) // umkm | masjid | community | kas
+  entityId  String   @map("entity_id") @db.VarChar(255)
+  oldData   Json?    @map("old_data") @db.JsonB
+  newData   Json?    @map("new_data") @db.JsonB
+  ipAddress String?  @map("ip_address") @db.VarChar(45)
+  timestamp DateTime @default(now()) @db.Timestamptz
+
+  @@index([actorId])
+  @@index([entity, entityId])
+  @@index([timestamp(sort: Desc)])
+  @@map("audit_log")
+}

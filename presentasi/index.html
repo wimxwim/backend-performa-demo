@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modul Performa Backend GR — Demo Logging + Performa</title>
+<link rel="stylesheet" href="./output.css">
+<link rel="stylesheet" href="./fonts.css">
+<link rel="preload" href="./fonts/plus-jakarta-sans-v8-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body class="bg-[#0f172a] text-slate-800 antialiased selection:bg-orange-500 selection:text-white">
+<!-- Header navy #1e3a5f + orange accent -->
+<header class="sticky top-0 z-40 bg-[#1e3a5f] border-b border-white/10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[56px] flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white font-extrabold text-[13px] shrink-0">GR</div>
+      <div class="min-w-0">
+        <h1 class="text-white font-extrabold text-[13px] sm:text-[14px] leading-none truncate">Modul Performa Backend GR — Demo Logging + Performa</h1>
+        <p class="text-blue-200/80 text-[11px] hidden sm:block truncate">TIGA INSAN: Muttaqin • Shalih • Nafi' — 60 menit • 10 Bab • 37 Slides</p>
+      </div>
+    </div>
+    <div class="hidden md:flex items-center gap-2 shrink-0">
+      <span class="px-2.5 py-1 rounded-full bg-white/10 text-blue-100 text-[11px] font-semibold border border-white/10">Part 1: 1–12</span>
+      <span id="progress-label" class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">1 / 37</span>
+    </div>
+  </div>
+  <div id="progress-wrap" class="h-1 bg-white/10 w-full">
+    <div id="progress" class="h-1 bg-orange-500" style="width:2.86%"></div>
+  </div>
+  <div class="h-[3px] bg-orange-500 w-full"></div>
+</header>
+
+<main id="slide-viewport" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-28">
+  <!-- Slide 1: Cover -->
+  <section id="slide-1" class="slide active min-h-[68vh] flex-col rounded-2xl overflow-hidden bg-gradient-to-br from-[#1e3a5f] via-[#1e3a5f] to-[#14263e] text-white p-6 sm:p-8 lg:p-10 relative" aria-hidden="false">
+    <div class="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full bg-orange-500/10 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-32 -left-32 w-[520px] h-[520px] rounded-full bg-blue-400/10 blur-3xl pointer-events-none"></div>
+    <div class="flex items-center gap-2 text-[11px] font-bold tracking-widest text-orange-300">
+      <span class="px-2.5 py-1 rounded-full bg-white/10 border border-white/15">COVER</span>
+      <span class="text-blue-200/70">GOTONG ROYONG — OS Kehidupan Komunitas</span>
+    </div>
+    <div class="mt-6 grid lg:grid-cols-[1.15fr_0.85fr] gap-8 items-start relative">
+      <div>
+        <h2 class="text-[32px] sm:text-[40px] lg:text-[44px] font-extrabold leading-[0.95] tracking-tight">Modul Performa<br><span class="text-orange-400">Backend GR Demo</span></h2>
+        <p class="mt-3 text-blue-100/90 text-[14px] sm:text-[15px] font-semibold">Logging + Performa, 4 branch + 5 CDC — TIGA INSAN • 60 menit</p>
+        <div class="mt-5 flex flex-wrap gap-2">
+          <span class="px-3 py-1.5 rounded-full bg-white text-[#1e3a5f] text-xs font-bold">Poster 1+2 + 10 Bab + 16 Endpoint</span>
+          <span class="px-3 py-1.5 rounded-full glass text-white text-xs font-semibold">p50 &lt;50ms • p95 &lt;200ms</span>
+        </div>
+        <div class="mt-6 grid grid-cols-3 gap-3 text-center">
+          <div class="glass-card rounded-xl p-3">
+            <div class="text-orange-300 font-extrabold text-lg leading-none">TIGA</div>
+            <div class="text-[11px] text-blue-100/80 font-semibold">INSAN</div>
+            <div class="text-[10px] text-white/60 mt-1">Muttaqin<br>Shalih • Nafi'</div>
+          </div>
+          <div class="glass-card rounded-xl p-3">
+            <div class="text-white font-extrabold text-lg leading-none">60</div>
+            <div class="text-[11px] text-blue-100/80 font-semibold">MENIT</div>
+            <div class="text-[10px] text-white/60 mt-1">10 Bab<br>37 Slides</div>
+          </div>
+          <div class="glass-card rounded-xl p-3">
+            <div class="text-white font-extrabold text-lg leading-none">Rp0</div>
+            <div class="text-[11px] text-blue-100/80 font-semibold">MVP</div>
+            <div class="text-[10px] text-white/60 mt-1">Postgres+Redis<br>pg_trgm+MatView</div>
+          </div>
+        </div>
+      </div>
+      <div class="glass-strong rounded-2xl p-5 text-slate-800 shadow-xl">
+        <div class="text-[11px] font-extrabold tracking-widest text-orange-600">APA YANG DIBAHAS</div>
+        <ul class="mt-3 space-y-2.5 text-[13px] leading-relaxed">
+          <li class="flex gap-2"><span class="text-orange-500 mt-1">•</span><span><b>Poster 1+2</b> + 10 Bab + 16 Endpoint + Checklist</span></li>
+          <li class="flex gap-2"><span class="text-orange-500 mt-1">•</span><span>Postgres + Redis + pg_trgm + MatView + PgBouncer → <b>p50 &lt;50ms</b></span></li>
+          <li class="flex gap-2"><span class="text-orange-500 mt-1">•</span><span>CDC Debezium WAL → Kafka → ES geospasial + ClickHouse</span></li>
+        </ul>
+        <div class="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200">
+          <div class="text-[11px] font-bold text-slate-500">ALUR DEMO</div>
+          <div class="mono text-[11px] text-slate-700 mt-1 leading-relaxed">01 console-log → 02 Pino JSON → 03 Scale → 04 Observability → 05 CDC</div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-auto pt-6 flex flex-wrap justify-between gap-2 text-[11px] text-blue-200/70 border-t border-white/10">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="text-orange-300 font-bold">1 / 37</span></div>
+  </section>
+
+  <!-- Slide 2: Daftar Isi -->
+  <section id="slide-2" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">DAFTAR ISI</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">10 BAB • 37 SLIDES MAP</span>
+      <span class="text-[11px] text-slate-400">Part 1: slides 1–12</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Daftar Isi — 10 Bab + 37 Slides Map</h2>
+    <div class="mt-5 grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 1</span><span>Kecepatan = Kepercayaan (Muttaqin, SLA) → <b>Slides 3–5</b></span></li>
+        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 2</span><span>Data Flow Flutter → Gateway → 7 Fondasi → 6 DB → <b>Slide 13</b></span></li>
+        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 3</span><span>Postgres Scale (B-Tree, pg_trgm, MatView, Cursor, RLS) → <b>Slides 14–17</b></span></li>
+        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 4</span><span>Caching (L1/L2/L3, TTL, tiering) → <b>Slide 18</b> • Bab 5 ES geospasial → <b>Slide 19</b></span></li>
+        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 6</span><span>CDC Streaming (WAL → Kafka → ES/CH, anti dual-write) → <b>Slide 20</b></span></li>
+        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 7–8</span><span>API Delivery (GZIP, cursor, Edge, rate limit) → <b>21</b> • Observability → <b>22</b></span></li>
+        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 9–10</span><span>Roadmap 5 Fase (MVP Rp0 → auto-scale) → <b>23</b> • SLA 16 endpoint + DoD → <b>24–26</b></span></li>
+        <li class="flex gap-2"><span class="font-bold text-orange-600 shrink-0">Demo</span><span>01–05 + Appendix A/B/C + Penutup → <b>Slides 27–35</b></span></li>
+      </ul>
+      <div class="rounded-xl border border-slate-200 overflow-hidden">
+        <div class="bg-[#1e3a5f] text-white text-[11px] font-bold px-3 py-2 flex justify-between"><span>BAB</span><span>SLIDES</span></div>
+        <div class="divide-y divide-slate-100 text-[12px]">
+          <div class="flex justify-between px-3 py-2 bg-slate-50"><span>Bab 1 — SLA</span><b>3–5</b></div>
+          <div class="flex justify-between px-3 py-2"><span>Bab 2 — Data Flow</span><b>13</b></div>
+          <div class="flex justify-between px-3 py-2 bg-slate-50"><span>Bab 3 — Postgres</span><b>14–17</b></div>
+          <div class="flex justify-between px-3 py-2"><span>Bab 4–5 — Cache + ES</span><b>18–19</b></div>
+          <div class="flex justify-between px-3 py-2 bg-slate-50"><span>Bab 6 — CDC</span><b>20</b></div>
+          <div class="flex justify-between px-3 py-2"><span>Bab 7–8 — API + Obs</span><b>21–22</b></div>
+          <div class="flex justify-between px-3 py-2 bg-slate-50"><span>Bab 9–10 — Roadmap + SLA</span><b>23–26</b></div>
+          <div class="flex justify-between px-3 py-2 bg-orange-50 font-bold text-orange-700"><span>Poster 1–7 (Part 1)</span><b>6–12 ✓</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">2 / 37</span></div>
+  </section>
+
+  <!-- Slide 3: Bab 1.1 -->
+  <section id="slide-3" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 1.1</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">TIGA INSAN • MUTTAQIN</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f]">Bab 1.1 — Kecepatan = Kepercayaan (Muttaqin)</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
+      <ul class="space-y-2.5 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Muttaqin</b> = fondasi TIGA INSAN: beriman dengan akal yang hidup — kepercayaan harus lebih dulu dari fitur.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>SHA-256 hash chain transparansi keuangan: setiap transaksi kas diverifikasi <b>&lt;1 detik</b> → jamaah percaya pengurus.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Lambat = khianat amanah</b>: setiap ms keterlambatan mengikis kepercayaan yang susah payah dibangun.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Kecepatan adalah bahasa universal keandalan — warga cek laporan kas, data muncul &lt;1 detik = platform serius.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Prinsip: ukur server-side (p50/p95/p99), bukan feeling — EXPLAIN ANALYZE, pg_stat_statements, prom-client.</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="rounded-xl bg-[#1e3a5f] text-white p-4 relative overflow-hidden">
+          <div class="text-orange-300 text-[11px] font-bold tracking-widest">QUOTE</div>
+          <p class="mt-2 text-[13px] leading-relaxed font-medium">“Kecepatan bukan soal gengsi — ini soal <span class="text-orange-300">amanah</span>. Jika kas masjid lambat dibuka, jamaah bertanya: ada apa?”</p>
+          <div class="mt-3 text-[11px] text-blue-200/70">— Prinsip Muttaqin, TIGA INSAN</div>
+        </div>
+        <div class="rounded-xl border border-slate-200 p-3 bg-slate-50">
+          <div class="text-[11px] font-bold text-slate-500">BUKTI TEKNIS</div>
+          <div class="mono text-[11px] text-slate-700 mt-1">hash_self = SHA256(amount|desc|recipient|actor|hash_prev)<br>verify &lt;1s via GET /ledger/verify</div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">3 / 37</span></div>
+  </section>
+
+  <!-- Slide 4: Bab 1.2 -->
+  <section id="slide-4" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 1.2</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">KONTEKS INDONESIA</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f]">Bab 1.2 — Konteks Indonesia: 3G, 2–3GB RAM, Kuota</h2>
+    <div class="mt-4 grid lg:grid-cols-3 gap-4">
+      <div class="lg:col-span-2">
+        <ul class="space-y-2.5 text-[13px] leading-relaxed text-slate-700">
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>Jaringan <b>3G RTT 500–1000ms</b>, sinyal tidak stabil — backend harus <b>&lt;200ms</b> agar total &lt;3 detik (UX #46, #50).</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>Android entry-level <b>RAM 2–3GB</b>, CPU terbatas — payload kecil + GZIP 70–80% = hemat kuota & parsing cepat.</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>Kuota terbatas: setiap byte tidak perlu adalah pemborosan — payload shaping <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">?fields=</span> + Brotli + Edge caching.</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>Implikasi: jangan kirim SELECT *; jangan polling; cache jadwal sholat TTL 1 jam; kompresi wajib.</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>Gotong Royong bukan Silicon Valley — <b>performa adalah aksesibilitas</b>, bukan kemewahan.</span></li>
+        </ul>
+      </div>
+      <div class="space-y-3">
+        <div class="rounded-xl border border-orange-200 bg-orange-50 p-4">
+          <div class="text-[11px] font-extrabold tracking-widest text-orange-700">BUDGET WAKTU</div>
+          <div class="mt-2 space-y-1.5 text-[12px]">
+            <div class="flex justify-between"><span class="text-slate-600">Backend p95</span><b class="text-[#1e3a5f]">&lt;200ms</b></div>
+            <div class="flex justify-between"><span class="text-slate-600">RTT 3G</span><b class="text-orange-600">500–1000ms</b></div>
+            <div class="h-px bg-orange-200 my-1"></div>
+            <div class="flex justify-between font-bold"><span>Total</span><span class="text-emerald-600">&lt;3 detik ✓</span></div>
+          </div>
+          <div class="mt-2 text-[11px] text-slate-500">UX #46 #50: &gt;3 detik = pengguna pergi</div>
+        </div>
+        <div class="rounded-xl bg-slate-900 text-emerald-300 p-3 mono text-[11px] leading-relaxed">Payload shaping:<br>GET /api/komunitas?fields=name,lat,lng<br>→ hemat 70% bandwidth</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">4 / 37</span></div>
+  </section>
+
+  <!-- Slide 5: Bab 1.3 SLA -->
+  <section id="slide-5" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 1.3</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">TARGET SLA</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f]">Bab 1.3 — Target SLA: p50 / p95 / p99 / Availability</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Global: <b>p50 &lt;50ms</b> (read) / &lt;100ms (write), <b>p95 &lt;200ms</b>, <b>p99 &lt;500ms</b> — diukur server-side (tanpa RTT).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Availability: MVP <b>99.5%</b> (3.6 jam down/bulan) → Fase 3+ 99.9% (43 menit) → Fase 5 99.99% (4 menit).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Error rate <b>&lt;0.1%</b> semua endpoint; jika p95 &gt;500ms 5 menit → incident, cek pg_stat_statements + EXPLAIN.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Alat ukur: prom-client histogram (buckets 0.01–5s), Prometheus histogram_quantile, Grafana, k6/autocannon.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>16 endpoint punya SLA per-endpoint (Bab 10.1) — tidak ada satu angka untuk semua.</span></li>
+      </ul>
+      <div class="rounded-xl border border-slate-200 overflow-hidden">
+        <table class="w-full text-[12px]">
+          <thead class="bg-[#1e3a5f] text-white">
+            <tr><th class="px-3 py-2 text-left font-bold">Metrik</th><th class="px-3 py-2 text-center font-bold">Target</th><th class="px-3 py-2 text-left font-bold">Alat</th></tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="bg-slate-50"><td class="px-3 py-2 font-semibold">p50 read / write</td><td class="px-3 py-2 text-center"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[11px]">&lt;50 / &lt;100ms</span></td><td class="px-3 py-2 text-slate-600">prom-client</td></tr>
+            <tr><td class="px-3 py-2 font-semibold">p95</td><td class="px-3 py-2 text-center"><span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-bold text-[11px]">&lt;200ms</span></td><td class="px-3 py-2 text-slate-600">histogram_quantile</td></tr>
+            <tr class="bg-slate-50"><td class="px-3 py-2 font-semibold">p99</td><td class="px-3 py-2 text-center"><span class="px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 font-bold text-[11px]">&lt;500ms</span></td><td class="px-3 py-2 text-slate-600">Grafana</td></tr>
+            <tr><td class="px-3 py-2 font-semibold">Availability</td><td class="px-3 py-2 text-center">99.5% → 99.99%</td><td class="px-3 py-2 text-slate-600">up, SLO</td></tr>
+            <tr class="bg-slate-50"><td class="px-3 py-2 font-semibold">Error rate</td><td class="px-3 py-2 text-center">&lt;0.1%</td><td class="px-3 py-2 text-slate-600">5xx / total</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">5 / 37</span></div>
+  </section>
+
+  <!-- Slide 6: Poster #1 -->
+  <section id="slide-6" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">POSTER #1</span>
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">APA ITU 200ms</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f]">Poster #1 — Apa itu 200ms</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+      <ul class="space-y-2.5 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>1 detik = 1000ms</b> — 200ms = 0.2 detik = kedipan mata.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Diagram: User (tap) → Server (proses 50ms) → DB (query 20ms) → Response (GZIP 10ms) → User lihat hasil.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>200ms adalah batas ‘terasa instan’</b> — di atas itu pengguna mulai merasa menunggu (UX #46).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Target backend &lt;200ms p95 → sisa budget untuk jaringan 3G (500–1000ms) masih &lt;3 detik total.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Ukur dengan <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">X-Response-Time</span> + prom-client histogram, bukan stopwatch manual.</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="ascii rounded-xl p-4 overflow-x-auto">User --tap--&gt; [Gateway JWT 5ms] --&gt; [Redis HIT 2ms / DB 20ms] --&gt; [GZIP 5ms] --&gt; User<br>Total server: 30–50ms (p50)  |  + RTT 3G 500ms = ~550ms (masih &lt;3s)</div>
+        <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
+          <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-3"><div class="font-extrabold text-emerald-700 text-lg">50ms</div><div class="text-slate-600 font-semibold">Server p50</div></div>
+          <div class="rounded-xl bg-amber-50 border border-amber-200 p-3"><div class="font-extrabold text-amber-700 text-lg">200ms</div><div class="text-slate-600 font-semibold">Batas instan</div></div>
+          <div class="rounded-xl bg-orange-50 border border-orange-200 p-3"><div class="font-extrabold text-orange-700 text-lg">550ms</div><div class="text-slate-600 font-semibold">+ 3G total</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">6 / 37</span></div>
+  </section>
+
+  <!-- Slide 7: Poster #2 -->
+  <section id="slide-7" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">POSTER #2</span>
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">SEMAKIN KECIL ms SEMAKIN CEPAT</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f]">Poster #2 — Semakin kecil ms, semakin cepat</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Intuisi: angka ms kecil = cepat, besar = lambat — jangan tertukar.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Tabel acuan (server-side): 1ms sangat cepat · 10ms cepat · 50ms baik · 200ms batas · 1000ms lambat · 10000ms sangat lambat.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Contoh: cache HIT Redis 1–5ms (sangat cepat) vs Seq Scan 2000ms (sangat lambat) = 400–2000x beda.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Goal: pindahkan sebanyak mungkin request dari kolom kanan (lambat) ke kiri (cepat) via index + cache.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Grafana: garis p50 (hijau), p95 (kuning), p99 (merah) — kejar hijau, jaga kuning, waspada merah.</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">
+          <table class="w-full text-[12px]">
+            <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-3 py-2 text-left">ms</th><th class="px-3 py-2 text-left">Rasa</th><th class="px-3 py-2 text-left">Contoh</th></tr></thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr data-ms-row="fast" class="bg-emerald-50"><td class="px-3 py-1.5 font-bold text-emerald-700">1–10 ms</td><td class="px-3 py-1.5">Sangat cepat</td><td class="px-3 py-1.5 text-slate-600">Redis HIT, RLS &lt;0.1ms</td></tr>
+              <tr data-ms-row="fast"><td class="px-3 py-1.5 font-bold text-emerald-600">10–50 ms</td><td class="px-3 py-1.5">Cepat</td><td class="px-3 py-1.5 text-slate-600">GIN 10–50ms, MatView 5–30ms</td></tr>
+              <tr data-ms-row="ok" class="bg-slate-50"><td class="px-3 py-1.5 font-bold text-amber-600">50–200 ms</td><td class="px-3 py-1.5">Baik</td><td class="px-3 py-1.5 text-slate-600">p50 read, p95 target</td></tr>
+              <tr data-ms-row="warn"><td class="px-3 py-1.5 font-bold text-orange-600">200–500 ms</td><td class="px-3 py-1.5">Mulai terasa</td><td class="px-3 py-1.5 text-slate-600">p99 batas, perlu optimasi</td></tr>
+              <tr data-ms-row="slow" class="bg-slate-50"><td class="px-3 py-1.5 font-bold text-red-600">500–1000 ms</td><td class="px-3 py-1.5">Lambat</td><td class="px-3 py-1.5 text-slate-600">OFFSET 2000ms, LIKE Seq Scan</td></tr>
+              <tr data-ms-row="slow"><td class="px-3 py-1.5 font-bold text-red-700">&gt;1000 ms</td><td class="px-3 py-1.5">Sangat lambat</td><td class="px-3 py-1.5 text-slate-600">N+1, tanpa index</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div data-ms-viz class="flex gap-1.5 items-end h-8 px-1">
+          <div data-tier="fast" class="viz-bar flex-1 h-3 rounded-full bg-emerald-500"></div>
+          <div data-tier="fast" class="viz-bar flex-1 h-5 rounded-full bg-emerald-500"></div>
+          <div data-tier="ok" class="viz-bar flex-1 h-7 rounded-full bg-amber-400"></div>
+          <div data-tier="warn" class="viz-bar flex-1 h-6 rounded-full bg-orange-500"></div>
+          <div data-tier="slow" class="viz-bar flex-1 h-4 rounded-full bg-red-500"></div>
+          <div data-tier="slow" class="viz-bar flex-1 h-2 rounded-full bg-red-600"></div>
+        </div>
+        <div class="text-[11px] text-slate-400 text-center">Hover baris tabel → highlight viz • Hijau → Merah</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">7 / 37</span></div>
+  </section>
+
+  <!-- Slide 8: Poster #3 P99 -->
+  <section id="slide-8" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">POSTER #3</span>
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">APA ITU P99</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f]">Poster #3 — Apa itu P99</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
+      <ul class="space-y-2.5 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>100 request diurutkan dari tercepat ke terlambat — <b>P99 = request ke-99</b> (99% lebih cepat, 1% lebih lambat).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Contoh: P99 = 200ms artinya 99 request ≤200ms, 1 request &gt;200ms (yang paling lambat, paling sering komplain).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Kenapa peduli P99? Karena <b>1% yang lambat adalah pengguna yang paling vokal</b> — mereka yang churn.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Jangan hanya lihat rata-rata (avg) — avg bisa 50ms tapi P99 2000ms = ada yang sangat menderita.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Spec: p50 &lt;50ms, p95 &lt;200ms, p99 &lt;500ms — ketiganya harus hijau, bukan cuma p50.</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="rounded-xl border border-slate-200 p-4 bg-white">
+          <div class="text-[11px] font-bold text-slate-500 tracking-widest">100 DOTS — 99 HIJAU, 1 MERAH (TAIL)</div>
+          <div data-dot-grid class="dot-grid mt-3"></div>
+          <div class="mt-3 flex gap-2 text-[11px]">
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> 99% ≤ P99</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span> 1% tail &gt;P99</span>
+          </div>
+        </div>
+        <div class="ascii rounded-xl p-3">100 request sorted: [10,12,15,...,45,48, 50(p50), ..., 180, 200(p99), 2500]<br>  50% ≤ p50   95% ≤ p95   99% ≤ p99   1% tail latency (paling lambat)</div>
+        <div class="rounded-xl bg-amber-50 border border-amber-200 p-3 text-[12px]"><b class="text-amber-700">Kenapa bukan rata-rata 590ms?</b><span class="text-slate-600"> — avg tertarik outlier 2500ms, P99 jujur: 99% ≤200ms, 1% menderita.</span></div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">8 / 37</span></div>
+  </section>
+
+  <!-- Slide 9: Poster #4 P50/P95/P99/P99.9 -->
+  <section id="slide-9" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">POSTER #4</span>
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">P50 / P95 / P99 / P99.9</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f]">Poster #4 — P50 / P95 / P99 / P99.9</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
+      <ul class="space-y-2.5 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>P50 (median)</b>: 50% request lebih cepat — gambaran ‘mayoritas’ pengguna.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>P95</b>: 95% lebih cepat — 5% masih lebih lambat; target p95 &lt;200ms.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>P99</b>: 99% lebih cepat — hanya 1% tail; target p99 &lt;500ms.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>P99.9</b>: 99.9% lebih cepat — hanya 0.1% (1 dari 1000) — untuk Fase 5 (200k RPS, tail sangat penting).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Distribusi: mayoritas (p50) → banyak (p95) → sedikit (p99) → sangat sedikit (p99.9) — ekor panjang harus dipangkas.</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="rounded-xl border border-slate-200 p-4 bg-white">
+          <div class="text-[11px] font-bold text-slate-500 tracking-widest">DISTRIBUSI LATENCY</div>
+          <div class="mt-3 space-y-2 text-[12px]">
+            <div class="flex items-center gap-2"><span class="w-16 font-bold text-emerald-600">p50=30</span><div class="flex-1 h-3 rounded-full bg-emerald-500" style="width:70%"></div><span class="text-slate-500">mayoritas</span></div>
+            <div class="flex items-center gap-2"><span class="w-16 font-bold text-amber-600">p95=150</span><div class="flex-1 h-3 rounded-full bg-amber-400" style="width:35%"></div><span class="text-slate-500">5% tail</span></div>
+            <div class="flex items-center gap-2"><span class="w-16 font-bold text-orange-600">p99=400</span><div class="flex-1 h-3 rounded-full bg-orange-500" style="width:15%"></div><span class="text-slate-500">1% tail</span></div>
+            <div class="flex items-center gap-2"><span class="w-16 font-bold text-red-600">p99.9=900</span><div class="flex-1 h-1.5 rounded-full bg-red-500" style="width:6%"></div><span class="text-slate-500">0.1% very tail</span></div>
+          </div>
+          <div class="mt-3 text-[11px] text-slate-500">Optimasi tail = index + cache + proteksi (Circuit/Bulkhead)</div>
+        </div>
+        <div class="ascii rounded-xl p-3">Distribusi latency (ms):<br> p50=30  |███████ majority<br> p95=150 |███<br> p99=400 |█ tail<br>p99.9=900|· very tail  --&gt; optimasi tail = index + cache + proteksi</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">9 / 37</span></div>
+  </section>
+
+  <!-- Slide 10: Poster #5 -->
+  <section id="slide-10" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">POSTER #5</span>
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">SKALA RASA</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f]">Poster #5 — Berapa cepat / lambat (skala rasa)</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Skala rasa (server-side): 0–50ms sangat cepat, 50–100 sangat baik, 100–200 baik, 200–500 mulai terasa, 500–1000 lambat, &gt;1000 sangat lambat.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Mapping ke SLA: p50 harus di ‘sangat cepat/sangat baik’, p95 di ‘baik’, p99 jangan sampai ‘lambat’.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Jika p95 &gt;500ms → pengguna mulai komplain; &gt;1000ms → tinggalkan aplikasi.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Gunakan skala ini saat baca Grafana — warna hijau (0–100), kuning (100–200), oranye (200–500), merah (&gt;500).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Setiap ms yang dipangkas = kepercayaan yang ditambah (Muttaqin).</span></li>
+      </ul>
+      <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">
+        <table class="w-full text-[12px]">
+          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-3 py-2 text-left">Rentang</th><th class="px-3 py-2 text-left">Rasa</th><th class="px-3 py-2 text-left">Aksi</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="bg-emerald-50"><td class="px-3 py-1.5 font-bold text-emerald-700">0–50 ms</td><td class="px-3 py-1.5">Sangat cepat</td><td class="px-3 py-1.5 text-slate-600">Pertahankan (cache HIT, GIN, MatView)</td></tr>
+            <tr><td class="px-3 py-1.5 font-bold text-emerald-600">50–100 ms</td><td class="px-3 py-1.5">Sangat baik</td><td class="px-3 py-1.5 text-slate-600">Ideal p50 read</td></tr>
+            <tr class="bg-amber-50"><td class="px-3 py-1.5 font-bold text-amber-600">100–200 ms</td><td class="px-3 py-1.5">Baik</td><td class="px-3 py-1.5 text-slate-600">Batas p95, masih OK</td></tr>
+            <tr><td class="px-3 py-1.5 font-bold text-orange-600">200–500 ms</td><td class="px-3 py-1.5">Mulai terasa</td><td class="px-3 py-1.5 text-slate-600">Optimasi: index, N+1, payload</td></tr>
+            <tr class="bg-red-50"><td class="px-3 py-1.5 font-bold text-red-600">500–1000 ms</td><td class="px-3 py-1.5">Lambat</td><td class="px-3 py-1.5 text-slate-600">Incident jika p95 di sini</td></tr>
+            <tr><td class="px-3 py-1.5 font-bold text-red-700">&gt;1000 ms</td><td class="px-3 py-1.5">Sangat lambat</td><td class="px-3 py-1.5 text-slate-600">Wajib fix: Seq Scan, OFFSET</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">10 / 37</span></div>
+  </section>
+
+  <!-- Slide 11: Poster #6.1 10 Metrik -->
+  <section id="slide-11" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">POSTER #6.1</span>
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">10 METRIK WAJIB</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f]">Poster #6.1 — 10 Metrik Wajib</h2>
+    <div class="mt-4 grid lg:grid-cols-[0.9fr_1.1fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>10 metrik Poster #6 adalah <b>kompas performa</b> — tanpa ukur, tidak bisa kelola.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>3 pilar observabilitas (Bab 8.5): Metrics (Prometheus), Logs (Loki), Traces (Jaeger) — saling melengkapi.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Cache hit rate <b>&gt;80%</b> adalah pembeda MVP yang scalable vs yang boros DB.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>DB Query Time p95 &lt;50ms & no Seq Scan &gt;1000 rows — cek pg_stat_statements tiap rilis.</span></li>
+      </ul>
+      <div class="rounded-xl border border-slate-200 overflow-hidden">
+        <table class="w-full text-[11px]">
+          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">#</th><th class="px-2 py-1.5 text-left">Metrik</th><th class="px-2 py-1.5 text-left">Target</th><th class="px-2 py-1.5 text-left">Alat</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="bg-slate-50"><td class="px-2 py-1">1</td><td class="px-2 py-1 font-semibold">Response Time</td><td class="px-2 py-1">p50 &lt;50ms read</td><td class="px-2 py-1 text-slate-600">prom-client histogram</td></tr>
+            <tr><td class="px-2 py-1">2</td><td class="px-2 py-1 font-semibold">P95 / P99</td><td class="px-2 py-1">&lt;200ms / &lt;500ms</td><td class="px-2 py-1 text-slate-600">histogram_quantile</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1">3</td><td class="px-2 py-1 font-semibold">Throughput RPS/QPS</td><td class="px-2 py-1">100 → 200k</td><td class="px-2 py-1 text-slate-600">http_requests_total, k6</td></tr>
+            <tr><td class="px-2 py-1">4</td><td class="px-2 py-1 font-semibold">Latency RTT/TTFB</td><td class="px-2 py-1">&lt;200ms</td><td class="px-2 py-1 text-slate-600">curl time_total</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1">5</td><td class="px-2 py-1 font-semibold">Error Rate</td><td class="px-2 py-1">&lt;0.1%</td><td class="px-2 py-1 text-slate-600">5xx / total</td></tr>
+            <tr><td class="px-2 py-1">6</td><td class="px-2 py-1 font-semibold">Availability</td><td class="px-2 py-1">99.5% → 99.99%</td><td class="px-2 py-1 text-slate-600">up, SLO</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1">7</td><td class="px-2 py-1 font-semibold">CPU Usage</td><td class="px-2 py-1">&lt;70% avg</td><td class="px-2 py-1 text-slate-600">node_cpu</td></tr>
+            <tr><td class="px-2 py-1">8</td><td class="px-2 py-1 font-semibold">Memory Usage</td><td class="px-2 py-1">&lt;70% avg</td><td class="px-2 py-1 text-slate-600">node_memory</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1">9</td><td class="px-2 py-1 font-semibold">DB Query Time</td><td class="px-2 py-1">&lt;50ms p95</td><td class="px-2 py-1 text-slate-600">pg_stat_statements</td></tr>
+            <tr><td class="px-2 py-1">10</td><td class="px-2 py-1 font-semibold">Cache Hit Rate</td><td class="px-2 py-1">&gt;80%</td><td class="px-2 py-1 text-slate-600">cache_hit_total</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">11 / 37</span></div>
+  </section>
+
+  <!-- Slide 12: Poster #7 Glossary -->
+  <section id="slide-12" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">POSTER #7</span>
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">GLOSSARY SUPER SEDERHANA</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f]">Poster #7 — Glossary Super Sederhana</h2>
+    <div class="mt-4 grid lg:grid-cols-[0.9fr_1.1fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Bahasa performa tanpa jargon — untuk pengurus masjid & RT/RW juga paham.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>ms</b> = milidetik (1/1000 detik); <b>P99</b> = 99% request lebih cepat dari angka ini.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>RPS/QPS</b> = request/detik; <b>Latency</b> = waktu bolak-balik; <b>Throughput</b> = berapa banyak yang bisa dilayani.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Cache Hit</b> = ambil dari memori cepat (tanpa tanya DB); <b>Error Rate</b> = % gagal; <b>Availability</b> = % waktu hidup.</span></li>
+      </ul>
+      <div class="rounded-xl border border-slate-200 overflow-hidden">
+        <table class="w-full text-[12px]">
+          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-3 py-2 text-left">Istilah</th><th class="px-3 py-2 text-left">Arti 1 kalimat</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="bg-slate-50"><td class="px-3 py-1.5 font-bold text-[#1e3a5f]">ms</td><td class="px-3 py-1.5 text-slate-600">Milidetik: 1000ms = 1 detik</td></tr>
+            <tr><td class="px-3 py-1.5 font-bold text-[#1e3a5f]">P99</td><td class="px-3 py-1.5 text-slate-600">99% request ≤ angka ini, 1% lebih lambat</td></tr>
+            <tr class="bg-slate-50"><td class="px-3 py-1.5 font-bold text-[#1e3a5f]">RPS/QPS</td><td class="px-3 py-1.5 text-slate-600">Request/Query per detik (throughput)</td></tr>
+            <tr><td class="px-3 py-1.5 font-bold text-[#1e3a5f]">Latency</td><td class="px-3 py-1.5 text-slate-600">Waktu tunggu bolak-balik</td></tr>
+            <tr class="bg-slate-50"><td class="px-3 py-1.5 font-bold text-[#1e3a5f]">Throughput</td><td class="px-3 py-1.5 text-slate-600">Kapasitas layani request/detik</td></tr>
+            <tr><td class="px-3 py-1.5 font-bold text-[#1e3a5f]">Error Rate</td><td class="px-3 py-1.5 text-slate-600">% request gagal (5xx)</td></tr>
+            <tr class="bg-slate-50"><td class="px-3 py-1.5 font-bold text-[#1e3a5f]">Availability</td><td class="px-3 py-1.5 text-slate-600">% waktu layanan hidup</td></tr>
+            <tr><td class="px-3 py-1.5 font-bold text-[#1e3a5f]">CPU / Memory</td><td class="px-3 py-1.5 text-slate-600">% otak & ingatan server terpakai</td></tr>
+            <tr class="bg-slate-50"><td class="px-3 py-1.5 font-bold text-[#1e3a5f]">Cache Hit</td><td class="px-3 py-1.5 text-slate-600">% dilayani dari memori cepat</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">12 / 37</span></div>
+  </section>
+
+  <!-- Slide 13: Bab2 Data Flow -->
+  <section id="slide-13" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 2</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">DATA FLOW</span>
+      <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600 text-[11px] font-semibold">Flutter → Gateway → 7 Fondasi → 6 DB</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 2 — Data Flow: Flutter → Gateway → 7 Fondasi → 6 DB</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.15fr_0.85fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Flutter single codebase → <b>API Gateway</b> (Kong / Supabase Edge: JWT, rate limit, GZIP) → 7 Fondasi Bersama.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>7 Fondasi:</b> Auth, Profil, Payment (HarmoniPay+Xendit), Notifikasi (FCM/Wablas), Storage (S3/R2), Audit SHA-256, Feature Flag.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>6 DB:</b> Postgres (ACID+RLS jantung), Redis (&lt;10ms cache), Mongo (kajian), ES (geo+search), ClickHouse (OLAP), Influx/Timescale (IoT).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Bottleneck per layer:</b> Gateway JWT cache &lt;5ms, Fondasi profil cache 5m, DB index+pool, Network GZIP 70%.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Hot path read: Flutter → Gateway cache → <b>Redis HIT &lt;5ms</b> → response (tanpa DB).</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="ascii rounded-xl p-3 text-[11px] leading-relaxed overflow-x-auto">Flutter --&gt; Gateway(JWT cache &lt;5ms) --&gt; [7 Fondasi] --&gt; Redis HIT &lt;5ms --&gt; response<br>                         \--&gt; Postgres(ACID) --WAL--&gt; Debezium --&gt; Kafka --&gt; ES/ClickHouse (async)<br>                         \--&gt; pg_trgm(MVP) / ES(Fase3) --&gt; cache populer 5m</div>
+        <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
+          <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-2.5"><div class="font-extrabold text-emerald-700">&lt;5ms</div><div class="text-slate-600 font-semibold">Redis HIT</div></div>
+          <div class="rounded-xl bg-amber-50 border border-amber-200 p-2.5"><div class="font-extrabold text-amber-700">20ms</div><div class="text-slate-600 font-semibold">DB Index</div></div>
+          <div class="rounded-xl bg-slate-50 border border-slate-200 p-2.5"><div class="font-extrabold text-slate-700">70%</div><div class="text-slate-600 font-semibold">GZIP saving</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">13 / 37</span></div>
+  </section>
+
+  <!-- Slide 14: Bab3.1 B-Tree -->
+  <section id="slide-14" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 3.1</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">B-TREE INDEX • 50.000x</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 3.1 — Index B-Tree: 50.000x lebih cepat</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Tanpa index: <b>Seq Scan</b> baca 1.000.000 baris satu-per-satu — O(n) ~2000ms.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Dengan <b>B-Tree Balanced Tree</b>: cari dalam ~20 langkah (log₂ 1M ≈ 20) — O(log n) ~10ms → <b>50.000x speedup</b>.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Aturan: semua FK wajib punya index (Checklist #3) — tanpa index, JOIN = Seq Scan.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Buat <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">CONCURRENTLY</span> agar tidak blokir write di produksi; cek EXPLAIN: Index Scan vs Seq Scan.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Komposit: <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">(community_id, pinned, created_at)</span> untuk ORDER BY pinned, created_at LIMIT 20 (p50 &lt;30ms).</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="ascii rounded-xl p-3 text-[11px] leading-relaxed">Tanpa index: [1M rows] --scan--&gt; 1.000.000 langkah ~2000ms  (Seq Scan)<br>Dengan B-Tree:  root -&gt; branch -&gt; branch -&gt; leaf  ~20 langkah ~10ms (Index Scan)<br><span class="text-emerald-300">CREATE INDEX CONCURRENTLY idx_komunitas_slug ON communities(slug);</span></div>
+        <div class="rounded-xl border border-slate-200 overflow-hidden">
+          <table class="w-full text-[12px]">
+            <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-3 py-2 text-left">Kondisi</th><th class="px-3 py-2 text-center">Langkah</th><th class="px-3 py-2 text-center">Waktu</th></tr></thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr class="bg-red-50"><td class="px-3 py-1.5 font-semibold text-red-700">Tanpa index (Seq Scan)</td><td class="px-3 py-1.5 text-center">1.000.000</td><td class="px-3 py-1.5 text-center font-bold text-red-600">~2000ms</td></tr>
+              <tr class="bg-emerald-50"><td class="px-3 py-1.5 font-semibold text-emerald-700">Dengan B-Tree (Index Scan)</td><td class="px-3 py-1.5 text-center">~20</td><td class="px-3 py-1.5 text-center font-bold text-emerald-600">~10ms</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">14 / 37</span></div>
+  </section>
+
+  <!-- Slide 15: Bab3.2 pg_trgm -->
+  <section id="slide-15" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 3.2</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">pg_trgm GIN • 10–50ms</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 3.2 — pg_trgm GIN: 10–50ms vs LIKE 2000ms</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">LIKE '%ayam%'</span> tidak bisa pakai B-Tree → Seq Scan 6.081 baris ~2000ms (meledak saat data tumbuh).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>pg_trgm</b> pecah teks jadi trigram (3 huruf), GIN index cari overlap trigram → <b>10–50ms, 40–200x</b>.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Query: <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">WHERE name % 'ayam' ORDER BY similarity DESC</span> (operator <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">%</span> = similarity &gt;0.3).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Trigram: SELAMAT → {SEL,ELA,LAM,AMA,MAT} vs SELAMIT → {SEL,ELA,LAM,AMI,MIT} overlap 3/5 → similarity <b>71% (5/7)</b>.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Tuning: <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">word_similarity_threshold 0.3 → 0.2</span> untuk typo tolerance lebih longgar; ES untuk 500+ komunitas (Fase 3).</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="ascii rounded-xl p-3 text-[11px] leading-relaxed">BEFORE: SELECT * FROM umkm WHERE name LIKE '%ayam%'  --&gt; Seq Scan 2000ms<br>AFTER : SELECT * FROM umkm WHERE name % 'ayam'<br>        ORDER BY similarity(name,'ayam') DESC LIMIT 20  --&gt; GIN 10-50ms<br><span class="text-slate-400">CREATE EXTENSION pg_trgm; CREATE INDEX USING GIN (name gin_trgm_ops);</span></div>
+        <div class="rounded-xl border border-slate-200 overflow-hidden">
+          <table class="w-full text-[12px]">
+            <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-3 py-1.5 text-left">Metode</th><th class="px-3 py-1.5 text-center">Waktu</th><th class="px-3 py-1.5 text-center">Speedup</th></tr></thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr class="bg-red-50"><td class="px-3 py-1.5 font-semibold">LIKE '%ayam%' (Seq Scan)</td><td class="px-3 py-1.5 text-center font-bold text-red-600">2000ms</td><td class="px-3 py-1.5 text-center">1x</td></tr>
+              <tr class="bg-emerald-50"><td class="px-3 py-1.5 font-semibold">pg_trgm GIN (% operator)</td><td class="px-3 py-1.5 text-center font-bold text-emerald-600">10–50ms</td><td class="px-3 py-1.5 text-center font-bold text-emerald-700">40–200x</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">15 / 37</span></div>
+  </section>
+
+  <!-- Slide 16: Bab3.3-3.4 MatView + Cursor -->
+  <section id="slide-16" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 3.3–3.4</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">MatView + CURSOR • 100x</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 3.3–3.4 — MatView + Cursor vs OFFSET</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>MatView:</b> <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">SUM(amount) GROUP BY community_id</span> dari 500ms (Seq Scan) → <b>5–30ms</b> (Index Scan MatView) — 16–100x.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>OFFSET 10000:</b> scan 10.020 baris, buang 10.000 → <b>2000ms</b>; <b>Cursor keyset:</b> <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">WHERE (created_at,id) &gt; cursor</span> → <b>20ms</b> (100x).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>OFFSET baca-buang: DB baca semua lalu buang; cursor langsung lompat via index <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">(created_at,id)</span>.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">REFRESH CONCURRENTLY</span> butuh UNIQUE INDEX agar tidak lock read; dijadwal <b>pg_cron tiap 5–15 menit</b>.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Cursor base64: <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">{created_at, id} → nextCursor</span>; stabil, tidak skip/duplikat saat data baru masuk.</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="ascii rounded-xl p-3 text-[11px] leading-relaxed">OFFSET: SELECT ... ORDER BY created_at LIMIT 20 OFFSET 10000<br>  --&gt; scan 10.020, buang 10.000  ~2000ms<br>CURSOR: SELECT ... WHERE (created_at,id) &gt; ('2024-01-15','umkm_3000')<br>  ORDER BY created_at,id LIMIT 20  --&gt; Index Scan ~20ms</div>
+        <div class="rounded-xl border border-slate-200 overflow-hidden">
+          <table class="w-full text-[12px]">
+            <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-3 py-1.5 text-left">Teknik</th><th class="px-3 py-1.5 text-center">Waktu</th><th class="px-3 py-1.5 text-center">Speedup</th></tr></thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr class="bg-red-50"><td class="px-3 py-1.5 font-semibold">OFFSET 10000</td><td class="px-3 py-1.5 text-center font-bold text-red-600">2000ms</td><td class="px-3 py-1.5 text-center">1x</td></tr>
+              <tr class="bg-emerald-50"><td class="px-3 py-1.5 font-semibold">Cursor keyset</td><td class="px-3 py-1.5 text-center font-bold text-emerald-600">20ms</td><td class="px-3 py-1.5 text-center font-bold text-emerald-700">100x</td></tr>
+              <tr><td class="px-3 py-1.5 font-semibold">MatView kas</td><td class="px-3 py-1.5 text-center font-bold text-emerald-600">5–30ms</td><td class="px-3 py-1.5 text-center font-bold text-emerald-700">16–100x</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">16 / 37</span></div>
+  </section>
+
+  <!-- Slide 17: Bab3.5-3.8 PgBouncer, EXPLAIN, RLS, VACUUM -->
+  <section id="slide-17" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 3.5–3.8</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">PgBouncer • EXPLAIN • RLS • VACUUM</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 3.5–3.8 — PgBouncer, EXPLAIN, RLS, VACUUM</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>PgBouncer pool 25</b>, transaction mode :6432 — 1–3MB/koneksi, 500 koneksi langsung = <b>1500MB → crash</b>; pool 25 = ~75MB, hemat 95%.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>EXPLAIN ANALYZE 6 langkah SOP:</b> EXPLAIN → cek Seq Scan → buat index CONCURRENTLY → ANALYZE → EXPLAIN lagi → cek Buffers hit.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>RLS &lt;0.1ms</b> overhead: <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">CREATE POLICY ... USING (community_id = current_setting(...))</span> + index FK → <b>99.94% improvement</b> vs app filter.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>VACUUM:</b> hapus dead tuples (UPDATE/DELETE tinggalkan bangkai), <b>ANALYZE</b> update statistik planner agar tidak salah pilih Seq Scan.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Checklist: autovacuum normal, n_dead_tup &lt;1000, pg_stat_statements enabled, slow log &gt;100ms.</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="rounded-xl border border-slate-200 overflow-hidden">
+          <table class="w-full text-[11px]">
+            <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">Item</th><th class="px-2 py-1.5 text-center">Sebelum</th><th class="px-2 py-1.5 text-center">Sesudah</th></tr></thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr class="bg-red-50"><td class="px-2 py-1 font-semibold">Koneksi 500 direct</td><td class="px-2 py-1 text-center font-bold text-red-600">1500MB crash</td><td class="px-2 py-1 text-center font-bold text-emerald-600">pool 25 ~75MB</td></tr>
+              <tr><td class="px-2 py-1 font-semibold">RLS overhead</td><td class="px-2 py-1 text-center">app filter lambat</td><td class="px-2 py-1 text-center font-bold text-emerald-600">&lt;0.1ms</td></tr>
+              <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">VACUUM</td><td class="px-2 py-1 text-center">dead tuples menumpuk</td><td class="px-2 py-1 text-center">planner akurat</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="rounded-xl bg-slate-900 text-emerald-300 p-3 mono text-[11px] leading-relaxed">EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM umkm WHERE name % 'ayam';<br>--&gt; Bitmap Index Scan on idx_umkm_name_trgm  Execution Time: 12ms<br>--&gt; Buffers: shared hit=45  (vs Seq Scan hit=1200)</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">17 / 37</span></div>
+  </section>
+
+  <!-- Slide 18: Bab4 Caching hierarki -->
+  <section id="slide-18" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 4</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">CACHING • L1/L2/L3</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 4 — Caching: Hierarki L1/L2/L3 + TTL</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Hierarki: <b>L1 memory sub-ms</b> (hot), <b>L2 Redis 1–5ms</b> (warm), <b>L3 Postgres 10–50ms</b> (cold) — kejar L1/L2; Redis <b>&lt;1ms ratusan kali</b> lebih cepat dari disk.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Pola: <b>Cache-Aside</b> (lazy, baca cache dulu, miss baru DB) vs Write-Through (tulis cache+DB) / Write-Behind (async DB — jangan untuk kas ACID).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Invalidate on update: POST /api/kas → <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">DEL kas:summary:{id}</span> → GET berikutnya MISS → fetch DB → SETEX.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Hit rate <b>&gt;80%</b> = pembeda MVP scalable vs boros DB; monitor <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">cache_hit_total</span>.</span></li>
+      </ul>
+      <div class="rounded-xl border border-slate-200 overflow-hidden">
+        <table class="w-full text-[11px]">
+          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">Endpoint</th><th class="px-2 py-1.5 text-center">TTL</th><th class="px-2 py-1.5 text-left">Alasan</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">profil</td><td class="px-2 py-1 text-center"><span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-bold">5m</span></td><td class="px-2 py-1 text-slate-600">Single Source of Truth</td></tr>
+            <tr><td class="px-2 py-1 font-semibold">komunitas/:id</td><td class="px-2 py-1 text-center"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold">10m</span></td><td class="px-2 py-1 text-slate-600">Jarang berubah</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">pengumuman</td><td class="px-2 py-1 text-center"><span class="px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 font-bold">1m</span></td><td class="px-2 py-1 text-slate-600">Sering update, pinned</td></tr>
+            <tr><td class="px-2 py-1 font-semibold">jadwal sholat</td><td class="px-2 py-1 text-center"><span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold">1 jam</span></td><td class="px-2 py-1 text-slate-600">Paling jarang berubah</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">laporan kas</td><td class="px-2 py-1 text-center"><span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-bold">5m</span></td><td class="px-2 py-1 text-slate-600">Agregasi MatView</td></tr>
+            <tr><td class="px-2 py-1 font-semibold">feature_flag</td><td class="px-2 py-1 text-center"><span class="px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-bold">30s</span></td><td class="px-2 py-1 text-slate-600">Kill-switch cepat</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mt-3 grid grid-cols-3 gap-2 text-center text-[11px]">
+      <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-2.5"><div class="font-extrabold text-emerald-700">L1 sub-ms</div><div class="text-slate-600">memory hot</div></div>
+      <div class="rounded-xl bg-amber-50 border border-amber-200 p-2.5"><div class="font-extrabold text-amber-700">L2 1–5ms</div><div class="text-slate-600">Redis warm</div></div>
+      <div class="rounded-xl bg-slate-50 border border-slate-200 p-2.5"><div class="font-extrabold text-slate-700">L3 10–50ms</div><div class="text-slate-600">Postgres cold</div></div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">18 / 37</span></div>
+  </section>
+
+  <!-- Slide 19: Bab4 tiering -->
+  <section id="slide-19" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 4</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">TIERING • HOT/WARM/COLD</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 4 — Tiering Hot/Warm/Cold + Kapan Redis Wajib</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Hot:</b> request/detik (leaderboard, flag) → Redis TTL 1s–1m; <b>Warm:</b> request/menit (pengumuman, cari populer) → Postgres+index + Redis 5–10m; <b>Cold:</b> request/jam (arsip) → ClickHouse/arsip.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Kapan Redis wajib? <b>MVP ditunda Rp0</b> (Postgres+index cukup), <b>Fase2 free tier</b> (Upstash 10k cmd/hari), <b>Fase3 wajib $10–50</b> (hit rate &gt;80% atau p99 &gt;5ms atau &gt;500 writes/detik).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Tiering hemat biaya: jangan cache semua; hanya hot/warm yang sering diakses — cold tanpa cache.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Contoh: jadwal sholat cold → TTL 1 jam (paling jarang berubah, endpoint tercepat p50 &lt;20ms).</span></li>
+      </ul>
+      <div class="rounded-xl border border-slate-200 overflow-hidden">
+        <table class="w-full text-[12px]">
+          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-3 py-2 text-left">Tier</th><th class="px-3 py-2 text-left">Frekuensi</th><th class="px-3 py-2 text-left">Store</th><th class="px-3 py-2 text-center">TTL</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="bg-red-50"><td class="px-3 py-1.5 font-bold text-red-700">Hot</td><td class="px-3 py-1.5">request/detik</td><td class="px-3 py-1.5">Redis</td><td class="px-3 py-1.5 text-center font-bold">1s–1m</td></tr>
+            <tr class="bg-amber-50"><td class="px-3 py-1.5 font-bold text-amber-700">Warm</td><td class="px-3 py-1.5">request/menit</td><td class="px-3 py-1.5">Postgres+index + Redis</td><td class="px-3 py-1.5 text-center font-bold">5–10m</td></tr>
+            <tr class="bg-slate-50"><td class="px-3 py-1.5 font-bold text-slate-700">Cold</td><td class="px-3 py-1.5">request/jam</td><td class="px-3 py-1.5">Arsip / ClickHouse</td><td class="px-3 py-1.5 text-center">—</td></tr>
+          </tbody>
+        </table>
+        <div class="px-3 py-2 bg-orange-50 text-[11px] text-slate-600"><b class="text-orange-700">MVP Rp0</b> → tunda Redis &nbsp;|&nbsp; <b class="text-amber-700">Fase2 free tier</b> → Upstash &nbsp;|&nbsp; <b class="text-emerald-700">Fase3 wajib $10–50</b> → Redis Cloud</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">19 / 37</span></div>
+  </section>
+
+  <!-- Slide 20: Bab5 Elasticsearch -->
+  <section id="slide-20" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 5</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">ELASTICSEARCH • GEO 5KM</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 5 — Elasticsearch: Inverted Index + Geospasial</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Inverted index vs LIKE:</b> LIKE scan semua baris; ES pecah kata → index kata → cari kata <b>&lt;10ms</b> untuk jutaan dokumen.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Kapan dibutuhkan? <b>MVP ditunda</b> (pg_trgm cukup puluhan ribu), <b>Fase3 ratusan ribu</b> dokumen / 500+ komunitas → ES wajib.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Mapping: text <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">analyzer indonesian</span> + keyword + suggest, <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">lat_lng geo_point</span>, created_at date, kelurahan keyword.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Geospasial masjid terdekat 5km: <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">geo_distance 5km + sort _geo_distance</span> &lt;10ms (PostGIS ~50ms).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Sinkronisasi: Postgres WAL → Debezium → Kafka → ES (real-time) atau batch 5 menit untuk MVP.</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="ascii rounded-xl p-3 text-[11px] leading-relaxed">LIKE '%ayam%'  --&gt; scan 6.081 rows  ~2000ms<br>Inverted: "ayam" --&gt; posting list [doc 12, 45, 89]  ~5ms<br><span class="text-emerald-300">GET /masjid-terdekat?lat=-6.25&amp;lng=106.75&amp;radius=5km</span><br><span class="text-slate-400">{ "query": { "geo_distance": { "distance": "5km", "lat_lng": [-6.25,106.75] } } }</span></div>
+        <div class="rounded-xl bg-amber-50 border border-amber-200 p-3 text-[12px]"><b class="text-amber-700">MVP:</b><span class="text-slate-600"> pg_trgm gratis, cukup puluhan ribu</span> &nbsp;|&nbsp; <b class="text-orange-700">Fase3:</b><span class="text-slate-600"> ES untuk ratusan ribu + geo</span></div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">20 / 37</span></div>
+  </section>
+
+  <!-- Slide 21: Bab5 pg_trgm vs ES -->
+  <section id="slide-21" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 5</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">pg_trgm vs ES</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 5 — pg_trgm vs Elasticsearch</h2>
+    <div class="mt-4 grid lg:grid-cols-[0.95fr_1.05fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Pilih sesuai fase: jangan over-engineering di awal; pg_trgm gratis & cukup untuk MVP–Fase2.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>ES untuk skala besar: stemming superior, fuzziness AUTO, highlight, geospasial, tapi butuh server & kompleks.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Fallback: jika ES down → otomatis fallback ke pg_trgm GIN 10–50ms (tidak error ke user).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Biaya & setup jadi penentu: Rp0 vs $10–50/bulan, sederhana vs kompleks.</span></li>
+      </ul>
+      <div class="rounded-xl border border-slate-200 overflow-hidden">
+        <table class="w-full text-[11px]">
+          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">Aspek</th><th class="px-2 py-1.5 text-center">pg_trgm</th><th class="px-2 py-1.5 text-center">Elasticsearch</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="bg-emerald-50"><td class="px-2 py-1 font-semibold">Biaya</td><td class="px-2 py-1 text-center font-bold text-emerald-700">Gratis (built-in)</td><td class="px-2 py-1 text-center">Server $10–50</td></tr>
+            <tr><td class="px-2 py-1 font-semibold">Setup</td><td class="px-2 py-1 text-center font-bold text-emerald-600">Sederhana</td><td class="px-2 py-1 text-center">Kompleks</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">Kapasitas</td><td class="px-2 py-1 text-center">Puluhan ribu</td><td class="px-2 py-1 text-center font-bold text-orange-600">Ratusan ribu</td></tr>
+            <tr><td class="px-2 py-1 font-semibold">Stemming</td><td class="px-2 py-1 text-center">Terbatas</td><td class="px-2 py-1 text-center font-bold text-orange-600">Superior</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">Geospasial</td><td class="px-2 py-1 text-center">PostGIS ~50ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600">&lt;10ms</td></tr>
+            <tr><td class="px-2 py-1 font-semibold">Kapan</td><td class="px-2 py-1 text-center font-bold">MVP–Fase2</td><td class="px-2 py-1 text-center font-bold">Fase3+</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">21 / 37</span></div>
+  </section>
+
+  <!-- Slide 22: Bab6 CDC -->
+  <section id="slide-22" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 6</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">CDC • WAL → Kafka → ES/CH</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 6 — CDC: Debezium WAL → Kafka → ES/ClickHouse</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>CDC</b> = tangkap perubahan DB tanpa polling — Debezium baca <b>WAL logical</b> (INSERT/UPDATE/DELETE) → kirim ke Kafka.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Kafka sebagai broker: consumer terpisah tulis ke <b>ES (search) & ClickHouse (OLAP)</b> — buffer & replay, lag_ms alert jika &gt;1000ms.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Batch ETL alternatif untuk non real-time: <b>cron 00:00</b> ekstrak Postgres → ClickHouse (laporan bulanan, hemat biaya, tanpa Kafka).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Bahaya dual-write:</b> app tulis Postgres OK + ES gagal = data hilang di search (inkonsisten); tidak ada transaksi lintas DB.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Prinsip <b>single writer</b>: Postgres WAL adalah source of truth; ES/ClickHouse adalah derived (bisa rebuild kapan saja).</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="ascii rounded-xl p-3 text-[11px] leading-relaxed">Postgres WAL --(Debezium pgoutput)--&gt; Kafka(9092) --+--&gt; ES(9200) geo &lt;10ms<br>                                           +--&gt; ClickHouse(8123) OLAP<br><span class="text-red-400">Dual-write DANGER: app-&gt;PG OK + app-&gt;ES FAIL = hilang di search</span><br><span class="text-emerald-300">Single writer: hanya tulis Postgres, CDC yang sebar</span></div>
+        <div class="rounded-xl bg-slate-50 border border-slate-200 p-3 text-[11px] leading-relaxed"><div class="font-bold text-slate-700">Batch ETL (non real-time)</div><div class="mono text-slate-600 mt-1">cron 00:00: COPY (SELECT * FROM ledger WHERE ts &gt; last_sync) TO STDOUT | clickhouse-client INSERT</div><div class="text-slate-500 mt-1">Cukup untuk Fase MVP–Fase2, tanpa Kafka</div></div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">22 / 37</span></div>
+  </section>
+
+  <!-- Slide 23: Bab7 API Delivery -->
+  <section id="slide-23" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 7</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">API DELIVERY • GZIP • CURSOR • EDGE</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 7 — API Delivery: Payload, GZIP, Cursor, Edge</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Payload shaping</b> (sparse fieldsets): <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">?fields=name,lat,lng</span> — kirim hanya yang dibutuhkan, hemat 70% bandwidth & parsing.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>GZIP 70–80%</b> (semua browser), <b>Brotli +20–30%</b> lebih baik → 100KB → 20KB (GZIP) → 14–16KB (Brotli); level 6, threshold 1024.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Cursor vs OFFSET:</b> cursor 20ms stabil, OFFSET 2000ms di halaman dalam — wajib cursor untuk feed/list.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Cloudflare Edge 330+ DC:</b> cache response GET di edge (TTL 1m) — kurangi origin hit, TTFB &lt;50ms global.</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="ascii rounded-xl p-3 text-[11px] leading-relaxed">GET /api/umkm?fields=name,lat,lng&amp;limit=20  --&gt; 15KB vs 100KB full (85% saving)<br>GZIP: 100KB --&gt; 20KB (70-80%)  |  Brotli: 20KB --&gt; 14KB (+20-30%)<br><span class="text-slate-400">app.use(compression({ level: 6, threshold: 1024 }))</span><br><span class="text-emerald-300">curl -H "Accept-Encoding: gzip" -I ...  =&gt; Content-Encoding: gzip</span></div>
+        <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
+          <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-2.5"><div class="font-extrabold text-emerald-700">100→20KB</div><div class="text-slate-600">GZIP 80%</div></div>
+          <div class="rounded-xl bg-blue-50 border border-blue-200 p-2.5"><div class="font-extrabold text-blue-700">20→14KB</div><div class="text-slate-600">Brotli +30%</div></div>
+          <div class="rounded-xl bg-orange-50 border border-orange-200 p-2.5"><div class="font-extrabold text-orange-700">330+ DC</div><div class="text-slate-600">Cloudflare Edge</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">23 / 37</span></div>
+  </section>
+
+  <!-- Slide 24: Bab7 rate limiting + Edge caching -->
+  <section id="slide-24" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 7</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">RATE LIMIT • EDGE CACHE</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 7 — Rate Limiting + Edge Caching</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Rate limiting:</b> 100 req/menit umum, 10 berat (write), 5 auth (login) — lindungi backend dari burst & abuse, kembalikan <b>429 + Retry-After</b>.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Token/Leaky Bucket di Redis: hitung per IP/user, tolak burst, simpan di Redis.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Edge caching:</b> profil, masjid, jadwal, pengumuman publik → cache di Cloudflare Edge TTL 1m–1jam, kurangi origin hit 80%.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Jangan cache privat: kas, profil pribadi, ledger → bypass Edge, hanya Redis L2.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Verifikasi: burst → 429 setelah limit; <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">curl -I</span> cek <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">Content-Encoding: gzip</span> & <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">CF-Cache-Status: HIT</span>.</span></li>
+      </ul>
+      <div class="rounded-xl border border-slate-200 overflow-hidden">
+        <table class="w-full text-[12px]">
+          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-3 py-2 text-left">Kategori</th><th class="px-3 py-2 text-center">Limit</th><th class="px-3 py-2 text-left">Contoh</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="bg-slate-50"><td class="px-3 py-1.5 font-semibold">Umum</td><td class="px-3 py-1.5 text-center"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold">100/menit</span></td><td class="px-3 py-1.5 text-slate-600">GET /api/komunitas</td></tr>
+            <tr><td class="px-3 py-1.5 font-semibold">Berat (write)</td><td class="px-3 py-1.5 text-center"><span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-bold">10/menit</span></td><td class="px-3 py-1.5 text-slate-600">POST /api/kas</td></tr>
+            <tr class="bg-slate-50"><td class="px-3 py-1.5 font-semibold">Auth</td><td class="px-3 py-1.5 text-center"><span class="px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-bold">5/menit</span></td><td class="px-3 py-1.5 text-slate-600">POST /auth/login</td></tr>
+            <tr><td class="px-3 py-1.5 font-semibold">Edge cache</td><td class="px-3 py-1.5 text-center">TTL 1m–1jam</td><td class="px-3 py-1.5 text-slate-600">profil, masjid, jadwal, pengumuman</td></tr>
+          </tbody>
+        </table>
+        <div class="px-3 py-2 bg-slate-50 text-[11px] text-slate-500">Publik → Edge HIT &nbsp;|&nbsp; Privat → bypass Edge → Redis L2 &nbsp;|&nbsp; Burst → 429 Retry-After</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">24 / 37</span></div>
+  </section>
+
+  <!-- Slide 25: Bab8 Observability pg_stat_statements -->
+  <section id="slide-25" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 8</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">OBSERVABILITY • pg_stat_statements</span>
+      <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600 text-[11px] font-semibold">slow log 100ms • Prometheus 9090 • Grafana 3000</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 8 — Observability: pg_stat_statements + Slow Log + 10 Metrik</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>pg_stat_statements</b>: lacak query lambat — <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">SELECT query, mean_exec_time, calls FROM pg_stat_statements ORDER BY mean_exec_time DESC LIMIT 5</span> → top 5 slowest.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Slow log 100ms</b>: <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">log_min_duration_statement = 100ms</span> → semua query &gt;100ms masuk Loki; tanpa tebak, langsung tahu bottleneck.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Prometheus 9090 + Grafana 3000</b>: 10 metrik Poster #6 (latency p50/p95/p99, throughput, error, CPU, memory, DB, cache) — scrape 15s, 11 jobs.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Alert threshold</b>: p95 &gt;500ms warning &gt;1000ms critical (5m), error &gt;1% warning &gt;5% critical, DB pool &gt;80%, disk &gt;85% → WA/Email.</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">
+          <table class="w-full text-[11px]">
+            <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">Alert</th><th class="px-2 py-1.5 text-center">Warning</th><th class="px-2 py-1.5 text-center">Critical</th><th class="px-2 py-1.5 text-left">Aksi</th></tr></thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr class="bg-amber-50"><td class="px-2 py-1 font-semibold">p95 latency</td><td class="px-2 py-1 text-center font-bold text-amber-700">&gt;500ms 5m</td><td class="px-2 py-1 text-center font-bold text-red-600">&gt;1000ms 5m</td><td class="px-2 py-1 text-slate-600">EXPLAIN + index</td></tr>
+              <tr><td class="px-2 py-1 font-semibold">Error rate</td><td class="px-2 py-1 text-center font-bold text-amber-700">&gt;1% 5m</td><td class="px-2 py-1 text-center font-bold text-red-600">&gt;5% 5m</td><td class="px-2 py-1 text-slate-600">Loki error + circuit</td></tr>
+              <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">DB pool</td><td class="px-2 py-1 text-center font-bold text-orange-600">&gt;80% 5m</td><td class="px-2 py-1 text-center">—</td><td class="px-2 py-1 text-slate-600">pool 25→50</td></tr>
+              <tr><td class="px-2 py-1 font-semibold">Disk usage</td><td class="px-2 py-1 text-center font-bold text-orange-600">&gt;85% 5m</td><td class="px-2 py-1 text-center">—</td><td class="px-2 py-1 text-slate-600">scale / sharding</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="rounded-xl bg-slate-900 text-emerald-300 p-3 mono text-[11px] leading-relaxed">SELECT query, mean_exec_time, calls FROM pg_stat_statements<br>ORDER BY mean_exec_time DESC LIMIT 5; -- top slowest<br>-- log_min_duration_statement = 100ms → Loki</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">25 / 37</span></div>
+  </section>
+
+  <!-- Slide 26: Bab8 3 Pilar -->
+  <section id="slide-26" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 8</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">3 PILAR • METRICS / LOGS / TRACES</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 8 — 3 Pilar Observabilitas: Metrics / Logs / Traces</h2>
+    <div class="mt-4 grid lg:grid-cols-3 gap-4">
+      <div class="rounded-xl border border-slate-200 p-4 bg-white">
+        <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">M</span><span class="text-[11px] font-extrabold tracking-widest text-emerald-700">METRICS</span></div>
+        <div class="mt-2 text-[12px] font-bold text-[#1e3a5f]">Prometheus + Grafana</div>
+        <ul class="mt-2 space-y-1.5 text-[12px] leading-relaxed text-slate-600">
+          <li class="flex gap-1.5"><span class="text-emerald-500">•</span><span>Apa yang lambat: latency p50/p95/p99, throughput RPS, error rate</span></li>
+          <li class="flex gap-1.5"><span class="text-emerald-500">•</span><span>PromQL <span class="mono text-[11px] bg-slate-100 px-1 rounded">histogram_quantile(0.95, ...)</span></span></li>
+          <li class="flex gap-1.5"><span class="text-emerald-500">•</span><span>Dashboard 10 metrik + 16 SLA per-endpoint</span></li>
+        </ul>
+        <div class="mt-3 mono text-[11px] bg-slate-900 text-emerald-300 rounded-lg p-2">rate(http_request_duration_seconds_bucket[5m])</div>
+      </div>
+      <div class="rounded-xl border border-slate-200 p-4 bg-white">
+        <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs font-bold">L</span><span class="text-[11px] font-extrabold tracking-widest text-amber-700">LOGS</span></div>
+        <div class="mt-2 text-[12px] font-bold text-[#1e3a5f]">Loki / ELK — JSON</div>
+        <ul class="mt-2 space-y-1.5 text-[12px] leading-relaxed text-slate-600">
+          <li class="flex gap-1.5"><span class="text-amber-500">•</span><span>Kenapa lambat: Pino JSON + <span class="mono text-[11px] bg-slate-100 px-1 rounded">requestId</span> korelasi lintas service</span></li>
+          <li class="flex gap-1.5"><span class="text-amber-500">•</span><span>LogQL <span class="mono text-[11px] bg-slate-100 px-1 rounded">{service="order"} | json | requestId="..."</span></span></li>
+          <li class="flex gap-1.5"><span class="text-amber-500">•</span><span>Labels low-cardinality, metadata high-cardinality</span></li>
+        </ul>
+        <div class="mt-3 mono text-[11px] bg-slate-900 text-amber-300 rounded-lg p-2">{service="order"} | json | level="error"</div>
+      </div>
+      <div class="rounded-xl border border-slate-200 p-4 bg-white">
+        <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg bg-orange-500 text-white flex items-center justify-center text-xs font-bold">T</span><span class="text-[11px] font-extrabold tracking-widest text-orange-700">TRACES</span></div>
+        <div class="mt-2 text-[12px] font-bold text-[#1e3a5f]">OTEL + Jaeger</div>
+        <ul class="mt-2 space-y-1.5 text-[12px] leading-relaxed text-slate-600">
+          <li class="flex gap-1.5"><span class="text-orange-500">•</span><span>Di mana bottleneck: flame graph span per service</span></li>
+          <li class="flex gap-1.5"><span class="text-orange-500">•</span><span>OTLP 4317/4318 → Jaeger 16686, propagasi <span class="mono text-[11px] bg-slate-100 px-1 rounded">x-request-id</span></span></li>
+          <li class="flex gap-1.5"><span class="text-orange-500">•</span><span>Identifikasi N+1: banyak span pg.query berulang</span></li>
+        </ul>
+        <div class="mt-3 mono text-[11px] bg-slate-900 text-orange-300 rounded-lg p-2">Trace 320ms → pg.query 40ms | redis 5ms | http 280ms</div>
+      </div>
+    </div>
+    <div class="mt-3 rounded-xl bg-[#1e3a5f] text-white p-3 flex flex-wrap gap-2 items-center text-[11px]"><span class="px-2 py-1 rounded-full bg-white/10 border border-white/15 font-bold">KORELASI</span><span class="text-blue-200">Metrics kasih tahu <b class="text-white">apa</b> yang lambat → Logs kasih tahu <b class="text-white">kenapa</b> → Traces kasih tahu <b class="text-white">di mana</b></span><span class="ml-auto mono text-orange-300">requestId = traceId = correlation ID</span></div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">26 / 37</span></div>
+  </section>
+
+  <!-- Slide 27: Bab9 Roadmap 5 Fase -->
+  <section id="slide-27" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 9</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">ROADMAP 5 FASE • MVP Rp0 → AUTO-SCALE</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 9 — Roadmap 5 Fase: MVP Rp0 → Auto-scale 99.99%</h2>
+    <div class="mt-4 rounded-xl border border-slate-200 overflow-hidden hover-table">
+      <table class="w-full text-[11px]">
+        <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-2 text-left">Fase</th><th class="px-2 py-2 text-center">Throughput</th><th class="px-2 py-2 text-center">Instance</th><th class="px-2 py-2 text-center">p50</th><th class="px-2 py-2 text-center">Biaya</th><th class="px-2 py-2 text-center">Avail.</th><th class="px-2 py-2 text-left">Stack Tambahan</th></tr></thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr class="bg-emerald-50"><td class="px-2 py-1.5 font-bold text-emerald-700">MVP (1–6 bln)</td><td class="px-2 py-1.5 text-center font-bold">100 RPS</td><td class="px-2 py-1.5 text-center">1</td><td class="px-2 py-1.5 text-center font-bold text-emerald-600">&lt;50ms</td><td class="px-2 py-1.5 text-center font-bold text-emerald-700">Rp0</td><td class="px-2 py-1.5 text-center">99.5%</td><td class="px-2 py-1.5 text-slate-600">Postgres+pg_trgm+MatView+PgBouncer</td></tr>
+          <tr><td class="px-2 py-1.5 font-bold">Fase 2 (7–12)</td><td class="px-2 py-1.5 text-center font-bold">500 RPS</td><td class="px-2 py-1.5 text-center">2–3</td><td class="px-2 py-1.5 text-center font-bold text-emerald-600">&lt;50ms</td><td class="px-2 py-1.5 text-center">Rp0–500rb</td><td class="px-2 py-1.5 text-center">99.5%</td><td class="px-2 py-1.5 text-slate-600">+ Redis cache + pooling</td></tr>
+          <tr class="bg-amber-50"><td class="px-2 py-1.5 font-bold text-amber-700">Fase 3 (13–24)</td><td class="px-2 py-1.5 text-center font-bold">5.000 RPS</td><td class="px-2 py-1.5 text-center">5–10</td><td class="px-2 py-1.5 text-center font-bold text-blue-600">&lt;30ms</td><td class="px-2 py-1.5 text-center">Rp1.5–5jt</td><td class="px-2 py-1.5 text-center">99.9%</td><td class="px-2 py-1.5 text-slate-600">+ ES + CDC + ClickHouse</td></tr>
+          <tr><td class="px-2 py-1.5 font-bold">Fase 4 (25+)</td><td class="px-2 py-1.5 text-center font-bold">50.000 RPS</td><td class="px-2 py-1.5 text-center">20–50</td><td class="px-2 py-1.5 text-center font-bold text-orange-600">&lt;20ms</td><td class="px-2 py-1.5 text-center">Rp10jt+</td><td class="px-2 py-1.5 text-center">99.9%</td><td class="px-2 py-1.5 text-slate-600">+ HA/DR + replica + LB</td></tr>
+          <tr class="bg-orange-50"><td class="px-2 py-1.5 font-bold text-orange-700">Fase 5 (25+)</td><td class="px-2 py-1.5 text-center font-bold text-orange-700">200.000 RPS</td><td class="px-2 py-1.5 text-center font-bold">auto-scale</td><td class="px-2 py-1.5 text-center font-bold text-orange-700">&lt;10ms</td><td class="px-2 py-1.5 text-center">Auto</td><td class="px-2 py-1.5 text-center font-bold text-emerald-700">99.99%</td><td class="px-2 py-1.5 text-slate-600">+ sharding + auto-scale</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-3 ascii rounded-xl p-3 text-[11px] leading-relaxed">MVP Rp0 (1 inst, p50&lt;50ms) → Fase2 500 RPS (2-3 inst) → Fase3 5k (5-10, ES+CDC) → Fase4 50k (20-50, HA) → Fase5 200k auto-scale 99.99%<br><span class="text-orange-300">Prinsip: mulai sederhana, tingkatkan bertahap — jangan over-engineering di awal</span></div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">27 / 37</span></div>
+  </section>
+
+  <!-- Slide 28: Bab10.1 SLA 16 endpoint -->
+  <section id="slide-28" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 10.1</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">SLA 16 ENDPOINT • p50/p95/p99</span>
+      <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600 text-[11px] font-semibold">server-side • tanpa RTT</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 10.1 — SLA 16 Endpoint (p50 / p95 / p99 server-side)</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.15fr_0.85fr] gap-6">
+      <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">
+        <table class="w-full text-[11px]">
+          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">#</th><th class="px-2 py-1.5 text-left">Endpoint</th><th class="px-2 py-1.5 text-center">p50</th><th class="px-2 py-1.5 text-center">p95</th><th class="px-2 py-1.5 text-center">p99</th><th class="px-2 py-1.5 text-left">Strategi</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="bg-slate-50"><td class="px-2 py-1">1</td><td class="px-2 py-1 font-semibold">GET /komunitas/:id</td><td class="px-2 py-1 text-center font-bold text-emerald-600">&lt;30ms</td><td class="px-2 py-1 text-center">&lt;100ms</td><td class="px-2 py-1 text-center">&lt;200ms</td><td class="px-2 py-1 text-slate-600">Redis 10m + index</td></tr>
+            <tr><td class="px-2 py-1">2</td><td class="px-2 py-1 font-semibold">GET /kas</td><td class="px-2 py-1 text-center font-bold text-emerald-600">&lt;50ms</td><td class="px-2 py-1 text-center">&lt;200ms</td><td class="px-2 py-1 text-center">&lt;500ms</td><td class="px-2 py-1 text-slate-600">MatView 5m</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1">3</td><td class="px-2 py-1 font-semibold">GET /pengumuman</td><td class="px-2 py-1 text-center font-bold text-emerald-600">&lt;30ms</td><td class="px-2 py-1 text-center">&lt;100ms</td><td class="px-2 py-1 text-center">&lt;200ms</td><td class="px-2 py-1 text-slate-600">Redis 1m + pinned index</td></tr>
+            <tr><td class="px-2 py-1">4</td><td class="px-2 py-1 font-semibold">GET /jadwal-sholat</td><td class="px-2 py-1 text-center font-bold text-emerald-600">&lt;20ms</td><td class="px-2 py-1 text-center">&lt;50ms</td><td class="px-2 py-1 text-center">&lt;100ms</td><td class="px-2 py-1 text-slate-600">Redis 1 jam</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1">5</td><td class="px-2 py-1 font-semibold">GET /cari?q=</td><td class="px-2 py-1 text-center font-bold text-emerald-600">&lt;50ms</td><td class="px-2 py-1 text-center">&lt;200ms</td><td class="px-2 py-1 text-center">&lt;500ms</td><td class="px-2 py-1 text-slate-600">pg_trgm GIN / ES</td></tr>
+            <tr><td class="px-2 py-1">6</td><td class="px-2 py-1 font-semibold">POST /kas</td><td class="px-2 py-1 text-center font-bold text-amber-600">&lt;100ms</td><td class="px-2 py-1 text-center">&lt;300ms</td><td class="px-2 py-1 text-center">&lt;500ms</td><td class="px-2 py-1 text-slate-600">SHA-256 + invalidate</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1">7</td><td class="px-2 py-1 font-semibold">GET /masjid-terdekat</td><td class="px-2 py-1 text-center font-bold text-emerald-600">&lt;30ms</td><td class="px-2 py-1 text-center">&lt;100ms</td><td class="px-2 py-1 text-center">&lt;200ms</td><td class="px-2 py-1 text-slate-600">ES geo &lt;10ms</td></tr>
+            <tr><td class="px-2 py-1 text-center text-slate-400" colspan="6">+ 9 endpoint lain (profil, ledger, auth, UMKM, notifikasi, storage, audit, flag, health) — lengkap 16 di docs/04-observability.md</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="space-y-3">
+        <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>16 endpoint punya SLA per-endpoint — tidak ada satu angka untuk semua; baca tabel sebelum rilis.</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>Diukur <b>server-side</b> (tanpa RTT 3G) via <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">X-Response-Time</span> + prom-client histogram.</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>Jika p95 &gt;500ms 5 menit → incident, cek pg_stat_statements + EXPLAIN.</span></li>
+        </ul>
+        <div class="rounded-xl bg-slate-900 text-emerald-300 p-3 mono text-[11px] leading-relaxed">curl -I http://localhost:3003/api/komunitas/xxx<br>X-Response-Time: 23ms  X-Request-Id: 550e8400-...<br>histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">28 / 37</span></div>
+  </section>
+
+  <!-- Slide 29: Bab10.2 Throughput + Biaya -->
+  <section id="slide-29" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 10.2</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">THROUGHPUT + BIAYA PER FASE</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 10.2 — Throughput + Biaya per Fase</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
+      <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">
+        <table class="w-full text-[11px]">
+          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">Fase</th><th class="px-2 py-1.5 text-center">Komunitas</th><th class="px-2 py-1.5 text-center">DAU</th><th class="px-2 py-1.5 text-center">Target RPS</th><th class="px-2 py-1.5 text-center">Biaya</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="bg-emerald-50"><td class="px-2 py-1 font-bold text-emerald-700">MVP</td><td class="px-2 py-1 text-center">5–10</td><td class="px-2 py-1 text-center">500–1k</td><td class="px-2 py-1 text-center font-bold text-emerald-700">100 RPS</td><td class="px-2 py-1 text-center font-bold text-emerald-700">Rp0</td></tr>
+            <tr><td class="px-2 py-1 font-bold">Fase 2</td><td class="px-2 py-1 text-center">50+</td><td class="px-2 py-1 text-center">5k–10k</td><td class="px-2 py-1 text-center font-bold">500 RPS</td><td class="px-2 py-1 text-center">Rp0–500rb</td></tr>
+            <tr class="bg-amber-50"><td class="px-2 py-1 font-bold text-amber-700">Fase 3</td><td class="px-2 py-1 text-center">500+</td><td class="px-2 py-1 text-center">50k–100k</td><td class="px-2 py-1 text-center font-bold text-amber-700">5.000 RPS</td><td class="px-2 py-1 text-center">Rp1.5–5jt</td></tr>
+            <tr><td class="px-2 py-1 font-bold">Fase 4</td><td class="px-2 py-1 text-center">5.000+</td><td class="px-2 py-1 text-center">500k–1jt</td><td class="px-2 py-1 text-center font-bold">50.000 RPS</td><td class="px-2 py-1 text-center">Rp10jt+</td></tr>
+            <tr class="bg-orange-50"><td class="px-2 py-1 font-bold text-orange-700">Fase 5</td><td class="px-2 py-1 text-center">50.000+</td><td class="px-2 py-1 text-center">5jt+</td><td class="px-2 py-1 text-center font-bold text-orange-700">200.000+ RPS</td><td class="px-2 py-1 text-center font-bold text-orange-700">Auto</td></tr>
+          </tbody>
+        </table>
+        <div class="px-3 py-2 bg-slate-50 text-[11px] text-slate-500">Rumus: Throughput = (DAU × req_per_user) / (peak_hours × 3600), burst 5×, target 10× estimasi</div>
+      </div>
+      <div class="space-y-3">
+        <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>MVP 100 RPS (500 DAU) → Fase 5 200k+ RPS (5jt+ DAU) — naik 2000×, biaya naik bertahap.</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>Biaya Rp0-friendly: Podman lokal + Supabase Free + Upstash Free untuk MVP–Fase2.</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>Scaling: MVP–Fase2 vertical (tambah RAM), Fase3 horizontal (+server+LB), Fase4–5 auto-scale.</span></li>
+        </ul>
+        <div class="rounded-xl bg-slate-900 text-emerald-300 p-3 mono text-[11px] leading-relaxed">Throughput = (DAU × 20 req) / (4 jam × 3600) × 10 safety<br>MVP: (1k × 20)/(14400)×10 ≈ 14 → target 100 RPS (aman)<br>Fase5: (5jt × 20)/(14400)×10 ≈ 69k → target 200k RPS</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">29 / 37</span></div>
+  </section>
+
+  <!-- Slide 30: Bab10.4 Checklist 10 DoD -->
+  <section id="slide-30" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">BAB 10.4</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">CHECKLIST 10 • DEFINITION OF DONE</span>
+      <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600 text-[11px] font-semibold">wajib sebelum rilis</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 10.4 — Checklist 10 Definition of Done</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.15fr_0.85fr] gap-6">
+      <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">
+        <table class="w-full text-[11px]">
+          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">#</th><th class="px-2 py-1.5 text-left">Checklist</th><th class="px-2 py-1.5 text-left">Verifikasi</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-bold">1</td><td class="px-2 py-1 font-semibold">EXPLAIN ANALYZE semua query baru</td><td class="px-2 py-1 text-slate-600">Execution Time OK</td></tr>
+            <tr><td class="px-2 py-1 font-bold">2</td><td class="px-2 py-1 font-semibold">No Seq Scan &gt;1000 rows</td><td class="px-2 py-1 text-slate-600">EXPLAIN tanpa Seq Scan</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-bold">3</td><td class="px-2 py-1 font-semibold">Semua FK punya index</td><td class="px-2 py-1 text-slate-600">pg_constraint vs pg_index</td></tr>
+            <tr><td class="px-2 py-1 font-bold">4</td><td class="px-2 py-1 font-semibold">pg_trgm aktif jika ada search</td><td class="px-2 py-1 text-slate-600">pg_extension</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-bold">5</td><td class="px-2 py-1 font-semibold">MatView refresh terjadwal</td><td class="px-2 py-1 text-slate-600">cron 5m CONCURRENTLY</td></tr>
+            <tr><td class="px-2 py-1 font-bold">6</td><td class="px-2 py-1 font-semibold">Autovacuum normal</td><td class="px-2 py-1 text-slate-600">n_dead_tup &lt;1000</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-bold">7</td><td class="px-2 py-1 font-semibold">p95 &lt;500ms semua endpoint</td><td class="px-2 py-1 text-slate-600">histogram_quantile</td></tr>
+            <tr><td class="px-2 py-1 font-bold">8</td><td class="px-2 py-1 font-semibold">No N+1 query</td><td class="px-2 py-1 text-slate-600">JOIN / IN, OTEL trace</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-bold">9</td><td class="px-2 py-1 font-semibold">GZIP / Brotli aktif</td><td class="px-2 py-1 text-slate-600">Content-Encoding: gzip</td></tr>
+            <tr><td class="px-2 py-1 font-bold">10</td><td class="px-2 py-1 font-semibold">Rate limiting aktif</td><td class="px-2 py-1 text-slate-600">429 setelah burst</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="space-y-3">
+        <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>Wajib diverifikasi sebelum setiap rilis — penanggung jawab rilis tanda tangan checklist.</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>Setiap item tidak terpenuhi = risiko degradasi; jangan deploy jika ada yang merah.</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span>Otomatisasi: CI jalankan EXPLAIN + lint + k6 smoke sebelum merge.</span></li>
+        </ul>
+        <div class="rounded-xl bg-amber-50 border border-amber-200 p-3 text-[12px]"><b class="text-amber-700">Aturan:</b><span class="text-slate-600"> 10/10 hijau = boleh rilis. 9/10 = tunda, fix dulu. Jangan kompromi performa.</span></div>
+        <div class="rounded-xl bg-slate-900 text-emerald-300 p-3 mono text-[11px] leading-relaxed">CI: EXPLAIN (ANALYZE, BUFFERS) + k6 smoke + curl -H "Accept-Encoding: gzip" -I<br>Grafana: histogram_quantile(0.95, ...) &lt;0.5  → hijau</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">30 / 37</span></div>
+  </section>
+
+  <!-- Slide 31: Demo 01 vs 02 -->
+  <section id="slide-31" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">DEMO 01 vs 02</span>
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">console.log vs PINO JSON</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Demo 01 vs 02 — console.log vs Pino JSON</h2>
+    <div class="mt-4 rounded-xl border border-slate-200 overflow-hidden hover-table">
+      <table class="w-full text-[11px]">
+        <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">Aspek</th><th class="px-2 py-1.5 text-center bg-red-900/30">Demo 01: console.log (buruk)</th><th class="px-2 py-1.5 text-center bg-emerald-900/20">Demo 02: Pino JSON (benar)</th></tr></thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr class="bg-red-50"><td class="px-2 py-1.5 font-semibold">Format</td><td class="px-2 py-1.5 text-center text-red-600">console.log('cari q='+q)</td><td class="px-2 py-1.5 text-center font-bold text-emerald-700">{"level":"info","q":"ayam",...}</td></tr>
+          <tr><td class="px-2 py-1.5 font-semibold">Password</td><td class="px-2 py-1.5 text-center font-bold text-red-600">bocor: password=123456</td><td class="px-2 py-1.5 text-center font-bold text-emerald-600">[Redacted]</td></tr>
+          <tr class="bg-slate-50"><td class="px-2 py-1.5 font-semibold">Correlation</td><td class="px-2 py-1.5 text-center text-red-600">tanpa requestId</td><td class="px-2 py-1.5 text-center font-bold text-emerald-600">UUID x-request-id</td></tr>
+          <tr><td class="px-2 py-1.5 font-semibold">Query</td><td class="px-2 py-1.5 text-center font-bold text-red-600">LIKE '%ayam%' Seq Scan 2000ms</td><td class="px-2 py-1.5 text-center font-bold text-emerald-600">GIN 10–50ms</td></tr>
+          <tr class="bg-amber-50"><td class="px-2 py-1.5 font-semibold">Metrik</td><td class="px-2 py-1.5 text-center text-amber-700">rata-rata bohong (avg 50ms, P99 2000ms)</td><td class="px-2 py-1.5 text-center font-bold text-emerald-700">p99 jujur (99% ≤200ms, 1% tail)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-3 grid lg:grid-cols-2 gap-3">
+      <div class="rounded-xl bg-slate-900 text-red-300 p-3 mono text-[11px] leading-relaxed">// Demo 01 — JANGAN<br>console.log('password='+req.body.password) // BOCOR!<br>console.log('query: SELECT * WHERE name LIKE \'%'+q+'%\'') // Seq Scan!</div>
+      <div class="rounded-xl bg-slate-900 text-emerald-300 p-3 mono text-[11px] leading-relaxed">// Demo 02 — BENAR<br>logger.info({ requestId, q: 'ayam', latency_ms: 23 })<br>redact: ['password','token'] → "[Redacted]" // aman</div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">31 / 37</span></div>
+  </section>
+
+  <!-- Slide 32: Demo 03 Scale benchmark -->
+  <section id="slide-32" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">DEMO 03</span>
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">SCALE BENCHMARK • 200x / 100x / 16x</span>
+      <span class="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[11px] font-bold">TERUJI 5 JUTA - 99 detik 50K rows/s streaming flat 64MB heap</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Demo 03 — Scale Benchmark: GIN / Cursor / MatView / RLS / Cache</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+      <div class="space-y-3">
+      <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">
+        <table class="w-full text-[11px]">
+          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">Teknik</th><th class="px-2 py-1.5 text-center">Sebelum</th><th class="px-2 py-1.5 text-center">Sesudah</th><th class="px-2 py-1.5 text-center">Speedup</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="bg-red-50"><td class="px-2 py-1 font-semibold">GIN pg_trgm</td><td class="px-2 py-1 text-center font-bold text-red-600">2000ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600">10ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">200×</td></tr>
+            <tr><td class="px-2 py-1 font-semibold">Cursor keyset</td><td class="px-2 py-1 text-center font-bold text-red-600">2000ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600">20ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">100×</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">MatView kas</td><td class="px-2 py-1 text-center font-bold text-red-600">500ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600">30ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">16×</td></tr>
+            <tr><td class="px-2 py-1 font-semibold">RLS overhead</td><td class="px-2 py-1 text-center">app filter</td><td class="px-2 py-1 text-center font-bold text-emerald-600">&lt;0.1ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">99.94%</td></tr>
+            <tr class="bg-emerald-50"><td class="px-2 py-1 font-semibold">Cache hit</td><td class="px-2 py-1 text-center">DB 50ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600">Redis 2ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">&gt;80% hit</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rounded-xl border border-emerald-200 overflow-hidden">
+        <div class="bg-emerald-600 text-white text-[11px] font-bold px-3 py-1.5 flex justify-between"><span>TERUJI 5 JUTA — Generate Streaming (BENCH_5M.md)</span><span>99.1s • 50K rows/s • 2.5GB</span></div>
+        <table class="w-full text-[11px]">
+          <thead class="bg-emerald-50 text-emerald-800"><tr><th class="px-2 py-1 text-left">Count</th><th class="px-2 py-1 text-center">Waktu</th><th class="px-2 py-1 text-center">rows/s</th><th class="px-2 py-1 text-center">Heap</th><th class="px-2 py-1 text-center">File</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr><td class="px-2 py-1 font-semibold">100k</td><td class="px-2 py-1 text-center">2.66s</td><td class="px-2 py-1 text-center">37.600</td><td class="px-2 py-1 text-center">13 MB</td><td class="px-2 py-1 text-center">~50 MB</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">1M</td><td class="px-2 py-1 text-center">22.4s</td><td class="px-2 py-1 text-center">44.557</td><td class="px-2 py-1 text-center">64.7 MB</td><td class="px-2 py-1 text-center">502 MB</td></tr>
+            <tr class="bg-emerald-50"><td class="px-2 py-1 font-bold text-emerald-700">5M</td><td class="px-2 py-1 text-center font-bold text-emerald-700">99.1s</td><td class="px-2 py-1 text-center font-bold text-emerald-700">50.457</td><td class="px-2 py-1 text-center font-bold">64.7 MB flat</td><td class="px-2 py-1 text-center font-bold">2.5 GB</td></tr>
+          </tbody>
+        </table>
+        <div class="px-3 py-1.5 bg-slate-50 text-[10px] text-slate-500">Bintaro 32% • Petukangan Utara 27.8% • Selatan 17.3% • Ulujami 13.5% • Pesanggrahan 9.4% • RSS ~210MB (sebelum OOM 9GB) • <span class="mono">npx tsx seed/generate.ts --synthetic 5000000 --out /tmp/test_5m.ndjson</span> • Rujuk docs/BENCH_5M.md + docs/TUNING_5M.md</div>
+      </div>
+      </div>
+      <div class="space-y-3">
+        <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>GIN 2000→10ms (200×)</b>: LIKE '%ayam%' Seq Scan → <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">WHERE name % 'ayam'</span> GIN.</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Cursor 2s→20ms (100×)</b>: OFFSET 10000 scan-buang → <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">WHERE (created_at,id) &gt; cursor</span>.</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>MatView 500→30ms (16×)</b>: SUM GROUP BY → <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">mv_kas_total</span> REFRESH CONCURRENTLY 5m.</span></li>
+          <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>RLS &lt;0.1ms</b> + <b>Cache &gt;80%</b> = pembeda scalable vs boros DB.</span></li>
+        </ul>
+        <div class="rounded-xl bg-slate-900 text-emerald-300 p-3 mono text-[11px] leading-relaxed">EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM umkm WHERE name % 'ayam';<br>→ Bitmap Index Scan on idx_umkm_name_trgm  Execution Time: 12ms<br>→ Buffers: shared hit=45 (vs Seq Scan hit=1200)</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">32 / 37</span></div>
+  </section>
+
+  <!-- Slide 33: Demo 04-05 Observability+CDC -->
+  <section id="slide-33" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">DEMO 04–05</span>
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">OBSERVABILITY + CDC</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Demo 04–05 — Observability + CDC Streaming</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
+      <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Grafana 10 metrik</b> (Poster #6) + 16 SLA per-endpoint + proteksi (Circuit/Bulkhead/Backpressure) — dashboard <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">performa-gr</span> :3000.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Loki LogQL</b>: <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">{service="order"} | json | requestId="550e..."</span> — korelasi lintas service via requestId.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Jaeger flame graph</b>: trace 320ms → span pg.query 40ms, redis 5ms, http 280ms — langsung tahu bottleneck.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Debezium WAL → Kafka → ES</b>: <span class="mono text-xs bg-slate-100 px-1 py-0.5 rounded">geo_distance 5km &lt;10ms</span> untuk 256 masjid (vs PostGIS ~50ms), fallback pg_trgm jika ES down.</span></li>
+      </ul>
+      <div class="space-y-3">
+        <div class="ascii rounded-xl p-3 text-[11px] leading-relaxed">Postgres WAL --(Debezium pgoutput)--&gt; Kafka(9092) --+--&gt; ES(9200) geo &lt;10ms<br>                                           +--&gt; ClickHouse(8123) OLAP<br><span class="text-amber-300">LogQL: {service="order"} | json | requestId="550e8400-..."</span><br><span class="text-emerald-300">curl ".../masjid-terdekat?lat=-6.25&amp;lng=106.75&amp;radius=5km" | jq .meta.took_ms  # &lt;10</span></div>
+        <div class="rounded-xl border border-slate-200 overflow-hidden">
+          <table class="w-full text-[11px]">
+            <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">Komponen</th><th class="px-2 py-1.5 text-left">Port</th><th class="px-2 py-1.5 text-left">Query / Aksi</th></tr></thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">Grafana</td><td class="px-2 py-1 mono">:3000</td><td class="px-2 py-1 text-slate-600">performa-gr + loki-gr</td></tr>
+              <tr><td class="px-2 py-1 font-semibold">Prometheus</td><td class="px-2 py-1 mono">:9090</td><td class="px-2 py-1 text-slate-600">11 jobs, 15s, alerts</td></tr>
+              <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">Loki</td><td class="px-2 py-1 mono">:3100</td><td class="px-2 py-1 text-slate-600">LogQL json + requestId</td></tr>
+              <tr><td class="px-2 py-1 font-semibold">Jaeger</td><td class="px-2 py-1 mono">:16686</td><td class="px-2 py-1 text-slate-600">flame graph, N+1</td></tr>
+              <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">ES geo</td><td class="px-2 py-1 mono">:9200</td><td class="px-2 py-1 text-slate-600">geo_distance 5km &lt;10ms</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">33 / 37</span></div>
+  </section>
+
+  <!-- Slide 34: Appendix Proteksi + Threshold + Security -->
+  <section id="slide-34" class="slide min-h-[68vh] flex-col rounded-2xl glass-strong p-6 sm:p-8 shadow-sm" aria-hidden="true">
+    <div class="flex flex-wrap gap-2">
+      <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">APPENDIX</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">PROTEKSI + THRESHOLD + SECURITY</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Appendix — Proteksi + Threshold + 10 Layer Security</h2>
+    <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
+      <div class="space-y-3">
+        <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">
+          <table class="w-full text-[11px]">
+            <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">#</th><th class="px-2 py-1.5 text-left">Proteksi</th><th class="px-2 py-1.5 text-left">Threshold</th><th class="px-2 py-1.5 text-left">Fallback</th></tr></thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr class="bg-slate-50"><td class="px-2 py-1">1</td><td class="px-2 py-1 font-semibold">Token / Leaky Bucket</td><td class="px-2 py-1">100/10/5 /menit</td><td class="px-2 py-1 text-slate-600">429 Retry-After</td></tr>
+              <tr><td class="px-2 py-1">2</td><td class="px-2 py-1 font-semibold">Circuit Breaker</td><td class="px-2 py-1">50% err 10s → open 30s</td><td class="px-2 py-1 text-slate-600">503 fast-fail</td></tr>
+              <tr class="bg-slate-50"><td class="px-2 py-1">3</td><td class="px-2 py-1 font-semibold">Bulkhead</td><td class="px-2 py-1">pool 20/10/15, queue 50</td><td class="px-2 py-1 text-slate-600">503 bulkhead penuh</td></tr>
+              <tr><td class="px-2 py-1">4</td><td class="px-2 py-1 font-semibold">Backpressure</td><td class="px-2 py-1">lag &gt;1000 → 503</td><td class="px-2 py-1 text-slate-600">Retry-After:10</td></tr>
+              <tr class="bg-slate-50"><td class="px-2 py-1">5</td><td class="px-2 py-1 font-semibold">Graceful Degradation</td><td class="px-2 py-1">circuit/bulkhead/lag</td><td class="px-2 py-1 text-slate-600">flag OFF, x-degradation</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-3">
+          <div class="text-[11px] font-extrabold tracking-widest text-amber-700">THRESHOLD SCALING (80% ALERT)</div>
+          <div class="mt-1.5 grid grid-cols-3 gap-2 text-[11px] text-center">
+            <div class="rounded-lg bg-white border border-amber-200 p-2"><div class="font-extrabold text-[#1e3a5f]">1 TB → 500 GB</div><div class="text-slate-500">Data size</div></div>
+            <div class="rounded-lg bg-white border border-amber-200 p-2"><div class="font-extrabold text-[#1e3a5f]">10M → 5M</div><div class="text-slate-500">Rows / table</div></div>
+            <div class="rounded-lg bg-white border border-amber-200 p-2"><div class="font-extrabold text-[#1e3a5f]">1000 → 500</div><div class="text-slate-500">Write QPS</div></div>
+          </div>
+          <div class="mt-1.5 text-[11px] text-slate-500 text-center">Alert di 80% (400GB / 4M / 400 QPS) — jangan tunggu 100% baru panik</div>
+        </div>
+      </div>
+      <div class="space-y-3">
+        <div class="rounded-xl border border-slate-200 p-3 bg-white">
+          <div class="text-[11px] font-extrabold tracking-widest text-[#1e3a5f]">10 LAYER SECURITY</div>
+          <div class="mt-2 grid grid-cols-2 gap-1.5 text-[11px]">
+            <span class="px-2 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 font-semibold">1 TLS 1.3</span>
+            <span class="px-2 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 font-semibold">2 AES-256</span>
+            <span class="px-2 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 font-semibold">3 RLS &lt;0.1ms</span>
+            <span class="px-2 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 font-semibold">4 SHA-256 hash chain</span>
+            <span class="px-2 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 font-semibold">5 Vault / KMS</span>
+            <span class="px-2 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 font-semibold">6 RBAC</span>
+            <span class="px-2 py-1 rounded-full bg-orange-50 border border-orange-200 text-orange-700 font-semibold">7 Rate limit</span>
+            <span class="px-2 py-1 rounded-full bg-orange-50 border border-orange-200 text-orange-700 font-semibold">8 Audit log</span>
+            <span class="px-2 py-1 rounded-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold">9 Backup encrypt</span>
+            <span class="px-2 py-1 rounded-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold">10 WAF</span>
+          </div>
+          <div class="mt-2 mono text-[11px] bg-slate-900 text-emerald-300 rounded-lg p-2">hash_self = SHA256(amount|desc|recipient|actor|hash_prev)<br>RLS: USING (community_id = current_setting(...))</div>
+        </div>
+        <div class="rounded-xl bg-slate-50 border border-slate-200 p-3 text-[11px] leading-relaxed text-slate-600"><b class="text-[#1e3a5f]">HA/DR:</b> RTO &lt;15m, RPO &lt;1m — replica + WAL archive S3 + PITR, Redis Sentinel, 3 broker Kafka RF3</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">34 / 37</span></div>
+  </section>
+
+  <!-- Slide 35: Penutup + Glossary -->
+  <section id="slide-35" class="slide min-h-[68vh] flex-col rounded-2xl overflow-hidden bg-gradient-to-br from-[#1e3a5f] via-[#1e3a5f] to-[#14263e] text-white p-6 sm:p-8 relative" aria-hidden="true">
+    <div class="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full bg-orange-500/10 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-32 -left-32 w-[520px] h-[520px] rounded-full bg-blue-400/10 blur-3xl pointer-events-none"></div>
+    <div class="flex flex-wrap gap-2 relative">
+      <span class="px-2.5 py-1 rounded-full bg-white text-[#1e3a5f] text-[11px] font-bold">PENUTUP</span>
+      <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">GLOSSARY 40+ ISTILAH • Q&A</span>
+      <span class="px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-blue-100 text-[11px] font-semibold">Kecepatan = Amanah</span>
+    </div>
+    <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold leading-tight relative">Penutup — Kecepatan = Amanah <span class="text-orange-400">• Q&A</span></h2>
+    <div class="mt-4 grid lg:grid-cols-[0.95fr_1.05fr] gap-6 relative">
+      <div class="space-y-3">
+        <div class="glass-card rounded-xl p-4">
+          <div class="text-orange-300 text-[11px] font-bold tracking-widest">PESAN UTAMA</div>
+          <p class="mt-2 text-[13px] leading-relaxed font-medium text-white">“<b class="text-orange-300">Kecepatan = Amanah</b> — mulai sederhana, tingkatkan bertahap. Setiap ms yang dipangkas adalah kepercayaan yang ditambah.”</p>
+          <ul class="mt-3 space-y-1.5 text-[12px] leading-relaxed text-blue-100/90">
+            <li class="flex gap-2"><span class="text-orange-400">•</span><span>MVP Rp0 sudah <b class="text-white">p50 &lt;50ms</b> dengan Postgres+Redis+pg_trgm+MatView+PgBouncer</span></li>
+            <li class="flex gap-2"><span class="text-orange-400">•</span><span>Tambah ES+CDC+ClickHouse saat 500+ komunitas (Fase 3) — jangan over-engineering di awal</span></li>
+            <li class="flex gap-2"><span class="text-orange-400">•</span><span>Ukur, jangan tebak: EXPLAIN ANALYZE, pg_stat_statements, Prometheus, Loki, Jaeger</span></li>
+            <li class="flex gap-2"><span class="text-orange-400">•</span><span>TIGA INSAN: <b class="text-white">Muttaqin</b> (percaya) • <b class="text-white">Shalih</b> (berkarya) • <b class="text-white">Nafi'</b> (bermanfaat)</span></li>
+          </ul>
+        </div>
+        <div class="glass rounded-xl p-3 text-center">
+          <div class="text-[11px] font-bold tracking-widest text-orange-300">Q&A</div>
+          <div class="mt-1 text-[13px] font-bold text-white">Tanya Jawab — 10 menit</div>
+          <div class="mt-1 text-[11px] text-blue-200/70">Gotong Royong — OS Kehidupan Komunitas • TIGA INSAN</div>
+        </div>
+      </div>
+      <div class="glass-strong rounded-xl p-4 text-slate-800">
+        <div class="text-[11px] font-extrabold tracking-widest text-orange-600">GLOSSARY 40+ ISTILAH</div>
+        <div class="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] leading-relaxed max-h-[280px] overflow-y-auto pr-1">
+          <span><b class="text-[#1e3a5f]">ACID</b> <span class="text-slate-500">transaksi aman</span></span>
+          <span><b class="text-[#1e3a5f]">B-Tree</b> <span class="text-slate-500">index log(n)</span></span>
+          <span><b class="text-[#1e3a5f]">CDC</b> <span class="text-slate-500">tangkap WAL</span></span>
+          <span><b class="text-[#1e3a5f]">Cache</b> <span class="text-slate-500">memori cepat</span></span>
+          <span><b class="text-[#1e3a5f]">Cursor</b> <span class="text-slate-500">keyset pagination</span></span>
+          <span><b class="text-[#1e3a5f]">Dual-Write</b> <span class="text-slate-500">bahaya inkonsisten</span></span>
+          <span><b class="text-[#1e3a5f]">Edge</b> <span class="text-slate-500">CDN 330+ DC</span></span>
+          <span><b class="text-[#1e3a5f]">ES</b> <span class="text-slate-500">Elasticsearch</span></span>
+          <span><b class="text-[#1e3a5f]">ETL</b> <span class="text-slate-500">extract batch</span></span>
+          <span><b class="text-[#1e3a5f]">EXPLAIN</b> <span class="text-slate-500">cek query plan</span></span>
+          <span><b class="text-[#1e3a5f]">FK</b> <span class="text-slate-500">foreign key</span></span>
+          <span><b class="text-[#1e3a5f]">GIN</b> <span class="text-slate-500">index trigram</span></span>
+          <span><b class="text-[#1e3a5f]">GZIP</b> <span class="text-slate-500">kompresi 70%</span></span>
+          <span><b class="text-[#1e3a5f]">Hot Data</b> <span class="text-slate-500">sering diakses</span></span>
+          <span><b class="text-[#1e3a5f]">Index</b> <span class="text-slate-500">daftar cepat</span></span>
+          <span><b class="text-[#1e3a5f]">Inverted</b> <span class="text-slate-500">index kata</span></span>
+          <span><b class="text-[#1e3a5f]">JSONB</b> <span class="text-slate-500">JSON binary</span></span>
+          <span><b class="text-[#1e3a5f]">Kafka</b> <span class="text-slate-500">broker event</span></span>
+          <span><b class="text-[#1e3a5f]">Latency</b> <span class="text-slate-500">waktu tunggu</span></span>
+          <span><b class="text-[#1e3a5f]">MatView</b> <span class="text-slate-500">agregasi cache</span></span>
+          <span><b class="text-[#1e3a5f]">N+1</b> <span class="text-slate-500">query berulang</span></span>
+          <span><b class="text-[#1e3a5f]">Observabilitas</b> <span class="text-slate-500">metrics/logs/traces</span></span>
+          <span><b class="text-[#1e3a5f]">Offset</b> <span class="text-slate-500">skip-buang lambat</span></span>
+          <span><b class="text-[#1e3a5f]">OLAP</b> <span class="text-slate-500">analitik kolom</span></span>
+          <span><b class="text-[#1e3a5f]">p50/p95/p99</b> <span class="text-slate-500">percentile</span></span>
+          <span><b class="text-[#1e3a5f]">PgBouncer</b> <span class="text-slate-500">pool 25</span></span>
+          <span><b class="text-[#1e3a5f]">pg_trgm</b> <span class="text-slate-500">trigram GIN</span></span>
+          <span><b class="text-[#1e3a5f]">PK</b> <span class="text-slate-500">primary key</span></span>
+          <span><b class="text-[#1e3a5f]">Prometheus</b> <span class="text-slate-500">metrics 9090</span></span>
+          <span><b class="text-[#1e3a5f]">Redis</b> <span class="text-slate-500">cache 1–5ms</span></span>
+          <span><b class="text-[#1e3a5f]">RLS</b> <span class="text-slate-500">row isolation</span></span>
+          <span><b class="text-[#1e3a5f]">RPS/RTT</b> <span class="text-slate-500">req/detik / round-trip</span></span>
+          <span><b class="text-[#1e3a5f]">Seq Scan</b> <span class="text-slate-500">scan semua</span></span>
+          <span><b class="text-[#1e3a5f]">SLA/SLI/SLO</b> <span class="text-slate-500">janji/ukur/target</span></span>
+          <span><b class="text-[#1e3a5f]">Supabase</b> <span class="text-slate-500">Postgres managed</span></span>
+          <span><b class="text-[#1e3a5f]">Throughput</b> <span class="text-slate-500">kapasitas RPS</span></span>
+          <span><b class="text-[#1e3a5f]">TTFB/TTL</b> <span class="text-slate-500">first byte / expire</span></span>
+          <span><b class="text-[#1e3a5f]">WAL</b> <span class="text-slate-500">log transaksi</span></span>
+        </div>
+        <div class="mt-2 text-[10px] text-slate-400">40+ istilah • lengkap di Poster #7 + docs/ • TIGA INSAN: Muttaqin • Shalih • Nafi'</div>
+      </div>
+    </div>
+    <div class="mt-auto pt-4 flex flex-wrap justify-between gap-2 text-[11px] text-blue-200/70 border-t border-white/10 relative">Gotong Royong — OS Kehidupan Komunitas | 60 menit • TIGA INSAN: Muttaqin • Shalih • Nafi'<span class="text-orange-300 font-bold">35 / 37 • Q&A</span></div>
+  </section>
+</main>
+
+<!-- Nav floating -->
+<nav id="nav-floating" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-3 py-2 rounded-full bg-[#1e3a5f]/95 backdrop-blur border border-white/10 shadow-2xl">
+  <button id="btn-prev" onclick="prevSlide()" class="w-9 h-9 rounded-full bg-white text-[#1e3a5f] flex items-center justify-center font-bold hover:bg-orange-50 disabled:opacity-40 disabled:cursor-not-allowed transition" aria-label="Sebelumnya">‹</button>
+  <span id="slide-counter" class="px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold border border-white/10">1 / 37</span>
+  <button id="btn-next" onclick="nextSlide()" class="w-9 h-9 rounded-full bg-orange-500 text-white flex items-center justify-center font-bold hover:bg-orange-600 transition" aria-label="Selanjutnya">›</button>
+  <div class="w-px h-6 bg-white/15 mx-1"></div>
+  <button onclick="toggleFullscreen()" class="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition border border-white/10" aria-label="Fullscreen" title="Fullscreen (F)">⛶</button>
+</nav>
+<div id="kbd-hint" class="fixed bottom-6 right-6 hidden lg:flex items-center gap-1.5 text-[11px] text-white/50">
+  <span class="px-1.5 py-0.5 rounded bg-white/10 border border-white/10">←</span>
+  <span class="px-1.5 py-0.5 rounded bg-white/10 border border-white/10">→</span>
+  <span class="ml-1">navigasi • F fullscreen</span>
+</div>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+</body>
+</html>

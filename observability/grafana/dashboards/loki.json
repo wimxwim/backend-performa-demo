@@ -1,0 +1,124 @@
+{
+  "title": "Gotong Royong - Logs (Loki)",
+  "uid": "loki-gr",
+  "tags": ["logs", "loki", "gotongroyong"],
+  "timezone": "browser",
+  "refresh": "5s",
+  "time": { "from": "now-1h", "to": "now" },
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Logs - Semua Service (json + requestId)",
+      "type": "logs",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "{service=~\"order|payment|umkm|kas\"} | json | requestId != \"\"",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "options": { "showLabels": false, "showTime": true, "enableLogDetails": true, "sortOrder": "Descending" }
+    },
+    {
+      "id": 2,
+      "title": "Logs - Error Level Only",
+      "type": "logs",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 10 },
+      "targets": [
+        {
+          "expr": "{service=~\"order|payment|umkm|kas\"} | json | level=\"error\"",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "options": { "showLabels": false, "showTime": true, "enableLogDetails": true, "sortOrder": "Descending" }
+    },
+    {
+      "id": 3,
+      "title": "Logs - Filter by requestId (template variable)",
+      "type": "logs",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 10 },
+      "targets": [
+        {
+          "expr": "{service=~\"order|payment|umkm|kas\"} | json | requestId=\"$requestId\"",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "options": { "showLabels": false, "showTime": true, "enableLogDetails": true, "sortOrder": "Descending" }
+    },
+    {
+      "id": 4,
+      "title": "Log Volume per Service (rate)",
+      "type": "timeseries",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "targets": [
+        {
+          "expr": "sum by (service) (rate({service=~\"order|payment|umkm|kas\"} | json [5m]))",
+          "legendFormat": "{{service}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Error Rate Logs (count_over_time)",
+      "type": "timeseries",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+      "targets": [
+        {
+          "expr": "sum by (service) (count_over_time({service=~\"order|payment|umkm|kas\"} | json | level=\"error\" [5m]))",
+          "legendFormat": "{{service}} errors",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Latency dari Logs (latency_ms histogram)",
+      "type": "timeseries",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 28 },
+      "targets": [
+        {
+          "expr": "avg by (service) (rate({service=~\"order|payment|umkm|kas\"} | json | unwrap latency_ms [5m]))",
+          "legendFormat": "{{service}} avg latency_ms",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "requestId",
+        "type": "textbox",
+        "label": "requestId",
+        "query": "",
+        "current": { "text": "", "value": "" }
+      },
+      {
+        "name": "service",
+        "type": "custom",
+        "label": "service",
+        "query": "order,payment,umkm,kas",
+        "current": { "text": "order", "value": "order" },
+        "options": [
+          { "text": "order", "value": "order", "selected": false },
+          { "text": "payment", "value": "payment", "selected": false },
+          { "text": "umkm", "value": "umkm", "selected": false },
+          { "text": "kas", "value": "kas", "selected": false }
+        ]
+      }
+    ]
+  }
+}

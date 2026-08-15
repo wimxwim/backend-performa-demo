@@ -1,0 +1,208 @@
+name: gotongroyong-demo-observability
+# Observabilitas & CDC — Rp0 lokal, aktifkan via profile.
+#   podman-compose -f compose.yaml -f compose.observability.yaml --profile observability up -d
+#   podman-compose -f compose.yaml -f compose.observability.yaml --profile cdc up -d
+#   podman-compose -f compose.yaml -f compose.observability.yaml --profile observability --profile cdc up -d
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.53.2
+    container_name: gr-prometheus
+    restart: unless-stopped
+    profiles: ["observability"]
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+    networks:
+      - demo-net
+
+  grafana:
+    image: grafana/grafana:11.2.2
+    container_name: gr-grafana
+    restart: unless-stopped
+    profiles: ["observability"]
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_FEATURE_TOGGLES_ENABLE: correlations
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+      - loki
+    networks:
+      - demo-net
+
+  loki:
+    image: grafana/loki:3.2.1
+    container_name: gr-loki
+    restart: unless-stopped
+    profiles: ["observability"]
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./observability/loki/loki.yml:/etc/loki/local-config.yaml:ro
+      - loki-data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - demo-net
+
+  alloy:
+    image: grafana/alloy:v1.4.2
+    container_name: gr-alloy
+    restart: unless-stopped
+    profiles: ["observability"]
+    ports:
+      - "12345:12345"
+    volumes:
+      - ./observability/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/log:/var/log:ro
+    command: run /etc/alloy/config.alloy
+    depends_on:
+      - loki
+    networks:
+      - demo-net
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.111.0
+    container_name: gr-otel-collector
+    restart: unless-stopped
+    profiles: ["observability"]
+    ports:
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+      - "8889:8889" # metrics
+    volumes:
+      - ./observability/otel/collector.yml:/etc/otelcol-contrib/config.yaml:ro
+    networks:
+      - demo-net
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    container_name: gr-jaeger
+    restart: unless-stopped
+    profiles: ["observability"]
+    ports:
+      - "16686:16686" # UI
+      - "14268:14268" # collector HTTP
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    networks:
+      - demo-net
+
+  # --- CDC & Search & OLAP (profile: cdc) ---
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    container_name: gr-zookeeper
+    restart: unless-stopped
+    profiles: ["cdc"]
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
+    networks:
+      - demo-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: gr-kafka
+    restart: unless-stopped
+    profiles: ["cdc"]
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    networks:
+      - demo-net
+
+  debezium:
+    image: debezium/connect:2.5.4.Final
+    container_name: gr-debezium
+    restart: unless-stopped
+    profiles: ["cdc"]
+    depends_on:
+      - kafka
+      - postgres
+    ports:
+      - "8083:8083"
+    environment:
+      BOOTSTRAP_SERVERS: kafka:29092
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: connect_configs
+      OFFSET_STORAGE_TOPIC: connect_offsets
+      STATUS_STORAGE_TOPIC: connect_statuses
+      CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      STATUS_STORAGE_REPLICATION_FACTOR: 1
+    networks:
+      - demo-net
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+    container_name: gr-elasticsearch
+    restart: unless-stopped
+    profiles: ["cdc"]
+    ports:
+      - "9200:9200"
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      cluster.name: gr-es
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - demo-net
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8-alpine
+    container_name: gr-clickhouse
+    restart: unless-stopped
+    profiles: ["cdc"]
+    ports:
+      - "8123:8123" # HTTP
+      - "9000:9000" # native
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+    networks:
+      - demo-net
+
+volumes:
+  prometheus-data:
+  grafana-data:
+  loki-data:
+  esdata:
+  clickhouse-data:
+  kafka-data:
+  zookeeper-data:
+  zookeeper-log:
+
+networks:
+  demo-net:
+    driver: bridge

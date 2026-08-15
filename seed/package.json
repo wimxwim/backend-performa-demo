@@ -1,0 +1,33 @@
+{
+  "name": "seed",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Seed Gotong Royong — import 6.081 UMKM + 256 masjid real + generator synthetic jitter 100k/1M/5M streaming + COPY bulk",
+  "type": "module",
+  "scripts": {
+    "generate": "tsx generate.ts",
+    "import": "tsx import.ts",
+    "verify": "tsx verify-ledger.ts",
+    "seed": "tsx import.ts",
+    "generate:100k": "tsx generate.ts --count 100000",
+    "generate:1m": "tsx generate.ts --count 1000000",
+    "generate:5m": "tsx generate.ts --synthetic 5M --out ./synthetic.ndjson"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "@prisma/client": "^5.22.0",
+    "csv-parse": "^5.5.6",
+    "pg": "^8.12.0",
+    "pg-copy-streams": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "@types/pg": "^8.11.0",
+    "prisma": "^5.22.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

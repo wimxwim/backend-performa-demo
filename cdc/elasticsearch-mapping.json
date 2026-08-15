@@ -1,0 +1,58 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "refresh_interval": "1s",
+    "analysis": {
+      "filter": {
+        "indonesian_stop": { "type": "stop", "stopwords": "_indonesian_" },
+        "indonesian_stemmer": { "type": "stemmer", "language": "indonesian" }
+      },
+      "analyzer": {
+        "indonesian": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "indonesian_stop", "indonesian_stemmer"]
+        },
+        "indonesian_keyword": {
+          "tokenizer": "keyword",
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "name": {
+        "type": "text",
+        "analyzer": "indonesian",
+        "fields": {
+          "keyword": { "type": "keyword", "ignore_above": 256 },
+          "suggest": { "type": "completion", "analyzer": "indonesian" },
+          "trigram": { "type": "text", "analyzer": "standard" }
+        }
+      },
+      "name_keyword": { "type": "keyword", "ignore_above": 256 },
+      "name_suggest": { "type": "completion" },
+      "kelurahan": { "type": "keyword" },
+      "kecamatan_id": { "type": "keyword" },
+      "category0": { "type": "keyword" },
+      "category1": { "type": "keyword" },
+      "alamat": {
+        "type": "text",
+        "analyzer": "indonesian",
+        "fields": { "keyword": { "type": "keyword", "ignore_above": 512 } }
+      },
+      "telepon": { "type": "keyword" },
+      "zip_code": { "type": "keyword" },
+      "lat_lng": { "type": "geo_point" },
+      "created_at": { "type": "date", "format": "strict_date_optional_time||epoch_millis" },
+      "data_id": { "type": "keyword" },
+      "tipe": { "type": "keyword" },
+      "kode_pos": { "type": "keyword" },
+      "pic": { "type": "keyword" },
+      "description": { "type": "text", "analyzer": "indonesian" },
+      "amount": { "type": "double" },
+      "community_id": { "type": "keyword" }
+    }
+  }
+}

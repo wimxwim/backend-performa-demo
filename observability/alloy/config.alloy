@@ -1,0 +1,114 @@
+// observability/alloy/config.alloy — Grafana Alloy pipeline: Docker logs -> Loki + Prometheus scrape
+// Bahasa komentar: Indonesia
+// Spec: discovery.docker + loki.source.docker + stage.json + stage.labels service,level + stage.structured_metadata requestId,userId,latency_ms + loki.write to Loki 3100, prometheus scrape
+// Anti-pattern: jangan pakai stage.labels untuk high cardinality (requestId) — pakai stage.structured_metadata
+
+// ──────────────────────────────────────────────
+// Discovery — cari container Docker via socket
+// ──────────────────────────────────────────────
+discovery.docker "demo" {
+  host = "unix:///var/run/docker.sock"
+  refresh_interval = "5s"
+}
+
+// ──────────────────────────────────────────────
+// Loki source — baca logs dari Docker
+// ──────────────────────────────────────────────
+loki.source.docker "demo" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.docker.demo.targets
+  forward_to = [loki.process.demo.receiver]
+}
+
+// ──────────────────────────────────────────────
+// Process — parse JSON, labels low-cardinality, structured_metadata high-cardinality
+// ──────────────────────────────────────────────
+loki.process "demo" {
+  // 1. Parse JSON (Pino JSON logs)
+  stage.json {
+    expressions = {
+      level      = "level",
+      service    = "service",
+      msg        = "msg",
+      requestId  = "requestId",
+      userId     = "userId",
+      latency_ms = "latency_ms",
+      method     = "method",
+      path       = "path",
+      status     = "status",
+    }
+  }
+
+  // 2. Labels — hanya low cardinality (service, level) agar tidak explosion
+  //    Jangan masukkan requestId/userId ke labels!
+  stage.labels {
+    values = {
+      service = "service",
+      level   = "level",
+    }
+  }
+
+  // 3. Structured metadata — high cardinality (requestId, userId, latency_ms)
+  //    Bisa di-query di LogQL tapi tidak jadi label index
+  stage.structured_metadata {
+    values = {
+      requestId  = "requestId",
+      userId     = "userId",
+      latency_ms = "latency_ms",
+      method     = "method",
+      path       = "path",
+      status     = "status",
+    }
+  }
+
+  // 4. Timestamp — pakai timestamp dari log jika ada
+  stage.timestamp {
+    source = "time"
+    format = "RFC3339Nano"
+  }
+
+  // 5. Output ke Loki
+  forward_to = [loki.write.demo.receiver]
+}
+
+// ──────────────────────────────────────────────
+// Loki write — kirim ke Loki 3100
+// ──────────────────────────────────────────────
+loki.write "demo" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+  external_labels = {
+    cluster = "gotongroyong-demo",
+  }
+}
+
+// ──────────────────────────────────────────────
+// Prometheus scrape — scrape metrics dari 4 service + infra
+// Alloy juga bisa scrape, tapi Prometheus utama tetap di 9090
+// ──────────────────────────────────────────────
+prometheus.scrape "demo" {
+  targets = [
+    { "__address__" = "order-service:3001", "service" = "order-service" },
+    { "__address__" = "payment-service:3002", "service" = "payment-service" },
+    { "__address__" = "umkm-service:3003", "service" = "umkm-service" },
+    { "__address__" = "kas-service:3004", "service" = "kas-service" },
+  ]
+  metrics_path = "/metrics"
+  scrape_interval = "15s"
+  forward_to = [prometheus.remote_write.demo.receiver]
+}
+
+prometheus.remote_write "demo" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
+  }
+}
+
+// ──────────────────────────────────────────────
+// Alloy self metrics — expose di 12345
+// ──────────────────────────────────────────────
+logging {
+  level  = "info"
+  format = "logfmt"
+}
