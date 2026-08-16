@@ -514,11 +514,16 @@
           <table class="w-full text-[12px]">
             <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-3 py-2 text-left">Kondisi</th><th class="px-3 py-2 text-center">Langkah</th><th class="px-3 py-2 text-center">Waktu</th></tr></thead>
             <tbody class="divide-y divide-slate-100">
-              <tr class="bg-red-50"><td class="px-3 py-1.5 font-semibold text-red-700">Tanpa index (Seq Scan)</td><td class="px-3 py-1.5 text-center">1.000.000</td><td class="px-3 py-1.5 text-center font-bold text-red-600">~2000ms</td></tr>
-              <tr class="bg-emerald-50"><td class="px-3 py-1.5 font-semibold text-emerald-700">Dengan B-Tree (Index Scan)</td><td class="px-3 py-1.5 text-center">~20</td><td class="px-3 py-1.5 text-center font-bold text-emerald-600">~10ms</td></tr>
+              <tr class="bg-red-50"><td class="px-3 py-1.5 font-semibold text-red-700"><span class="px-1.5 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold mr-1">LEMOT</span>Tanpa index (Seq Scan)</td><td class="px-3 py-1.5 text-center">1.000.000</td><td class="px-3 py-1.5 text-center font-bold text-red-600">~2000ms</td></tr>
+              <tr class="bg-emerald-50"><td class="px-3 py-1.5 font-semibold text-emerald-700"><span class="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>Dengan B-Tree (Index Scan)</td><td class="px-3 py-1.5 text-center">~20</td><td class="px-3 py-1.5 text-center font-bold text-emerald-600">~10ms <span class="text-emerald-700">50.000x</span></td></tr>
             </tbody>
           </table>
         </div>
+        <div class="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+          <div class="rounded-lg bg-red-50 border border-red-200 px-2.5 py-2 text-center"><span class="font-extrabold text-red-700">LEMOT</span> <span class="text-slate-600">Tanpa Index 2000ms — scan 1jt baris satu-satu kayak warung tanpa daftar harga</span></div>
+          <div class="rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-2 text-center"><span class="font-extrabold text-emerald-700">KENCENG</span> <span class="text-slate-600">B-Tree 10ms <b class="text-emerald-700">50.000x</b> — lompat via indeks, kayak ambil barang pakai katalog</span></div>
+        </div>
+        <a href="../website/praktik/?tech=b-tree" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold hover:bg-[#14263e] transition">Coba di Praktik: B-Tree →</a>
       </div>
     </div>
     <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">14 / 40</span></div>
@@ -545,11 +550,16 @@
           <table class="w-full text-[12px]">
             <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-3 py-1.5 text-left">Metode</th><th class="px-3 py-1.5 text-center">Waktu</th><th class="px-3 py-1.5 text-center">Speedup</th></tr></thead>
             <tbody class="divide-y divide-slate-100">
-              <tr class="bg-red-50"><td class="px-3 py-1.5 font-semibold">LIKE '%ayam%' (Seq Scan)</td><td class="px-3 py-1.5 text-center font-bold text-red-600">2000ms</td><td class="px-3 py-1.5 text-center">1x</td></tr>
-              <tr class="bg-emerald-50"><td class="px-3 py-1.5 font-semibold">pg_trgm GIN (% operator)</td><td class="px-3 py-1.5 text-center font-bold text-emerald-600">10–50ms</td><td class="px-3 py-1.5 text-center font-bold text-emerald-700">40–200x</td></tr>
+              <tr class="bg-red-50"><td class="px-3 py-1.5 font-semibold"><span class="px-1.5 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold mr-1">LEMOT</span>LIKE '%ayam%' (Seq Scan)</td><td class="px-3 py-1.5 text-center font-bold text-red-600">2000ms</td><td class="px-3 py-1.5 text-center">1x</td></tr>
+              <tr class="bg-emerald-50"><td class="px-3 py-1.5 font-semibold"><span class="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>pg_trgm GIN (% operator)</td><td class="px-3 py-1.5 text-center font-bold text-emerald-600">10–50ms</td><td class="px-3 py-1.5 text-center font-bold text-emerald-700">40–200x</td></tr>
             </tbody>
           </table>
         </div>
+        <div class="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+          <div class="rounded-lg bg-red-50 border border-red-200 px-2.5 py-2 text-center"><span class="font-extrabold text-red-700">LEMOT</span> <span class="text-slate-600">LIKE 2000ms — scan semua baris, typo dikit langsung gagal</span></div>
+          <div class="rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-2 text-center"><span class="font-extrabold text-emerald-700">KENCENG</span> <span class="text-slate-600">GIN 10ms <b class="text-emerald-700">200x</b> — cari via trigram, typo tetap ketemu</span></div>
+        </div>
+        <a href="../website/praktik/?tech=gin" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold hover:bg-[#14263e] transition">Coba di Praktik: GIN →</a>
       </div>
     </div>
     <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">15 / 40</span></div>
@@ -576,11 +586,19 @@
           <table class="w-full text-[12px]">
             <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-3 py-1.5 text-left">Teknik</th><th class="px-3 py-1.5 text-center">Waktu</th><th class="px-3 py-1.5 text-center">Speedup</th></tr></thead>
             <tbody class="divide-y divide-slate-100">
-              <tr class="bg-red-50"><td class="px-3 py-1.5 font-semibold">OFFSET 10000</td><td class="px-3 py-1.5 text-center font-bold text-red-600">2000ms</td><td class="px-3 py-1.5 text-center">1x</td></tr>
-              <tr class="bg-emerald-50"><td class="px-3 py-1.5 font-semibold">Cursor keyset</td><td class="px-3 py-1.5 text-center font-bold text-emerald-600">20ms</td><td class="px-3 py-1.5 text-center font-bold text-emerald-700">100x</td></tr>
-              <tr><td class="px-3 py-1.5 font-semibold">MatView kas</td><td class="px-3 py-1.5 text-center font-bold text-emerald-600">5–30ms</td><td class="px-3 py-1.5 text-center font-bold text-emerald-700">16–100x</td></tr>
+              <tr class="bg-red-50"><td class="px-3 py-1.5 font-semibold"><span class="px-1.5 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold mr-1">LEMOT</span>OFFSET 10000</td><td class="px-3 py-1.5 text-center font-bold text-red-600">2000ms</td><td class="px-3 py-1.5 text-center">1x</td></tr>
+              <tr class="bg-emerald-50"><td class="px-3 py-1.5 font-semibold"><span class="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>Cursor keyset</td><td class="px-3 py-1.5 text-center font-bold text-emerald-600">20ms</td><td class="px-3 py-1.5 text-center font-bold text-emerald-700">100x</td></tr>
+              <tr class="bg-emerald-50"><td class="px-3 py-1.5 font-semibold"><span class="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>MatView kas</td><td class="px-3 py-1.5 text-center font-bold text-emerald-600">5–30ms</td><td class="px-3 py-1.5 text-center font-bold text-emerald-700">16–100x</td></tr>
             </tbody>
           </table>
+        </div>
+        <div class="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+          <div class="rounded-lg bg-red-50 border border-red-200 px-2.5 py-2 text-center"><span class="font-extrabold text-red-700">LEMOT</span> <span class="text-slate-600">OFFSET 2000ms / real-time 500ms — baca-buang 10rb baris, makin jauh makin lemot</span></div>
+          <div class="rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-2 text-center"><span class="font-extrabold text-emerald-700">KENCENG</span> <span class="text-slate-600">Cursor 20ms <b class="text-emerald-700">100x</b> & MatView 30ms — lompat via index & ringkasan siap pakai</span></div>
+        </div>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <a href="../website/praktik/?tech=cursor" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold hover:bg-[#14263e] transition">Coba di Praktik: Cursor →</a>
+          <a href="../website/praktik/?tech=matview" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-[#1e3a5f] text-[11px] font-bold hover:bg-slate-50 transition">Coba di Praktik: MatView →</a>
         </div>
       </div>
     </div>
@@ -607,11 +625,20 @@
           <table class="w-full text-[11px]">
             <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">Item</th><th class="px-2 py-1.5 text-center">Sebelum</th><th class="px-2 py-1.5 text-center">Sesudah</th></tr></thead>
             <tbody class="divide-y divide-slate-100">
-              <tr class="bg-red-50"><td class="px-2 py-1 font-semibold">Koneksi 500 direct</td><td class="px-2 py-1 text-center font-bold text-red-600">1500MB crash</td><td class="px-2 py-1 text-center font-bold text-emerald-600">pool 25 ~75MB</td></tr>
-              <tr><td class="px-2 py-1 font-semibold">RLS overhead</td><td class="px-2 py-1 text-center">app filter lambat</td><td class="px-2 py-1 text-center font-bold text-emerald-600">&lt;0.1ms</td></tr>
-              <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">VACUUM</td><td class="px-2 py-1 text-center">dead tuples menumpuk</td><td class="px-2 py-1 text-center">planner akurat</td></tr>
+              <tr class="bg-red-50"><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold mr-1">LEMOT</span>Koneksi 500 direct</td><td class="px-2 py-1 text-center font-bold text-red-600">1500MB crash</td><td class="px-2 py-1 text-center font-bold text-emerald-600"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>pool 25 ~75MB</td></tr>
+              <tr><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold mr-1">LEMOT</span>RLS overhead</td><td class="px-2 py-1 text-center">app filter 1960ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>&lt;0.1ms 99.94%</td></tr>
+              <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold mr-1">LEMOT</span>VACUUM</td><td class="px-2 py-1 text-center">dead tuples menumpuk</td><td class="px-2 py-1 text-center font-bold text-emerald-600"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>planner akurat</td></tr>
             </tbody>
           </table>
+        </div>
+        <div class="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+          <div class="rounded-lg bg-red-50 border border-red-200 px-2.5 py-2 text-center"><span class="font-extrabold text-red-700">LEMOT</span> <span class="text-slate-600">Direct 1500MB crash & app filter 1960ms — boros RAM, sekat di aplikasi lambat</span></div>
+          <div class="rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-2 text-center"><span class="font-extrabold text-emerald-700">KENCENG</span> <span class="text-slate-600">Pool 75MB & RLS &lt;0.1ms <b class="text-emerald-700">95% hemat</b> — antrian hemat & sekat di DB super cepat</span></div>
+        </div>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <a href="../website/praktik/?tech=pgbouncer" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold hover:bg-[#14263e] transition">Coba di Praktik: PgBouncer →</a>
+          <a href="../website/praktik/?tech=rls" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-[#1e3a5f] text-[11px] font-bold hover:bg-slate-50 transition">Coba di Praktik: RLS →</a>
+          <a href="../website/praktik/?tech=vacuum" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-[#1e3a5f] text-[11px] font-bold hover:bg-slate-50 transition">Coba di Praktik: VACUUM →</a>
         </div>
         <div class="rounded-xl bg-slate-900 text-emerald-300 p-3 mono text-[11px] leading-relaxed">EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM umkm WHERE name % 'ayam';<br>--&gt; Bitmap Index Scan on idx_umkm_name_trgm  Execution Time: 12ms<br>--&gt; Buffers: shared hit=45  (vs Seq Scan hit=1200)</div>
       </div>
@@ -646,6 +673,14 @@
           </tbody>
         </table>
       </div>
+        <div class="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+          <div class="rounded-lg bg-red-50 border border-red-200 px-2.5 py-2 text-center"><span class="font-extrabold text-red-700">LEMOT</span> <span class="text-slate-600">DB 50ms tiap request — tanya gudang terus, antri panjang</span></div>
+          <div class="rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-2 text-center"><span class="font-extrabold text-emerald-700">KENCENG</span> <span class="text-slate-600">Redis 2ms <b class="text-emerald-700">25x</b> & TTL tiering — ambil dari etalase depan, hit &gt;80%</span></div>
+        </div>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <a href="../website/praktik/?tech=cache" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold hover:bg-[#14263e] transition">Coba di Praktik: Cache →</a>
+          <a href="../website/praktik/?tech=ttl" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-[#1e3a5f] text-[11px] font-bold hover:bg-slate-50 transition">Coba di Praktik: TTL →</a>
+        </div>
     </div>
     <div class="mt-3 grid grid-cols-3 gap-2 text-center text-[11px]">
       <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-2.5"><div class="font-extrabold text-emerald-700">L1 sub-ms</div><div class="text-slate-600">memory hot</div></div>
@@ -702,6 +737,11 @@
       <div class="space-y-3">
         <div class="ascii rounded-xl p-3 text-[11px] leading-relaxed">LIKE '%ayam%'  --&gt; scan 6.081 rows  ~2000ms<br>Inverted: "ayam" --&gt; posting list [doc 12, 45, 89]  ~5ms<br><span class="text-emerald-300">GET /masjid-terdekat?lat=-6.25&amp;lng=106.75&amp;radius=5km</span><br><span class="text-slate-400">{ "query": { "geo_distance": { "distance": "5km", "lat_lng": [-6.25,106.75] } } }</span></div>
         <div class="rounded-xl bg-amber-50 border border-amber-200 p-3 text-[12px]"><b class="text-amber-700">MVP:</b><span class="text-slate-600"> pg_trgm gratis, cukup puluhan ribu</span> &nbsp;|&nbsp; <b class="text-orange-700">Fase3:</b><span class="text-slate-600"> ES untuk ratusan ribu + geo</span></div>
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <div class="rounded-lg bg-red-50 border border-red-200 px-2.5 py-2 text-center"><span class="font-extrabold text-red-700">LEMOT</span> <span class="text-slate-600">PostGIS 50ms — hitung jarak satu-satu, makin banyak masjid makin lemot</span></div>
+          <div class="rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-2 text-center"><span class="font-extrabold text-emerald-700">KENCENG</span> <span class="text-slate-600">ES Geo &lt;10ms <b class="text-emerald-700">5x</b> — index geospasial, masjid 5km langsung ketemu</span></div>
+        </div>
+        <a href="../website/praktik/?tech=es-geo" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold hover:bg-[#14263e] transition">Coba di Praktik: ES Geo →</a>
       </div>
     </div>
     <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">20 / 40</span></div>
@@ -755,6 +795,11 @@
       </ul>
       <div class="space-y-3">
         <div class="ascii rounded-xl p-3 text-[11px] leading-relaxed">Postgres WAL --(Debezium pgoutput)--&gt; Kafka(9092) --+--&gt; ES(9200) geo &lt;10ms<br>                                           +--&gt; ClickHouse(8123) OLAP<br><span class="text-red-400">Dual-write DANGER: app-&gt;PG OK + app-&gt;ES FAIL = hilang di search</span><br><span class="text-emerald-300">Single writer: hanya tulis Postgres, CDC yang sebar</span></div>
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <div class="rounded-lg bg-red-50 border border-red-200 px-2.5 py-2 text-center"><span class="font-extrabold text-red-700">LEMOT</span> <span class="text-slate-600">Polling tiap detik — tanya DB terus, boros & telat</span></div>
+          <div class="rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-2 text-center"><span class="font-extrabold text-emerald-700">KENCENG</span> <span class="text-slate-600">CDC WAL→Kafka <b class="text-emerald-700">real-time</b> — DB berubah, ES/CH langsung ngikut otomatis</span></div>
+        </div>
+        <a href="../website/praktik/?tech=cdc" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold hover:bg-[#14263e] transition">Coba di Praktik: CDC →</a>
         <div class="rounded-xl bg-slate-50 border border-slate-200 p-3 text-[11px] leading-relaxed"><div class="font-bold text-slate-700">Batch ETL (non real-time)</div><div class="mono text-slate-600 mt-1">cron 00:00: COPY (SELECT * FROM ledger WHERE ts &gt; last_sync) TO STDOUT | clickhouse-client INSERT</div><div class="text-slate-500 mt-1">Cukup untuk Fase MVP–Fase2, tanpa Kafka</div></div>
       </div>
     </div>
@@ -781,6 +826,15 @@
           <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-2.5"><div class="font-extrabold text-emerald-700">100→20KB</div><div class="text-slate-600">GZIP 80%</div></div>
           <div class="rounded-xl bg-blue-50 border border-blue-200 p-2.5"><div class="font-extrabold text-blue-700">20→14KB</div><div class="text-slate-600">Brotli +30%</div></div>
           <div class="rounded-xl bg-orange-50 border border-orange-200 p-2.5"><div class="font-extrabold text-orange-700">330+ DC</div><div class="text-slate-600">Cloudflare Edge</div></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <div class="rounded-lg bg-red-50 border border-red-200 px-2.5 py-2 text-center"><span class="font-extrabold text-red-700">LEMOT</span> <span class="text-slate-600">SELECT * 100KB & tanpa GZIP — kirim semua, kuota jebol di 3G</span></div>
+          <div class="rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-2 text-center"><span class="font-extrabold text-emerald-700">KENCENG</span> <span class="text-slate-600">?fields 15KB & GZIP 20KB <b class="text-emerald-700">80% hemat</b> & Edge HIT — kirim seperlunya, cache global</span></div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a href="../website/praktik/?tech=payload" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold hover:bg-[#14263e] transition">Coba di Praktik: Payload →</a>
+          <a href="../website/praktik/?tech=gzip" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-[#1e3a5f] text-[11px] font-bold hover:bg-slate-50 transition">Coba di Praktik: GZIP →</a>
+          <a href="../website/praktik/?tech=edge" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-[#1e3a5f] text-[11px] font-bold hover:bg-slate-50 transition">Coba di Praktik: Edge →</a>
         </div>
       </div>
     </div>
@@ -814,6 +868,11 @@
         </table>
         <div class="px-3 py-2 bg-slate-50 text-[11px] text-slate-500">Publik → Edge HIT &nbsp;|&nbsp; Privat → bypass Edge → Redis L2 &nbsp;|&nbsp; Burst → 429 Retry-After</div>
       </div>
+        <div class="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+          <div class="rounded-lg bg-red-50 border border-red-200 px-2.5 py-2 text-center"><span class="font-extrabold text-red-700">LEMOT</span> <span class="text-slate-600">Tanpa limit — 1 user borong 1000 req, server tumbang semua kena</span></div>
+          <div class="rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-2 text-center"><span class="font-extrabold text-emerald-700">KENCENG</span> <span class="text-slate-600">Token Bucket 100/menit <b class="text-emerald-700">429 aman</b> — antri tertib, abuse ketahan</span></div>
+        </div>
+        <a href="../website/praktik/?tech=rate" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold hover:bg-[#14263e] transition">Coba di Praktik: Rate Limit →</a>
     </div>
     <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">24 / 40</span></div>
   </section>
@@ -1047,6 +1106,11 @@
         </tbody>
       </table>
     </div>
+    <div class="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+      <div class="rounded-lg bg-red-50 border border-red-200 px-2.5 py-2 text-center"><span class="font-extrabold text-red-700">LEMOT</span> <span class="text-slate-600">console.log — bocor password, tanpa requestId, susah trace</span></div>
+      <div class="rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-2 text-center"><span class="font-extrabold text-emerald-700">KENCENG</span> <span class="text-slate-600">Pino JSON <b class="text-emerald-700">aman & cepat</b> — redact otomatis, requestId korelasi</span></div>
+    </div>
+    <a href="../website/praktik/?tech=logging" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold hover:bg-[#14263e] transition">Coba di Praktik: Logging →</a>
     <div class="mt-3 grid lg:grid-cols-2 gap-3">
       <div class="rounded-xl bg-slate-900 text-red-300 p-3 mono text-[11px] leading-relaxed">// Demo 01 — JANGAN<br>console.log('password='+req.body.password) // BOCOR!<br>console.log('query: SELECT * WHERE name LIKE \'%'+q+'%\'') // Seq Scan!</div>
       <div class="rounded-xl bg-slate-900 text-emerald-300 p-3 mono text-[11px] leading-relaxed">// Demo 02 — BENAR<br>logger.info({ requestId, q: 'ayam', latency_ms: 23 })<br>redact: ['password','token'] → "[Redacted]" // aman</div>
@@ -1067,16 +1131,23 @@
       <div class="space-y-3">
       <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">
         <table class="w-full text-[11px]">
-          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">Teknik</th><th class="px-2 py-1.5 text-center">Sebelum</th><th class="px-2 py-1.5 text-center">Sesudah</th><th class="px-2 py-1.5 text-center">Speedup</th></tr></thead>
+          <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">Teknik</th><th class="px-2 py-1.5 text-center"><span class="px-1.5 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold">LEMOT</span> Sebelum</th><th class="px-2 py-1.5 text-center"><span class="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">KENCENG</span> Sesudah</th><th class="px-2 py-1.5 text-center">Speedup</th></tr></thead>
           <tbody class="divide-y divide-slate-100">
-            <tr class="bg-red-50"><td class="px-2 py-1 font-semibold">GIN pg_trgm</td><td class="px-2 py-1 text-center font-bold text-red-600">2000ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600">10ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">200×</td></tr>
-            <tr><td class="px-2 py-1 font-semibold">Cursor keyset</td><td class="px-2 py-1 text-center font-bold text-red-600">2000ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600">20ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">100×</td></tr>
-            <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold">MatView kas</td><td class="px-2 py-1 text-center font-bold text-red-600">500ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600">30ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">16×</td></tr>
-            <tr><td class="px-2 py-1 font-semibold">RLS overhead</td><td class="px-2 py-1 text-center">app filter</td><td class="px-2 py-1 text-center font-bold text-emerald-600">&lt;0.1ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">99.94%</td></tr>
-            <tr class="bg-emerald-50"><td class="px-2 py-1 font-semibold">Cache hit</td><td class="px-2 py-1 text-center">DB 50ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600">Redis 2ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">&gt;80% hit</td></tr>
+            <tr class="bg-red-50"><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold mr-1">LEMOT</span>GIN pg_trgm</td><td class="px-2 py-1 text-center font-bold text-red-600">2000ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>10ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">200×</td></tr>
+            <tr><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold mr-1">LEMOT</span>Cursor keyset</td><td class="px-2 py-1 text-center font-bold text-red-600">2000ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>20ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">100×</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold mr-1">LEMOT</span>MatView kas</td><td class="px-2 py-1 text-center font-bold text-red-600">500ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>30ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">16×</td></tr>
+            <tr><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold mr-1">LEMOT</span>RLS overhead</td><td class="px-2 py-1 text-center">app filter</td><td class="px-2 py-1 text-center font-bold text-emerald-600"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>&lt;0.1ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">99.94%</td></tr>
+            <tr class="bg-emerald-50"><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold mr-1">LEMOT</span>Cache hit</td><td class="px-2 py-1 text-center">DB 50ms</td><td class="px-2 py-1 text-center font-bold text-emerald-600"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>Redis 2ms</td><td class="px-2 py-1 text-center font-bold text-emerald-700">&gt;80% hit</td></tr>
           </tbody>
         </table>
       </div>
+        <div class="mt-2 flex flex-wrap gap-1.5">
+          <a href="../website/praktik/?tech=gin" target="_blank" rel="noopener" class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[10px] font-bold hover:bg-[#14263e] transition">GIN →</a>
+          <a href="../website/praktik/?tech=cursor" target="_blank" rel="noopener" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[#1e3a5f] text-[10px] font-bold hover:bg-slate-50 transition">Cursor →</a>
+          <a href="../website/praktik/?tech=matview" target="_blank" rel="noopener" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[#1e3a5f] text-[10px] font-bold hover:bg-slate-50 transition">MatView →</a>
+          <a href="../website/praktik/?tech=rls" target="_blank" rel="noopener" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[#1e3a5f] text-[10px] font-bold hover:bg-slate-50 transition">RLS →</a>
+          <a href="../website/praktik/?tech=cache" target="_blank" rel="noopener" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[#1e3a5f] text-[10px] font-bold hover:bg-slate-50 transition">Cache →</a>
+        </div>
       <div class="rounded-xl border border-emerald-200 overflow-hidden">
         <div class="bg-emerald-600 text-white text-[11px] font-bold px-3 py-1.5 flex justify-between"><span>TERUJI 5 JUTA — Generate Streaming (BENCH_5M.md)</span><span>99.1s • 50K rows/s • 2.5GB</span></div>
         <table class="w-full text-[11px]">
@@ -1149,14 +1220,19 @@
           <table class="w-full text-[11px]">
             <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">#</th><th class="px-2 py-1.5 text-left">Proteksi</th><th class="px-2 py-1.5 text-left">Threshold</th><th class="px-2 py-1.5 text-left">Fallback</th></tr></thead>
             <tbody class="divide-y divide-slate-100">
-              <tr class="bg-slate-50"><td class="px-2 py-1">1</td><td class="px-2 py-1 font-semibold">Token / Leaky Bucket</td><td class="px-2 py-1">100/10/5 /menit</td><td class="px-2 py-1 text-slate-600">429 Retry-After</td></tr>
-              <tr><td class="px-2 py-1">2</td><td class="px-2 py-1 font-semibold">Circuit Breaker <span class="text-[11px] text-slate-500">(sekring listrik)</span></td><td class="px-2 py-1">50% err 10s → open 30s</td><td class="px-2 py-1 text-slate-600">503 fast-fail</td></tr>
-              <tr class="bg-slate-50"><td class="px-2 py-1">3</td><td class="px-2 py-1 font-semibold">Bulkhead <span class="text-[11px] text-slate-500">(sekat kapal)</span></td><td class="px-2 py-1">pool 20/10/15, queue 50</td><td class="px-2 py-1 text-slate-600">503 bulkhead penuh</td></tr>
-              <tr><td class="px-2 py-1">4</td><td class="px-2 py-1 font-semibold">Backpressure <span class="text-[11px] text-slate-500">(antrian penuh)</span></td><td class="px-2 py-1">lag &gt;1000 → 503</td><td class="px-2 py-1 text-slate-600">Retry-After:10</td></tr>
-              <tr class="bg-slate-50"><td class="px-2 py-1">5</td><td class="px-2 py-1 font-semibold">Graceful Degradation</td><td class="px-2 py-1">circuit/bulkhead/lag</td><td class="px-2 py-1 text-slate-600">flag OFF, x-degradation</td></tr>
+              <tr class="bg-slate-50"><td class="px-2 py-1">1</td><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>Token / Leaky Bucket</td><td class="px-2 py-1">100/10/5 /menit</td><td class="px-2 py-1 text-slate-600">429 Retry-After</td></tr>
+              <tr><td class="px-2 py-1">2</td><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>Circuit Breaker <span class="text-[11px] text-slate-500">(sekring listrik)</span></td><td class="px-2 py-1">50% err 10s → open 30s</td><td class="px-2 py-1 text-slate-600">503 fast-fail</td></tr>
+              <tr class="bg-slate-50"><td class="px-2 py-1">3</td><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>Bulkhead <span class="text-[11px] text-slate-500">(sekat kapal)</span></td><td class="px-2 py-1">pool 20/10/15, queue 50</td><td class="px-2 py-1 text-slate-600">503 bulkhead penuh</td></tr>
+              <tr><td class="px-2 py-1">4</td><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>Backpressure <span class="text-[11px] text-slate-500">(antrian penuh)</span></td><td class="px-2 py-1">lag &gt;1000 → 503</td><td class="px-2 py-1 text-slate-600">Retry-After:10</td></tr>
+              <tr class="bg-slate-50"><td class="px-2 py-1">5</td><td class="px-2 py-1 font-semibold"><span class="px-1 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold mr-1">KENCENG</span>Graceful Degradation</td><td class="px-2 py-1">circuit/bulkhead/lag</td><td class="px-2 py-1 text-slate-600">flag OFF, x-degradation</td></tr>
             </tbody>
           </table>
         </div>
+        <div class="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+          <div class="rounded-lg bg-red-50 border border-red-200 px-2.5 py-2 text-center"><span class="font-extrabold text-red-700">LEMOT</span> <span class="text-slate-600">Tanpa proteksi — 1 layanan lambat, semua ikut tumbang kayak domino</span></div>
+          <div class="rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-2 text-center"><span class="font-extrabold text-emerald-700">KENCENG</span> <span class="text-slate-600">Circuit/Bulkhead <b class="text-emerald-700">503 cepat</b> — sekring putus cepat, yang sehat tetap jalan</span></div>
+        </div>
+        <a href="../website/praktik/?tech=proteksi" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold hover:bg-[#14263e] transition">Coba di Praktik: Proteksi →</a>
         <div class="rounded-xl border border-amber-200 bg-amber-50 p-3">
           <div class="text-[11px] font-extrabold tracking-widest text-amber-700">THRESHOLD SCALING (80% ALERT)</div>
           <div class="mt-1.5 grid grid-cols-3 gap-2 text-[11px] text-center">

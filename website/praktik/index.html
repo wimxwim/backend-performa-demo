@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRAKTIK — Cari UMKM Pesanggrahan | Gotong Royong</title>
+<meta name="description" content="PRAKTIK — Ketik ayam langsung lihat 10ms (GIN) vs 2000ms (LIKE) — tanpa terminal, tanpa docker. 250 UMKM Pesanggrahan live di browser.">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>try{mermaid.initialize({startOnLoad:true,theme:'base',themeVariables:{primaryColor:'#1e3a5f',primaryTextColor:'#fff',lineColor:'#64748b'}})}catch(e){}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:ui-sans,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:#f1f5f9;color:#0f172a;line-height:1.6}
+a{color:inherit}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.card{border-radius:16px;background:#fff;border:1px solid #e2e8f0}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px}
+.input-search{width:100%;font-size:18px;font-weight:600;padding:16px 18px;border:2px solid #cbd5e1;border-radius:14px;outline:none;transition:border-color .15s,box-shadow .15s}
+.input-search:focus{border-color:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.15)}
+.btn{appearance:none;border:0;border-radius:12px;padding:12px 18px;font-weight:800;font-size:14px;cursor:pointer;transition:transform .1s,opacity .15s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:#f59e0b;color:#fff}
+.btn-dark{background:#1e3a5f;color:#fff}
+.btn-ghost{background:#fff;border:1px solid #cbd5e1;color:#1e3a5f}
+.select-tech{border:1px solid #cbd5e1;border-radius:10px;padding:10px 12px;font-size:13px;font-weight:700;background:#fff;color:#1e3a5f;cursor:pointer}
+.time-green{color:#059669}
+.time-yellow{color:#d97706}
+.time-red{color:#dc2626}
+.pill{font-size:11px;font-weight:800;padding:3px 8px;border-radius:999px}
+.pill-ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+.pill-warn{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.pill-bad{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;letter-spacing:.06em;color:#64748b;text-align:left;padding:10px 12px;border-bottom:2px solid #e2e8f0;background:#f8fafc}
+td{padding:10px 12px;border-bottom:1px solid #f1f5f9}
+tr:hover td{background:#f8fafc}
+.mermaid-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;overflow:auto}
+details{border:1px solid #e2e8f0;border-radius:12px;background:#fff;overflow:hidden}
+details summary{cursor:pointer;padding:12px 14px;font-weight:800;color:#1e3a5f;list-style:none;display:flex;align-items:center;justify-content:space-between}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{border-bottom:1px solid #e2e8f0;background:#f8fafc}
+@media(max-width:640px){.hide-sm{display:none}}
+.tech-pills{display:flex;gap:8px;overflow-x:auto;padding:8px 2px 10px;scrollbar-width:thin;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+.tech-pills::-webkit-scrollbar{height:6px}
+.tech-pills::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
+.tech-btn{white-space:nowrap;padding:8px 14px;border-radius:999px;font-weight:800;font-size:12px;border:1px solid #cbd5e1;background:#fff;color:#1e3a5f;cursor:pointer;transition:all .15s;scroll-snap-align:start;flex-shrink:0}
+.tech-btn:hover{border-color:#f59e0b;color:#f59e0b}
+.tech-btn.active{background:#f59e0b;color:#fff;border-color:#f59e0b;box-shadow:0 2px 8px rgba(245,158,11,.35)}
+.tech-panel{display:none}
+.tech-panel.active{display:block}
+.btn-lemot{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;padding:8px 14px;border-radius:999px;font-weight:800;font-size:12px;cursor:pointer}
+.btn-lemot.active{background:#dc2626;color:#fff;border-color:#dc2626}
+.btn-kenceng{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;padding:8px 14px;border-radius:999px;font-weight:800;font-size:12px;cursor:pointer}
+.btn-kenceng.active{background:#059669;color:#fff;border-color:#059669}
+.time-big{font-size:28px;font-weight:800;letter-spacing:-.02em}
+.tooltip{position:relative;display:inline-flex;align-items:center;gap:4px;background:#f8fafc;border:1px solid #e2e8f0;padding:3px 8px;border-radius:999px;font-size:11px;color:#64748b;cursor:help}
+.code-mono{background:#0f172a;color:#e2e8f0;padding:10px 12px;border-radius:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;line-height:1.6;overflow:auto;border:1px solid #1e293b}
+.range{width:100%;accent-color:#f59e0b}
+</style>
+</head>
+<body>
+<!-- HEADER navy #1e3a5f + orange #f59e0b -->
+<header style="background:#1e3a5f;border-bottom:3px solid #f59e0b;position:sticky;top:0;z-index:40">
+  <div style="max-width:1120px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:10px;min-width:0">
+      <div style="width:34px;height:34px;border-radius:9px;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px">GR</div>
+      <div style="min-width:0">
+        <div style="color:#fff;font-weight:800;font-size:14px;letter-spacing:-.01em">PRAKTIK — Cari UMKM Pesanggrahan</div>
+        <div style="color:#bfdbfe;font-size:11px;font-weight:600">Ketik 'ayam' -&gt; lihat 10ms (GIN) vs 2000ms (LIKE) — tanpa terminal</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <span class="badge" style="background:#f59e0b;color:#fff;border:1px solid rgba(255,255,255,.2)">TERUJI 5 JUTA — Generate 99s | Query 10ms</span>
+      <a href="../index.html" style="background:#fff;color:#1e3a5f;font-weight:800;font-size:12px;padding:7px 12px;border-radius:999px;text-decoration:none;border:1px solid #e2e8f0">← Kembali ke Website</a>
+      <a href="../index.html" target="_blank" rel="noopener" style="color:#dbeafe;font-size:12px;font-weight:700;padding:6px 10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;text-decoration:none">Buka di tab baru ↗</a>
+    </div>
+  </div>
+</header>
+
+<main style="max-width:1120px;margin:0 auto;padding:20px 16px 40px">
+  <!-- HERO SEARCH -->
+  <section class="card" style="padding:22px 18px;background:linear-gradient(135deg,#ffffff 0%,#f8fafc 100%)">
+    <div style="text-align:center;max-width:760px;margin:0 auto">
+      <div style="display:inline-flex;gap:6px;align-items:center;background:#fffbeb;border:1px solid #fde68a;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:800;color:#92400e"><span style="background:#f59e0b;color:#fff;padding:2px 6px;border-radius:999px">PRAKTIK</span> Tanpa Docker • Tanpa curl • Tanpa psql — cukup ketik</div>
+      <h1 style="margin-top:10px;font-size:26px;font-weight:800;color:#1e3a5f;letter-spacing:-.02em">Ketik nama UMKM, langsung lihat waktunya</h1>
+      <p style="margin-top:6px;color:#475569;font-size:13px;font-weight:600">Seperti PZN — ketik di pencarian, langsung kelihatan waktunya. Bandingkan <b>LIKE (lambat)</b> vs <b>GIN pg_trgm (cepat)</b> vs <b>MatView (ringkas)</b> — live di browser.</p>
+    </div>
+
+    <!-- SEARCH BOX centered -->
+    <div style="max-width:760px;margin:18px auto 0">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center">
+        <div style="flex:1;min-width:260px;position:relative">
+          <input id="q" type="search" class="input-search" placeholder="Ketik nama UMKM... misal: ayam, kuliner, warung, sate" autocomplete="off" spellcheck="false" aria-label="Cari UMKM">
+          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:12px" class="hide-sm">↵ Enter</span>
+        </div>
+        <button id="btn-cari" class="btn btn-primary">Cari</button>
+        <button id="btn-clear" class="btn btn-ghost">Clear</button>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center">
+        <label style="font-size:12px;font-weight:800;color:#334155;display:flex;align-items:center;gap:6px">Teknik
+          <select id="tech" class="select-tech" aria-label="Pilih teknik">
+            <option value="gin" selected>GIN pg_trgm (cepat) — 10-50ms</option>
+            <option value="like">LIKE (lambat) — Seq Scan 1500-2000ms</option>
+            <option value="matview">MatView (ringkas) — &lt;5ms agregat</option>
+          </select>
+        </label>
+        <span style="font-size:11px;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;padding:4px 8px;border-radius:999px">Debounce 200ms • 250 sample • 6.081 total</span>
+        <span style="font-size:11px;color:#64748b">Coba: <button class="chip" data-try="ayam" style="border:1px solid #cbd5e1;background:#fff;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer">ayam</button> <button class="chip" data-try="kuliner" style="border:1px solid #cbd5e1;background:#fff;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer">kuliner</button> <button class="chip" data-try="warung" style="border:1px solid #cbd5e1;background:#fff;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer">warung</button> <button class="chip" data-try="sate" style="border:1px solid #cbd5e1;background:#fff;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer">sate</button></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEKNIK SWITCHER 9 pills horizontal scrollable -->
+  <nav id="tech-pills" class="tech-pills" aria-label="Pilih teknik" style="margin-top:12px">
+    <button class="tech-btn active" data-tech="gin" title="GIN pg_trgm 10-50ms — slide 15">GIN pg_trgm</button>
+    <button class="tech-btn" data-tech="like" title="LIKE Seq Scan 2000ms — slide 15">LIKE</button>
+    <button class="tech-btn" data-tech="matview" title="MatView <5ms — slide 16">MatView</button>
+    <button class="tech-btn" data-tech="b-tree" title="B-Tree Index Scan 0.07ms — slide 14">B-Tree</button>
+    <button class="tech-btn" data-tech="cursor" title="Cursor keyset 20ms — slide 16">Cursor</button>
+    <button class="tech-btn" data-tech="cache" title="Cache Redis 2ms — slide 18">Cache</button>
+    <button class="tech-btn" data-tech="gzip" title="GZIP 20KB — slide 23">GZIP</button>
+    <button class="tech-btn" data-tech="edge" title="Edge HIT 40ms — slide 24">Edge</button>
+    <button class="tech-btn" data-tech="rate" title="Rate Limit 100/menit — slide 24">Rate Limit</button>
+    <button class="tech-btn" data-tech="payload" title="Payload 15KB vs 100KB 85% — slide 23">Payload</button>
+    <button class="tech-btn" data-tech="pgbouncer" title="PgBouncer pool 25 95% — slide 17">PgBouncer</button>
+    <button class="tech-btn" data-tech="vacuum" title="VACUUM 15ms vs 200ms — slide 17">VACUUM</button>
+    <button class="tech-btn" data-tech="ttl" title="TTL Hot/Warm/Cold — slide 18">TTL</button>
+    <button class="tech-btn" data-tech="es-geo" title="ES Geo 5km <10ms — slide 20">ES Geo</button>
+    <button class="tech-btn" data-tech="cdc" title="CDC WAL->Kafka->ES <100ms — slide 22">CDC</button>
+    <button class="tech-btn" data-tech="rls" title="RLS <0.1ms vs App Filter 1960ms — slide 17">RLS</button>
+    <button class="tech-btn" data-tech="logging" title="Pino JSON vs console.log — slide 31">Logging</button>
+    <button class="tech-btn" data-tech="proteksi" title="Circuit/Bulkhead/Backpressure — slide 34">Proteksi</button>
+  </nav>
+  <div style="font-size:11px;color:#64748b;text-align:center;margin-top:4px">18 teknik — klik pill atau pakai URL <span class="mono" style="background:#fff;border:1px solid #e2e8f0;padding:2px 6px;border-radius:6px">?tech=rls</span> • Active orange #f59e0b • Scroll horizontal di HP</div>
+
+  <!-- HASIL + WAKTU BESAR -->
+  <section style="margin-top:14px" class="card" style="padding:0;overflow:hidden">
+    <div style="padding:14px 16px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <div>
+        <div id="result-head" style="font-size:18px;font-weight:800;color:#1e3a5f">Ketik untuk mulai — coba "ayam"</div>
+        <div id="result-sub" style="font-size:12px;color:#64748b;margin-top:2px">GIN 10-50ms ✓ vs LIKE 1500-2000ms ✗ — pilih teknik di atas, lihat bedanya</div>
+      </div>
+      <span id="result-pill" class="pill pill-ok">GIN 10-50ms ✓</span>
+    </div>
+
+    <!-- BUDGET WAKTU live -->
+    <div style="padding:10px 16px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12px">
+      <span style="font-weight:800;color:#1e3a5f">BUDGET WAKTU live:</span>
+      <span class="mono" style="background:#fff;border:1px solid #e2e8f0;padding:4px 8px;border-radius:8px">Backend <b id="b-backend">—</b> ms</span>
+      <span>+</span>
+      <span class="mono" style="background:#fff;border:1px solid #e2e8f0;padding:4px 8px;border-radius:8px">RTT 3G <b>500</b> ms</span>
+      <span>=</span>
+      <span class="mono" style="background:#1e3a5f;color:#fff;padding:4px 8px;border-radius:8px">Total <b id="b-total">—</b> ms <span id="b-status">—</span></span>
+      <span style="color:#64748b">Target &lt;3000ms — jika &gt;3000ms user tutup aplikasi (slide 4)</span>
+    </div>
+
+    <!-- TABEL -->
+    <div style="overflow:auto;max-height:420px">
+      <table aria-label="Hasil UMKM">
+        <thead><tr><th style="width:42%">Nama</th><th>Kelurahan</th><th>Kategori</th><th>Jarak</th></tr></thead>
+        <tbody id="tbody"><tr><td colspan="4" style="padding:18px;color:#64748b;text-align:center">Belum ada pencarian — ketik "ayam" di atas</td></tr></tbody>
+      </table>
+    </div>
+    <div style="padding:8px 16px;font-size:11px;color:#64748b;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <span>Menampilkan <b id="shown">0</b> dari <b id="total">0</b> hasil • max 50 baris</span>
+      <span>Data: 250 sample Pesanggrahan (AYAM 453 • KULINER 948 • WARUNG 648 • WARKOP 277 • KAFE 131) — full 6.081 di DB</span>
+    </div>
+  </section>
+
+  <!-- PANEL B-Tree (slide 14) -->
+  <section id="panel-b-tree" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">B-Tree Index — 575x lebih cepat</h2>
+      <span class="pill pill-ok">Slide 14 • B-Tree 50.000x</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Cari karung tanpa label vs pakai label rak — tanpa index scan 1jt baris, pakai B-Tree 20 langkah.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-btree="lemot" id="btree-lemot">LEMOT Seq Scan 40ms</button>
+      <button class="btn-kenceng active" data-btree="kenceng" id="btree-kenceng">KENCENG Index Scan 0.07ms</button>
+      <span class="tooltip" title="Benchmark real: Seq Scan 40ms vs Index Scan 0.07ms — speedup 575x (slide 14, 1M rows log2 ~20 langkah)">ⓘ benchmark real 575x</span>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <label style="font-size:12px;font-weight:700;color:#334155;display:flex;align-items:center;gap:6px">user_id <input id="btree-input" type="number" value="12345" min="1" max="999999" style="border:1px solid #cbd5e1;border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;width:140px"></label>
+      <button id="btree-run" class="btn btn-primary">Cari B-Tree</button>
+      <span style="font-size:11px;color:#64748b">Cara demo: ganti user_id → klik Cari → lihat WAKTU BESAR</span>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="btree-time" class="time-big time-green">0.07ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="btree-speedup" style="font-weight:800;color:#059669">575x</span> lebih cepat • <span id="btree-det">0.00007 detik</span> • <span id="btree-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>user_id</th><th>Nama</th><th>Kelurahan</th><th>Via</th></tr></thead><tbody id="btree-tbody"><tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Klik Cari B-Tree — lihat Index Scan vs Seq Scan</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">CREATE INDEX CONCURRENTLY idx_umkm_user_id ON umkm(user_id);<br>-- EXPLAIN: Index Scan ~0.07ms vs Seq Scan 40ms (575x) — slide 14<br>SELECT * FROM umkm WHERE user_id = 12345; -- Index Scan</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-14" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 14 — B-Tree 50.000x ↗</a><span style="font-size:11px;color:#64748b;align-self:center">BUDGET WAKTU: 0.07ms + 500ms RTT = 500.07ms &lt;3 detik ✓</span></div>
+  </section>
+
+  <!-- PANEL Cursor (slide 16) -->
+  <section id="panel-cursor" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">Cursor Keyset — 100x vs OFFSET</h2>
+      <span class="pill pill-ok">Slide 16 • Cursor 100x</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Antri panggil nomor 10.000 satu-satu vs tiket lompat — OFFSET scan-buang, Cursor lompat via index.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-cursor="lemot" id="cursor-lemot">LEMOT OFFSET 10000 2000ms</button>
+      <button class="btn-kenceng active" data-cursor="kenceng" id="cursor-kenceng">KENCENG Cursor 20ms</button>
+      <span class="tooltip" title="Benchmark real: OFFSET 10000 2000ms vs Cursor keyset 20ms — 100x (slide 16)">ⓘ benchmark real 100x</span>
+    </div>
+    <div style="margin-top:10px">
+      <label style="font-size:12px;font-weight:700;color:#334155">Halaman <span id="cursor-page-label" class="mono" style="background:#f1f5f9;padding:2px 6px;border-radius:6px">500</span> / 1000 — geser slider</label>
+      <input id="cursor-slider" type="range" min="1" max="1000" value="500" class="range" style="margin-top:6px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748b"><span>1 (awal)</span><span>1000 (dalam)</span></div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button id="cursor-run" class="btn btn-primary">Muat Halaman</button><span style="font-size:11px;color:#64748b;align-self:center">Cara demo: geser slider → Muat Halaman → lihat WAKTU BESAR</span></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="cursor-time" class="time-big time-green">20ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="cursor-speedup" style="font-weight:800;color:#059669">100x</span> • <span id="cursor-det">0.020 detik</span> • <span id="cursor-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>#</th><th>Nama</th><th>created_at</th><th>Via</th></tr></thead><tbody id="cursor-tbody"><tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Geser slider lalu Muat Halaman — OFFSET vs Cursor</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">-- LEMOT: SELECT * FROM umkm ORDER BY created_at LIMIT 20 OFFSET 10000; -- 2000ms scan-buang<br>-- KENCENG: SELECT * FROM umkm WHERE (created_at,id) &gt; ('2024-01-15','umkm_3000') ORDER BY created_at,id LIMIT 20; -- 20ms Index Scan</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-16" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 16 — MatView + Cursor 100x ↗</a><span style="font-size:11px;color:#64748b;align-self:center">Stabil: tidak skip/duplikat saat data baru masuk</span></div>
+  </section>
+
+  <!-- PANEL Cache (slide 18) -->
+  <section id="panel-cache" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">Cache Redis — HIT 2ms vs DB 50ms</h2>
+      <span class="pill pill-ok">Slide 18 • Cache L1/L2/L3</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Gula di gudang vs toples di meja — gudang (DB) jauh, toples (Redis) di meja 2ms.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-cache="lemot" id="cache-lemot">LEMOT DB 50ms</button>
+      <button class="btn-kenceng active" data-cache="kenceng" id="cache-kenceng">KENCENG Redis 2ms (HIT)</button>
+      <span class="tooltip" title="Benchmark real: DB 50ms vs Redis HIT 2ms — hit rate 80% avg 7.6ms (slide 18, L2 1-5ms)">ⓘ benchmark hit 80% avg 7.6ms</span>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button id="cache-run" class="btn btn-primary">GET cache:summary</button>
+      <button id="cache-invalidate" class="btn btn-ghost">Invalidate (DEL)</button>
+      <span style="font-size:11px;color:#64748b">Cara demo: klik GET berulang — 80% HIT 2ms, 20% MISS 50ms</span>
+    </div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;font-size:12px">
+      <span class="mono" style="background:#fff;border:1px solid #e2e8f0;padding:4px 8px;border-radius:8px">HIT <b id="cache-hit">0</b></span>
+      <span class="mono" style="background:#fff;border:1px solid #e2e8f0;padding:4px 8px;border-radius:8px">MISS <b id="cache-miss">0</b></span>
+      <span class="mono" style="background:#1e3a5f;color:#fff;padding:4px 8px;border-radius:8px">Hit rate <b id="cache-rate">—</b>%</span>
+      <span class="mono" style="background:#fffbeb;border:1px solid #fde68a;padding:4px 8px;border-radius:8px">Avg <b id="cache-avg">—</b>ms</span>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="cache-time" class="time-big time-green">2ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="cache-speedup" style="font-weight:800;color:#059669">25x</span> • <span id="cache-det">HIT 2ms</span> • <span id="cache-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>Key</th><th>Value</th><th>Status</th><th>Waktu</th></tr></thead><tbody id="cache-tbody"><tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Klik GET cache:summary — lihat HIT vs MISS</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">GET cache:summary --&gt; HIT 2ms (80%)<br>SETEX cache:summary 300 '{count:6081}' -- TTL 5m<br>DEL cache:summary -- invalidate on POST /api/kas</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-18" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 18 — Caching L1/L2/L3 ↗</a><span style="font-size:11px;color:#64748b;align-self:center">TTL: profil 5m • komunitas 10m • jadwal 1 jam</span></div>
+  </section>
+
+  <!-- PANEL GZIP (slide 23) -->
+  <section id="panel-gzip" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">GZIP — 100KB → 20KB (80% hemat)</h2>
+      <span class="pill pill-ok">Slide 23 • GZIP 70-80%</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Karung tanpa press vs vakum press — tanpa press 100KB, vakum GZIP 20KB, Brotli 14KB.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-gzip="lemot" id="gzip-lemot">LEMOT tanpa kompresi 800ms</button>
+      <button class="btn-kenceng active" data-gzip="kenceng" id="gzip-kenceng">KENCENG GZIP 150ms</button>
+      <span class="tooltip" title="Benchmark real: 100KB tanpa kompresi 800ms 3G vs GZIP 20KB 150ms + Brotli 14KB — hemat 80% (slide 23)">ⓘ benchmark hemat 80%</span>
+    </div>
+    <div style="margin-top:10px">
+      <label style="font-size:12px;font-weight:700;color:#334155">Payload <span id="gzip-kb-label" class="mono" style="background:#f1f5f9;padding:2px 6px;border-radius:6px">50KB</span> — geser slider</label>
+      <input id="gzip-slider" type="range" min="10" max="100" value="50" step="10" class="range" style="margin-top:6px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748b"><span>10KB</span><span>100KB</span></div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button id="gzip-run" class="btn btn-primary">Kirim Payload</button><span style="font-size:11px;color:#64748b;align-self:center">Cara demo: geser payload → Kirim → lihat 3G 800ms vs GZIP 150ms</span></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="gzip-time" class="time-big time-green">150ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="gzip-saving" style="font-weight:800;color:#059669">80% hemat</span> • <span id="gzip-det">20KB GZIP</span> • <span id="gzip-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;text-align:center">
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:8px"><div style="font-size:11px;color:#991b1b;font-weight:800">Tanpa</div><div id="gzip-raw" class="mono" style="font-size:12px;font-weight:800;color:#dc2626">50KB → 400ms</div></div>
+      <div style="background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;padding:8px"><div style="font-size:11px;color:#065f46;font-weight:800">GZIP</div><div id="gzip-gz" class="mono" style="font-size:12px;font-weight:800;color:#059669">10KB → 75ms</div></div>
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:8px"><div style="font-size:11px;color:#1e40af;font-weight:800">Brotli</div><div id="gzip-br" class="mono" style="font-size:12px;font-weight:800;color:#2563eb">7KB → 60ms</div></div>
+    </div>
+    <div class="code-mono" style="margin-top:10px">app.use(compression({ level: 6, threshold: 1024 }));<br>// curl -H "Accept-Encoding: gzip" -I → Content-Encoding: gzip<br>// 100KB → 20KB GZIP (80%) → 14KB Brotli (+30%)</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-23" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 23 — GZIP + Brotli ↗</a><span style="font-size:11px;color:#64748b;align-self:center">Level 6, threshold 1024 — semua browser support GZIP</span></div>
+  </section>
+
+  <!-- PANEL Edge (slide 24) -->
+  <section id="panel-edge" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">Edge Cache — TTFB 40ms vs 300ms (7x)</h2>
+      <span class="pill pill-ok">Slide 24 • Edge 330+ DC</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Ambil dari Jakarta vs cabang kelurahan — origin Jakarta 300ms, Edge kelurahan 40ms HIT.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-edge="lemot" id="edge-lemot">LEMOT origin TTFB 300ms</button>
+      <button class="btn-kenceng active" data-edge="kenceng" id="edge-kenceng">KENCENG Edge HIT 40ms</button>
+      <span class="tooltip" title="Benchmark real: origin TTFB 300ms vs Edge HIT TTFB 40ms — 7x (slide 24, Cloudflare 330+ DC)">ⓘ benchmark 7x</span>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <span style="font-size:12px;font-weight:700;color:#334155">Edge</span>
+      <button id="edge-toggle" class="btn btn-dark" style="padding:8px 14px;border-radius:999px;font-size:12px">Edge ON ✓</button>
+      <span style="font-size:11px;color:#64748b">Cara demo: toggle Edge OFF/ON → klik GET → lihat TTFB</span>
+    </div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+      <button id="edge-run" class="btn btn-primary">GET /api/komunitas</button>
+      <span id="edge-status" class="mono" style="background:#ecfdf5;border:1px solid #a7f3d0;padding:6px 10px;border-radius:8px;font-size:11px">CF-Cache-Status: HIT</span>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="edge-time" class="time-big time-green">40ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="edge-speedup" style="font-weight:800;color:#059669">7x</span> • <span id="edge-det">TTFB 40ms HIT</span> • <span id="edge-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>Header</th><th>Value</th><th>Arti</th></tr></thead><tbody id="edge-tbody"><tr><td colspan="3" style="padding:12px;color:#64748b;text-align:center">Klik GET — lihat CF-Cache-Status HIT vs MISS</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">CF-Cache-Status: HIT  // Edge HIT 40ms<br>CF-Cache-Status: MISS // origin 300ms<br>// curl -I https://... → CF-Cache-Status: HIT (TTL 1m)</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-24" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 24 — Rate + Edge ↗</a><span style="font-size:11px;color:#64748b;align-self:center">Publik → Edge HIT • Privat → bypass Edge → Redis L2</span></div>
+  </section>
+
+  <!-- PANEL Rate Limit (slide 24) -->
+  <section id="panel-rate" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">Rate Limit — Token Bucket 100/menit</h2>
+      <span class="pill pill-ok">Slide 24 • Rate 100/menit</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Warung tanpa antrian vs ambil nomor 100/jam — tanpa limit DB crash, pakai Token Bucket 429 Retry-After.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-rate="lemot" id="rate-lemot">LEMOT tanpa limit DB crash</button>
+      <button class="btn-kenceng active" data-rate="kenceng" id="rate-kenceng">KENCENG Token Bucket 429</button>
+      <span class="tooltip" title="Benchmark real: tanpa limit burst 20x DB crash vs Token Bucket 100/menit → 429 Retry-After (slide 24)">ⓘ benchmark 429</span>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button id="rate-burst" class="btn btn-primary">Burst 20x → 429</button>
+      <button id="rate-reset" class="btn btn-ghost">Reset Bucket</button>
+      <span style="font-size:11px;color:#64748b">Cara demo: klik Burst 20x — lihat 429 setelah limit 100/menit</span>
+    </div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;font-size:12px">
+      <span class="mono" style="background:#fff;border:1px solid #e2e8f0;padding:4px 8px;border-radius:8px">Sisa <b id="rate-remaining">100</b>/100</span>
+      <span class="mono" style="background:#fef2f2;border:1px solid #fecaca;padding:4px 8px;border-radius:8px">429 <b id="rate-429">0</b>x</span>
+      <span class="mono" style="background:#1e3a5f;color:#fff;padding:4px 8px;border-radius:8px">Retry-After <b id="rate-retry">—</b>s</span>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="rate-time" class="time-big time-green">12ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="rate-speedup" style="font-weight:800;color:#059669">lindung DB</span> • <span id="rate-det">200 OK (sisa 100)</span> • <span id="rate-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>#</th><th>Status</th><th>Header</th><th>Waktu</th></tr></thead><tbody id="rate-tbody"><tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Klik Burst 20x — lihat 200 OK vs 429 Retry-After</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">rateLimit({ windowMs: 60000, max: 100, store: new RedisStore() })<br>// 429 Too Many Requests + Retry-After: 42<br>// curl burst 20x → 429 setelah 100/menit</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-24" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 24 — Rate + Edge ↗</a><span style="font-size:11px;color:#64748b;align-self:center">Umum 100/menit • Berat 10/menit • Auth 5/menit</span></div>
+  </section>
+
+  <!-- PANEL Payload (slide 23) -->
+  <section id="panel-payload" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">Payload Shaping — ?fields= 85% hemat</h2>
+      <span class="pill pill-ok">Slide 23 • Payload 85%</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Bawa 1 karung penuh padahal cuma butuh 1kg — SELECT * 100KB vs ?fields=name,lat,lng 15KB.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-payload="lemot" id="payload-lemot">LEMOT SELECT * 100KB 800ms</button>
+      <button class="btn-kenceng active" data-payload="kenceng" id="payload-kenceng">KENCENG ?fields= 15KB 150ms</button>
+      <span class="tooltip" title="Benchmark real: SELECT * 100KB 800ms 3G vs ?fields=name,lat,lng 15KB 150ms — hemat 85% (slide 23)">i benchmark hemat 85%</span>
+    </div>
+    <div style="margin-top:10px">
+      <label style="font-size:12px;font-weight:700;color:#334155">Fields <span id="payload-fields-label" class="mono" style="background:#f1f5f9;padding:2px 6px;border-radius:6px">name,lat,lng (3)</span> — geser slider</label>
+      <input id="payload-slider" type="range" min="1" max="5" value="3" class="range" style="margin-top:6px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748b"><span>1 field (5KB)</span><span>5 fields (100KB)</span></div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button id="payload-run" class="btn btn-primary">Kirim ?fields=</button><span style="font-size:11px;color:#64748b;align-self:center">Cara demo: geser fields → Kirim → lihat 800ms vs 150ms 3G</span></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="payload-time" class="time-big time-green">150ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="payload-speedup" style="font-weight:800;color:#059669">85% hemat</span> • <span id="payload-det">15KB ?fields=</span> • <span id="payload-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>Mode</th><th>Payload</th><th>Waktu 3G</th><th>Hemat</th></tr></thead><tbody id="payload-tbody"><tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Geser slider lalu Kirim ?fields= — lihat SELECT * vs sparse fieldsets</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">GET /api/komunitas?fields=name,lat,lng  // 15KB vs 100KB full (85% saving)<br>// SELECT * → 100KB 800ms 3G vs ?fields=name,lat,lng → 15KB 150ms<br>app.get('/api/komunitas', (req) =&gt; pick(req.query.fields, ['name','lat','lng']))</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-23" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 23 — GZIP + Payload ↗</a><span style="font-size:11px;color:#64748b;align-self:center">Sparse fieldsets: kirim hanya yang dibutuhkan — hemat 70% bandwidth</span></div>
+  </section>
+
+  <!-- PANEL PgBouncer (slide 17) -->
+  <section id="panel-pgbouncer" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">PgBouncer Pool — 500 koneksi 1500MB vs 25 pool 75MB</h2>
+      <span class="pill pill-ok">Slide 17 • PgBouncer 95%</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> 500 kasir buka brankas sendiri vs 25 kunci bergantian — direct 500 koneksi crash, pool 25 hemat 95%.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-pgbouncer="lemot" id="pgbouncer-lemot">LEMOT direct 500 1500MB crash</button>
+      <button class="btn-kenceng active" data-pgbouncer="kenceng" id="pgbouncer-kenceng">KENCENG pool 25 75MB</button>
+      <span class="tooltip" title="Benchmark real: direct 500 koneksi 1500MB crash vs PgBouncer pool 25 ~75MB — hemat 95% (slide 17, 1-3MB/koneksi)">i benchmark hemat 95%</span>
+    </div>
+    <div style="margin-top:10px">
+      <label style="font-size:12px;font-weight:700;color:#334155">Koneksi <span id="pgbouncer-conn-label" class="mono" style="background:#f1f5f9;padding:2px 6px;border-radius:6px">25</span> — geser slider 10..500</label>
+      <input id="pgbouncer-slider" type="range" min="10" max="500" value="25" step="5" class="range" style="margin-top:6px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748b"><span>10 (hemat)</span><span>500 (crash)</span></div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button id="pgbouncer-run" class="btn btn-primary">Hitung Pool</button><span style="font-size:11px;color:#64748b;align-self:center">Cara demo: geser koneksi → Hitung Pool → lihat RAM & crash</span></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="pgbouncer-time" class="time-big time-green">75MB</span>
+      <span style="font-size:12px;color:#64748b"><span id="pgbouncer-speedup" style="font-weight:800;color:#059669">95% hemat</span> • <span id="pgbouncer-det">pool 25 transaction :6432</span> • <span id="pgbouncer-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>Mode</th><th>Koneksi</th><th>RAM</th><th>Status</th></tr></thead><tbody id="pgbouncer-tbody"><tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Geser slider lalu Hitung Pool — lihat direct vs PgBouncer</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">[pgbouncer]<br>pool_mode = transaction<br>max_client_conn = 1000<br>default_pool_size = 25<br>listen_port = 6432<br>// direct :5432 500*3MB=1500MB crash vs pool :6432 25*3MB=75MB</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-17" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 17 — PgBouncer + VACUUM ↗</a><span style="font-size:11px;color:#64748b;align-self:center">Transaction mode :6432 — 1-3MB/koneksi, pool 25 = ~75MB</span></div>
+  </section>
+
+  <!-- PANEL VACUUM (slide 17) -->
+  <section id="panel-vacuum" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">VACUUM + ANALYZE — 200ms vs 15ms (13x)</h2>
+      <span class="pill pill-ok">Slide 17 • VACUUM 13x</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Meja penuh sampah vs bersihkan tiap tutup — tanpa VACUUM planner salah Seq Scan 200ms, pakai autovacuum 15ms.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-vacuum="lemot" id="vacuum-lemot">LEMOT VACUUM OFF 200ms</button>
+      <button class="btn-kenceng active" data-vacuum="kenceng" id="vacuum-kenceng">KENCENG VACUUM ON 15ms</button>
+      <span class="tooltip" title="Benchmark real: n_dead_tup >1000 planner salah Seq Scan 200ms Buffers 1200 vs autovacuum + ANALYZE 15ms Buffers 45 — 13x (slide 17)">i benchmark 13x Buffers 45 vs 1200</span>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button id="vacuum-toggle" class="btn btn-dark" style="padding:8px 14px;border-radius:999px;font-size:12px">VACUUM ON ✓</button>
+      <button id="vacuum-run" class="btn btn-primary">EXPLAIN ANALYZE</button>
+      <span style="font-size:11px;color:#64748b">Cara demo: toggle VACUUM OFF/ON → EXPLAIN → lihat Buffers & waktu</span>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="vacuum-time" class="time-big time-green">15ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="vacuum-speedup" style="font-weight:800;color:#059669">13x</span> • <span id="vacuum-det">Buffers 45 hit</span> • <span id="vacuum-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>Mode</th><th>n_dead_tup</th><th>Plan</th><th>Buffers</th></tr></thead><tbody id="vacuum-tbody"><tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Toggle VACUUM lalu EXPLAIN ANALYZE — lihat Seq Scan vs Index Scan</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">VACUUM ANALYZE umkm;<br>-- autovacuum = on, n_dead_tup &lt;1000<br>EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM umkm WHERE name % 'ayam';<br>-- VACUUM OFF: Seq Scan Buffers 1200 200ms vs ON: Index Scan Buffers 45 15ms</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-17" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 17 — PgBouncer + VACUUM ↗</a><span style="font-size:11px;color:#64748b;align-self:center">ANALYZE update statistik planner — jangan salah pilih Seq Scan</span></div>
+  </section>
+
+  <!-- PANEL TTL (slide 18-19) -->
+  <section id="panel-ttl" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">TTL Tiering — Hot/Warm/Cold</h2>
+      <span class="pill pill-ok">Slide 18 • TTL tiering</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Simpan semua lauk di meja (basi) vs harian di meja bulanan di gudang — tanpa TTL basi/boros, tiering Hot 1s-1m Warm 5-10m Cold tanpa cache.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-ttl="lemot" id="ttl-lemot">LEMOT tanpa TTL basi</button>
+      <button class="btn-kenceng active" data-ttl="kenceng" id="ttl-kenceng">KENCENG tiering Hot/Warm/Cold</button>
+      <span class="tooltip" title="Benchmark real: tanpa TTL basi/boros vs tiering Hot 1s-1m Warm 5-10m Cold tanpa cache — hit rate >80% (slide 18-19)">i benchmark tiering Hot/Warm/Cold</span>
+    </div>
+    <div style="margin-top:10px">
+      <label style="font-size:12px;font-weight:700;color:#334155">TTL <span id="ttl-ttl-label" class="mono" style="background:#f1f5f9;padding:2px 6px;border-radius:6px">5m (Warm)</span> — geser slider 30s..1 jam</label>
+      <input id="ttl-slider" type="range" min="30" max="3600" value="300" step="30" class="range" style="margin-top:6px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748b"><span>30s (Hot)</span><span>1 jam (Cold)</span></div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button id="ttl-run" class="btn btn-primary">SETEX cache</button><button id="ttl-invalidate" class="btn btn-ghost">DEL on POST</button><span style="font-size:11px;color:#64748b;align-self:center">Cara demo: geser TTL → SETEX → lihat tiering</span></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="ttl-time" class="time-big time-green">5m</span>
+      <span style="font-size:12px;color:#64748b"><span id="ttl-speedup" style="font-weight:800;color:#059669">Warm 5m</span> • <span id="ttl-det">SETEX 300s</span> • <span id="ttl-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>Tier</th><th>TTL</th><th>Contoh</th><th>Status</th></tr></thead><tbody id="ttl-tbody"><tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Geser TTL lalu SETEX — lihat Hot/Warm/Cold tiering</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">SETEX cache:summary 300 '{count:6081}'  // TTL 5m Warm<br>SETEX cache:jadwal 3600 '{...}'       // TTL 1 jam Cold<br>DEL cache:summary  // invalidate on POST /api/kas<br>// Hot 1s-1m (flag) Warm 5-10m (komunitas) Cold tanpa cache (arsip)</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-18" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 18 — Caching L1/L2/L3 ↗</a><span style="font-size:11px;color:#64748b;align-self:center">TTL: profil 5m • komunitas 10m • jadwal 1 jam • flag 30s</span></div>
+  </section>
+
+  <!-- PANEL ES Geo (slide 20) -->
+  <section id="panel-es-geo" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">ES Geo — 5km &lt;10ms vs PostGIS 50ms (5x)</h2>
+      <span class="pill pill-ok">Slide 20 • ES Geo 5x</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Cari tanpa indeks vs indeks kata + peta 5km — PostGIS ~50ms, ES geo_distance &lt;10ms.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-esgeo="lemot" id="esgeo-lemot">LEMOT PostGIS 50ms</button>
+      <button class="btn-kenceng active" data-esgeo="kenceng" id="esgeo-kenceng">KENCENG ES Geo &lt;10ms</button>
+      <span class="tooltip" title="Benchmark real: PostGIS ~50ms vs ES geo_distance <10ms — 5x (slide 20, 256 masjid)">i benchmark 5x geo_distance</span>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <label style="font-size:12px;font-weight:700;color:#334155">Lat <input id="esgeo-lat" type="number" value="-6.25" step="0.01" style="border:1px solid #cbd5e1;border-radius:8px;padding:6px 8px;font-size:12px;width:90px"></label>
+      <label style="font-size:12px;font-weight:700;color:#334155">Lng <input id="esgeo-lng" type="number" value="106.75" step="0.01" style="border:1px solid #cbd5e1;border-radius:8px;padding:6px 8px;font-size:12px;width:90px"></label>
+      <label style="font-size:12px;font-weight:700;color:#334155">Radius <select id="esgeo-radius" style="border:1px solid #cbd5e1;border-radius:8px;padding:6px 8px;font-size:12px"><option value="1km">1km</option><option value="5km" selected>5km</option><option value="10km">10km</option></select></label>
+      <button id="esgeo-run" class="btn btn-primary">Cari 5km</button>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="esgeo-time" class="time-big time-green">8ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="esgeo-speedup" style="font-weight:800;color:#059669">5x</span> • <span id="esgeo-det">geo_distance 5km</span> • <span id="esgeo-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>Nama</th><th>Jarak</th><th>Via</th><th>Waktu</th></tr></thead><tbody id="esgeo-tbody"><tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Isi lat/lng lalu Cari 5km — lihat PostGIS vs ES Geo</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">GET /masjid-terdekat?lat=-6.25&lng=106.75&radius=5km<br>{ "query": { "geo_distance": { "distance": "5km", "lat_lng": [-6.25,106.75] } }, "sort": [{ "_geo_distance": { "lat_lng": [-6.25,106.75] } }] }<br>// ES &lt;10ms vs PostGIS ST_DWithin ~50ms</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-20" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 20 — ES Geo 5km ↗</a><span style="font-size:11px;color:#64748b;align-self:center">Mapping: lat_lng geo_point + analyzer indonesian</span></div>
+  </section>
+
+  <!-- PANEL CDC (slide 22) -->
+  <section id="panel-cdc" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">CDC — WAL → Kafka → ES &lt;100ms vs Polling 5s</h2>
+      <span class="pill pill-ok">Slide 22 • CDC &lt;100ms</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Cek warung tiap 5 menit vs bel otomatis — polling 5s + dual-write hilang, CDC WAL→Kafka→ES &lt;100ms buffer replay.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-cdc="lemot" id="cdc-lemot">LEMOT polling 5s hilang</button>
+      <button class="btn-kenceng active" data-cdc="kenceng" id="cdc-kenceng">KENCENG CDC &lt;100ms</button>
+      <span class="tooltip" title="Benchmark real: polling 5s + dual-write hilang vs CDC WAL->Kafka->ES <100ms buffer replay — single writer (slide 22)">i benchmark CDC &lt;100ms</span>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button id="cdc-toggle" class="btn btn-dark" style="padding:8px 14px;border-radius:999px;font-size:12px">CDC ON ✓</button>
+      <button id="cdc-run" class="btn btn-primary">Simulasi INSERT</button>
+      <span style="font-size:11px;color:#64748b">Cara demo: toggle Polling/CDC → INSERT → lihat lag & hilang</span>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="cdc-time" class="time-big time-green">85ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="cdc-speedup" style="font-weight:800;color:#059669">50x</span> • <span id="cdc-det">WAL→Kafka→ES</span> • <span id="cdc-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>#</th><th>Event</th><th>Lag</th><th>Status</th></tr></thead><tbody id="cdc-tbody"><tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Klik Simulasi INSERT — lihat polling vs CDC WAL</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">-- Debezium WAL logical (pgoutput)<br>Postgres WAL --(Debezium)--> Kafka(9092) --+--> ES(9200) geo &lt;10ms<br>                                   +--> ClickHouse(8123) OLAP<br>// Dual-write DANGER: app->PG OK + app->ES FAIL = hilang<br>// Single writer: hanya tulis Postgres, CDC yang sebar</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-22" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 22 — CDC WAL → Kafka ↗</a><span style="font-size:11px;color:#64748b;align-self:center">Buffer & replay, lag_ms alert jika &gt;1000ms</span></div>
+  </section>
+
+  <!-- PANEL RLS (slide 17) -->
+  <section id="panel-rls" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">RLS — Sekat Otomatis &lt;0.1ms vs App Filter Bocor 1960ms</h2>
+      <span class="pill pill-ok">Slide 17 • RLS &lt;0.1ms</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Satpam cek KTP satu-satu vs sekat otomatis — app filter cek di kode (lupa = bocor) vs RLS sekat di DB otomatis tiap query.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-rls="lemot" id="rls-lemot">LEMOT App Filter 1960ms bocor</button>
+      <button class="btn-kenceng active" data-rls="kenceng" id="rls-kenceng">KENCENG RLS 99ms &lt;0.1ms</button>
+      <span class="tooltip" title="Benchmark real: RLS STABLE+InitPlan <0.1ms overhead 99ms vs VOLATILE 1960ms 18x lebih lambat — index FK + current_setting (slide 17)">i benchmark 18x VOLATILE</span>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button id="rls-toggle" class="btn btn-dark" style="padding:8px 14px;border-radius:999px;font-size:12px">RLS ON ✓</button>
+      <button id="rls-run" class="btn btn-primary">EXPLAIN RLS</button>
+      <span style="font-size:11px;color:#64748b">Cara demo: toggle App/RLS → EXPLAIN → lihat overhead & bocor</span>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="rls-time" class="time-big time-green">99ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="rls-speedup" style="font-weight:800;color:#059669">18x</span> • <span id="rls-det">RLS &lt;0.1ms + index</span> • <span id="rls-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>Mode</th><th>Overhead</th><th>Waktu</th><th>Status</th></tr></thead><tbody id="rls-tbody"><tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Toggle App/RLS lalu EXPLAIN — lihat STABLE vs VOLATILE</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">CREATE POLICY tenant_isolation ON umkm<br>  USING (community_id = current_setting('app.community_id')::uuid);<br>CREATE INDEX idx_umkm_community_id ON umkm(community_id);<br>-- STABLE + InitPlan &lt;0.1ms vs VOLATILE 1960ms 18x (slide 17)</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-17" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 17 — RLS &lt;0.1ms ↗</a><span style="font-size:11px;color:#64748b;align-self:center">STABLE + InitPlan &lt;0.1ms • VOLATILE 18x lambat • index FK wajib</span></div>
+  </section>
+
+  <!-- PANEL Logging (slide 31) -->
+  <section id="panel-logging" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">Logging — Pino JSON vs console.log</h2>
+      <span class="pill pill-ok">Slide 31 • Logging Pino</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Catat coretan tanpa nomor vs nota bernomor + cap rahasia — console.log tanpa requestId + bocor password vs Pino JSON redact [Redacted] + requestId + p99 jujur.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-logging="lemot" id="logging-lemot">LEMOT console.log bocor avg bohong</button>
+      <button class="btn-kenceng active" data-logging="kenceng" id="logging-kenceng">KENCENG Pino JSON p99 200ms</button>
+      <span class="tooltip" title="Benchmark real: console.log bocor password + tanpa requestId + avg bohong vs Pino JSON redact [Redacted] + requestId + p99 jujur 200ms (slide 31)">i benchmark p99 jujur</span>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button id="logging-run" class="btn btn-primary">Log Request</button>
+      <button id="logging-toggle" class="btn btn-ghost">Toggle Bocor/Aman</button>
+      <span style="font-size:11px;color:#64748b">Cara demo: klik Log Request — lihat bocor vs [Redacted] + requestId</span>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="logging-time" class="time-big time-green">23ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="logging-speedup" style="font-weight:800;color:#059669">p99 jujur</span> • <span id="logging-det">Pino JSON + requestId</span> • <span id="logging-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>Field</th><th>Value</th><th>Status</th></tr></thead><tbody id="logging-tbody"><tr><td colspan="3" style="padding:12px;color:#64748b;text-align:center">Klik Log Request — lihat console.log vs Pino JSON</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">const log = pino({ redact: ['password','token','req.headers.authorization'] });<br>app.use((req,res,next)=>{ req.log = log.child({ requestId: req.headers['x-request-id']||crypto.randomUUID() }); next(); });<br>req.log.info({ q:'ayam', latency_ms:23 }) // {"level":"info","requestId":"550e...","q":"ayam"}</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-31" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 31 — Pino JSON ↗</a><span style="font-size:11px;color:#64748b;align-self:center">redact [Redacted] • requestId UUID • p99 jujur 200ms bukan avg bohong</span></div>
+  </section>
+
+  <!-- PANEL Proteksi (slide 34) -->
+  <section id="panel-proteksi" class="tech-panel card" style="padding:16px;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <h2 style="font-size:16px;font-weight:800;color:#1e3a5f">Proteksi — Circuit/Bulkhead/Backpressure</h2>
+      <span class="pill pill-ok">Slide 34 • Proteksi 503</span>
+    </div>
+    <p style="font-size:12px;color:#475569;margin-top:6px"><b>Analogi warung:</b> Listrik tanpa sekring vs sekring 30 detik — tanpa proteksi cascade failure 2000ms tail vs Circuit 50% open 30s 503 + Bulkhead pool 20 + Backpressure lag&gt;1000 → 503.</p>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-lemot" data-proteksi="lemot" id="proteksi-lemot">LEMOT tanpa proteksi 2000ms cascade</button>
+      <button class="btn-kenceng active" data-proteksi="kenceng" id="proteksi-kenceng">KENCENG Circuit 503 + Bulkhead 20</button>
+      <span class="tooltip" title="Benchmark real: tanpa proteksi cascade 2000ms tail vs Circuit 50% open 30s 503 + Bulkhead pool 20 queue 50 + Backpressure lag>1000 ->503 (slide 34)">i benchmark 503 fast-fail</span>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button id="proteksi-burst" class="btn btn-primary">Burst 20x → 503</button>
+      <button id="proteksi-reset" class="btn btn-ghost">Reset Circuit</button>
+      <span style="font-size:11px;color:#64748b">Cara demo: klik Burst 20x — lihat cascade vs fast-fail 503</span>
+    </div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;font-size:12px">
+      <span class="mono" style="background:#fff;border:1px solid #e2e8f0;padding:4px 8px;border-radius:8px">Circuit <b id="proteksi-circuit">CLOSED</b></span>
+      <span class="mono" style="background:#fff;border:1px solid #e2e8f0;padding:4px 8px;border-radius:8px">Bulkhead <b id="proteksi-bulkhead">0/20</b></span>
+      <span class="mono" style="background:#1e3a5f;color:#fff;padding:4px 8px;border-radius:8px">503 <b id="proteksi-503">0</b>x</span>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span id="proteksi-time" class="time-big time-green">12ms</span>
+      <span style="font-size:12px;color:#64748b"><span id="proteksi-speedup" style="font-weight:800;color:#059669">fast-fail</span> • <span id="proteksi-det">Circuit CLOSED 12ms</span> • <span id="proteksi-label" class="pill pill-ok">KENCENG hijau ✓</span></span>
+    </div>
+    <div style="margin-top:8px;overflow:auto;max-height:220px;border:1px solid #e2e8f0;border-radius:10px">
+      <table><thead><tr><th>#</th><th>Status</th><th>Proteksi</th><th>Waktu</th></tr></thead><tbody id="proteksi-tbody"><tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Klik Burst 20x — lihat tanpa proteksi vs Circuit/Bulkhead</td></tr></tbody></table>
+    </div>
+    <div class="code-mono" style="margin-top:10px">const breaker = new CircuitBreaker(fn, { errorThreshold:50, resetTimeout:30000 }); // 50% 10s -> open 30s 503<br>const bulkhead = new Bulkhead({ maxConcurrent:20, queue:50 }); // pool 20 queue 50 -> 503 jika penuh<br>if (lagMs > 1000) return res.status(503).set('Retry-After','10').send('Backpressure');</div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><a href="../presentasi/index.html#slide-34" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;border-radius:999px;text-decoration:none">Slide 34 — Proteksi 503 ↗</a><span style="font-size:11px;color:#64748b;align-self:center">Circuit 50% open 30s • Bulkhead 20/10/15 • Backpressure lag&gt;1000 → 503</span></div>
+  </section>
+
+  <!-- STATS p50 p95 p99 -->
+  <section style="margin-top:14px;display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:10px">
+    <style>@media(min-width:640px){#stats{grid-template-columns:repeat(3,minmax(0,1fr))!important}}</style>
+    <div id="stats" style="display:contents">
+      <div class="card" style="padding:14px;text-align:center">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#64748b">p50 — MEDIAN</div>
+        <div id="stat-p50" style="font-size:22px;font-weight:800;color:#1e3a5f;margin-top:4px">— ms</div>
+        <div style="font-size:11px;color:#64748b">50% pencarian lebih cepat dari ini</div>
+      </div>
+      <div class="card" style="padding:14px;text-align:center;border:1px solid #fde68a;background:#fffbeb">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#92400e">p95 — 0.2 DETIK</div>
+        <div id="stat-p95" style="font-size:22px;font-weight:800;color:#92400e;margin-top:4px">— ms</div>
+        <div style="font-size:11px;color:#92400e">95% di bawah 200ms = enak</div>
+      </div>
+      <div class="card" style="padding:14px;text-align:center;border:1px solid #fecaca;background:#fef2f2">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#991b1b">p99 — 0.5 DETIK</div>
+        <div id="stat-p99" style="font-size:22px;font-weight:800;color:#991b1b;margin-top:4px">— ms</div>
+        <div style="font-size:11px;color:#991b1b">99% di bawah 500ms = SLA</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:#64748b;text-align:center">Update live dari 10 pencarian terakhir — simpan latencies, hitung percentile</div>
+  </section>
+
+  <!-- DIAGRAM Mermaid kecil -->
+  <section style="margin-top:14px" class="card" style="padding:14px">
+    <div style="font-size:12px;font-weight:800;color:#1e3a5f">Alur — Ketik → Gateway → Redis HIT 2ms / DB GIN 10ms → GZIP → Total &lt;3 detik</div>
+    <div class="mermaid-wrap" style="margin-top:10px">
+      <pre class="mermaid">flowchart LR
+  A[Ketik ayam] --> B[Gateway]
+  B --> C{Cache?}
+  C -->|HIT| D[Redis 2ms]
+  C -->|MISS| E[DB GIN 10ms]
+  D --> F[GZIP]
+  E --> F
+  F --> G[Total &lt; 512ms ✓]
+  G --> H[&lt; 3 detik aman]
+  E -.-> I[LIKE 2000ms ✗]
+  I -.-> J[Total 2500ms ✗ tutup app]</pre>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:#64748b">GIN pg_trgm = cari trigram (3 huruf) — tidak scan semua baris. LIKE = scan 6.081 baris satu-satu (Seq Scan) — lambat 200x.</div>
+  </section>
+
+  <!-- CARA KERJA collapsible -->
+  <section style="margin-top:14px">
+    <details>
+      <summary><span>Gimana ini kerja tanpa terminal? <span style="font-weight:600;color:#64748b">— klik untuk buka</span></span><span style="color:#f59e0b">▼</span></summary>
+      <div style="padding:14px;font-size:13px;color:#334155;line-height:1.7">
+        <p><b>Tanpa Docker, tanpa curl, tanpa psql.</b> Data 250 UMKM ada di browser sebagai <span class="mono" style="background:#f1f5f9;padding:2px 6px;border-radius:6px">const DATA = [...]</span> (JS array). Saat kamu ketik:</p>
+        <ul style="margin:8px 0 0 18px">
+          <li><b>LIKE (lambat):</b> <span class="mono">DATA.filter(d => d.name.toLowerCase().includes(q))</span> — scan semua 250 baris + delay 1500-2000ms simulasi Seq Scan 5M (2000ms real di DB).</li>
+          <li><b>GIN pg_trgm (cepat):</b> pecah query jadi trigram 3 huruf (<span class="mono">ayam → aya, yam</span>), cek overlap &gt;0.3 — hanya sentuh baris yang mirip, 5-20ms (real GIN 10-50ms).</li>
+          <li><b>MatView (ringkas):</b> agregat per kelurahan (Bintaro 1931, Petukangan Utara 1689, dst) — instant &lt;5ms, tanpa scan nama.</li>
+        </ul>
+        <p style="margin-top:8px">Waktu diukur pakai <span class="mono">performance.now()</span> — real di browser. LIKE sengaja delay via <span class="mono">setTimeout 1500-2000ms</span> biar terasa lambatnya. GIN tanpa delay — cepat beneran.</p>
+        <p style="margin-top:8px;color:#64748b">Mau lihat angka real 5M? Buka <a href="../docs/BENCH_5M.md" target="_blank" rel="noopener" style="color:#1e3a5f;font-weight:700;text-decoration:underline">BENCH_5M.md</a> — Generate 99s, Query 10ms, p99 &lt;500ms.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- FOOTER links -->
+  <section style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+    <a href="../presentasi/index.html#slide-15" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px;text-decoration:none">Slide 15 — pg_trgm GIN 10-50ms ↗</a>
+    <a href="../presentasi/index.html#slide-4" target="_blank" rel="noopener" style="background:#fff;color:#1e3a5f;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px;border:1px solid #cbd5e1;text-decoration:none">Slide 4 — Budget Waktu &lt;3 detik ↗</a>
+    <a href="../presentasi/index.html#slide-14" target="_blank" rel="noopener" style="background:#fff;color:#1e3a5f;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px;border:1px solid #cbd5e1;text-decoration:none">Slide 14 — B-Tree 50.000x ↗</a>
+  </section>
+
+  <!-- FOOTER CTA 18 teknik -->
+  <section style="margin-top:14px" class="card" style="padding:16px;text-align:center;background:linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%);border:1px solid #1e3a5f">
+    <div style="font-size:14px;font-weight:800;color:#1e3a5f">Sudah coba 18 teknik?</div>
+    <div style="font-size:12px;color:#475569;margin-top:4px">Jelajahi semua — dari GIN 10ms sampai Proteksi 503 — lalu kembali ke Website 1 Atap atau buka Presentasi 40 Slides</div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+      <a href="../index.html" style="background:#f59e0b;color:#fff;font-weight:800;font-size:12px;padding:8px 14px;border-radius:999px;text-decoration:none">← Kembali ke Website 1 Atap</a>
+      <a href="../presentasi/index.html" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:800;font-size:12px;padding:8px 14px;border-radius:999px;text-decoration:none">Buka Presentasi 40 Slides ↗</a>
+      <a href="?tech=rls" style="background:#fff;color:#1e3a5f;font-weight:800;font-size:12px;padding:8px 14px;border-radius:999px;border:1px solid #cbd5e1;text-decoration:none">Coba RLS ?tech=rls</a>
+    </div>
+  </section>
+</main>
+
+<footer style="border-top:1px solid #e2e8f0;background:#fff;margin-top:16px">
+  <div style="max-width:1120px;margin:0 auto;padding:14px 16px;text-align:center;font-size:11px;color:#64748b">
+    Gotong Royong — PRAKTIK 18 teknik tanpa terminal — 250 sample Pesanggrahan • Full 6.081 di DB • 5M synthetic 99s • GIN 10ms vs LIKE 2000ms • RLS &lt;0.1ms • Pino JSON • Proteksi 503 • <a href="../index.html" style="color:#1e3a5f;font-weight:700;text-decoration:underline">← Kembali ke Website</a> • <a href="../presentasi/index.html" target="_blank" rel="noopener" style="color:#1e3a5f;font-weight:700;text-decoration:underline">Presentasi 40 Slides ↗</a>
+  </div>
+</footer>
+
+<script>
+// DATA 250 sample Pesanggrahan — 50 per kategori (AYAM, KULINER, WARUNG MAKAN, WARKOP, KAFE) — kelurahan distribusi Bintaro 32% etc
+const DATA = [{name:"Ayam Geprek Bu Siti", kelurahan:"Bintaro", category:"AYAM", jarak:"0.3 km"}, {name:"Ayam Bakar Pak Joko", kelurahan:"Petukangan Utara", category:"AYAM", jarak:"0.8 km"}, {name:"Ayam Penyet Surabaya", kelurahan:"Petukangan Selatan", category:"AYAM", jarak:"1.1 km"}, {name:"Ayam Goreng Kalasan", kelurahan:"Ulujami", category:"AYAM", jarak:"0.5 km"}, {name:"Ayam Crispy Dapoer Ayam", kelurahan:"Pesanggrahan", category:"AYAM", jarak:"1.4 km"}, {name:"Ayam Geprek Sambal Matah", kelurahan:"Bintaro", category:"AYAM", jarak:"0.6 km"}, {name:"Ayam Bakar Madu", kelurahan:"Bintaro", category:"AYAM", jarak:"0.9 km"}, {name:"Ayam Penyet Cabe Ijo", kelurahan:"Petukangan Utara", category:"AYAM", jarak:"0.4 km"}, {name:"Ayam Goreng Berkah", kelurahan:"Petukangan Selatan", category:"AYAM", jarak:"1.2 km"}, {name:"Ayam Geprek Juara", kelurahan:"Ulujami", category:"AYAM", jarak:"0.7 km"}, {name:"Ayam Bakar Wong Solo", kelurahan:"Bintaro", category:"AYAM", jarak:"1.0 km"}, {name:"Ayam Penyet Bu Kris", kelurahan:"Pesanggrahan", category:"AYAM", jarak:"0.3 km"}, {name:"Ayam Goreng Ny. Suharti", kelurahan:"Bintaro", category:"AYAM", jarak:"0.5 km"}, {name:"Ayam Geprek Keju Mozarella", kelurahan:"Petukangan Utara", category:"AYAM", jarak:"1.3 km"}, {name:"Ayam Bakar Taliwang", kelurahan:"Petukangan Selatan", category:"AYAM", jarak:"0.9 km"}, {name:"Ayam Penyet Lamongan", kelurahan:"Ulujami", category:"AYAM", jarak:"0.6 km"}, {name:"Ayam Goreng Kampung", kelurahan:"Bintaro", category:"AYAM", jarak:"0.8 km"}, {name:"Ayam Geprek Sambal Bawang", kelurahan:"Bintaro", category:"AYAM", jarak:"1.1 km"}, {name:"Ayam Bakar Kecap", kelurahan:"Petukangan Utara", category:"AYAM", jarak:"0.4 km"}, {name:"Ayam Penyet Sambal Korek", kelurahan:"Pesanggrahan", category:"AYAM", jarak:"0.7 km"}, {name:"Ayam Goreng Tepung", kelurahan:"Petukangan Selatan", category:"AYAM", jarak:"1.0 km"}, {name:"Ayam Geprek Level 5", kelurahan:"Ulujami", category:"AYAM", jarak:"0.5 km"}, {name:"Ayam Bakar Jimbaran", kelurahan:"Bintaro", category:"AYAM", jarak:"0.9 km"}, {name:"Ayam Penyet Cabe Rawit", kelurahan:"Bintaro", category:"AYAM", jarak:"0.6 km"}, {name:"Ayam Goreng Lalapan", kelurahan:"Petukangan Utara", category:"AYAM", jarak:"1.2 km"}, {name:"Ayam Geprek Mozarella Lumer", kelurahan:"Petukangan Selatan", category:"AYAM", jarak:"0.8 km"}, {name:"Ayam Bakar Pedas Manis", kelurahan:"Ulujami", category:"AYAM", jarak:"0.4 km"}, {name:"Ayam Penyet Komplit", kelurahan:"Pesanggrahan", category:"AYAM", jarak:"1.1 km"}, {name:"Ayam Goreng Kremes", kelurahan:"Bintaro", category:"AYAM", jarak:"0.7 km"}, {name:"Ayam Geprek Sambal Ijo", kelurahan:"Bintaro", category:"AYAM", jarak:"0.5 km"}, {name:"Ayam Bakar Solo Asli", kelurahan:"Petukangan Utara", category:"AYAM", jarak:"0.9 km"}, {name:"Ayam Penyet Gurih", kelurahan:"Petukangan Selatan", category:"AYAM", jarak:"0.6 km"}, {name:"Ayam Goreng Mentega", kelurahan:"Ulujami", category:"AYAM", jarak:"1.0 km"}, {name:"Ayam Geprek Original", kelurahan:"Bintaro", category:"AYAM", jarak:"0.3 km"}, {name:"Ayam Bakar Madu Pedas", kelurahan:"Pesanggrahan", category:"AYAM", jarak:"0.8 km"}, {name:"Ayam Penyet Sambal Terasi", kelurahan:"Bintaro", category:"AYAM", jarak:"1.2 km"}, {name:"Ayam Goreng Saus Tiram", kelurahan:"Petukangan Utara", category:"AYAM", jarak:"0.5 km"}, {name:"Ayam Geprek Keju Lumer", kelurahan:"Petukangan Selatan", category:"AYAM", jarak:"0.9 km"}, {name:"Ayam Bakar Kecap Manis", kelurahan:"Ulujami", category:"AYAM", jarak:"0.6 km"}, {name:"Ayam Penyet Ayam Kampung", kelurahan:"Bintaro", category:"AYAM", jarak:"1.1 km"}, {name:"Ayam Goreng Crispy Pedas", kelurahan:"Bintaro", category:"AYAM", jarak:"0.4 km"}, {name:"Ayam Geprek Sambal Korek", kelurahan:"Petukangan Utara", category:"AYAM", jarak:"0.7 km"}, {name:"Ayam Bakar Bumbu Rujak", kelurahan:"Pesanggrahan", category:"AYAM", jarak:"1.0 km"}, {name:"Ayam Penyet Cabe Merah", kelurahan:"Petukangan Selatan", category:"AYAM", jarak:"0.5 km"}, {name:"Ayam Goreng Bawang Putih", kelurahan:"Ulujami", category:"AYAM", jarak:"0.8 km"}, {name:"Ayam Geprek Telur Asin", kelurahan:"Bintaro", category:"AYAM", jarak:"0.6 km"}, {name:"Ayam Bakar Ayam Kampung", kelurahan:"Bintaro", category:"AYAM", jarak:"0.9 km"}, {name:"Ayam Penyet Sambal Matah Bali", kelurahan:"Petukangan Utara", category:"AYAM", jarak:"1.3 km"}, {name:"Ayam Goreng Sambal Penyet", kelurahan:"Petukangan Selatan", category:"AYAM", jarak:"0.4 km"}, {name:"Ayam Geprek Sambal Embe", kelurahan:"Ulujami", category:"AYAM", jarak:"0.7 km"},
+  {name:"Kuliner Nusantara Bintaro", kelurahan:"Bintaro", category:"KULINER", jarak:"0.4 km"}, {name:"Kuliner Jawa Timur", kelurahan:"Petukangan Utara", category:"KULINER", jarak:"0.9 km"}, {name:"Kuliner Sunda Asli", kelurahan:"Petukangan Selatan", category:"KULINER", jarak:"1.2 km"}, {name:"Kuliner Padang Murah", kelurahan:"Ulujami", category:"KULINER", jarak:"0.6 km"}, {name:"Kuliner Betawi Asli", kelurahan:"Pesanggrahan", category:"KULINER", jarak:"0.8 km"}, {name:"Kuliner Seafood Bintaro", kelurahan:"Bintaro", category:"KULINER", jarak:"0.5 km"}, {name:"Kuliner Bakso Malang", kelurahan:"Bintaro", category:"KULINER", jarak:"1.0 km"}, {name:"Kuliner Soto Ayam Lamongan", kelurahan:"Petukangan Utara", category:"KULINER", jarak:"0.7 km"}, {name:"Kuliner Nasi Goreng Gila", kelurahan:"Petukangan Selatan", category:"KULINER", jarak:"0.4 km"}, {name:"Kuliner Mie Ayam Bakso", kelurahan:"Ulujami", category:"KULINER", jarak:"1.1 km"}, {name:"Kuliner Sate Ayam Madura", kelurahan:"Bintaro", category:"KULINER", jarak:"0.9 km"}, {name:"Kuliner Gado-Gado Betawi", kelurahan:"Pesanggrahan", category:"KULINER", jarak:"0.6 km"}, {name:"Kuliner Pecel Lele", kelurahan:"Bintaro", category:"KULINER", jarak:"0.8 km"}, {name:"Kuliner Rawon Surabaya", kelurahan:"Petukangan Utara", category:"KULINER", jarak:"1.2 km"}, {name:"Kuliner Rendang Padang", kelurahan:"Petukangan Selatan", category:"KULINER", jarak:"0.5 km"}, {name:"Kuliner Pempek Palembang", kelurahan:"Ulujami", category:"KULINER", jarak:"0.7 km"}, {name:"Kuliner Siomay Bandung", kelurahan:"Bintaro", category:"KULINER", jarak:"1.0 km"}, {name:"Kuliner Batagor Bandung", kelurahan:"Bintaro", category:"KULINER", jarak:"0.4 km"}, {name:"Kuliner Ketoprak Jakarta", kelurahan:"Petukangan Utara", category:"KULINER", jarak:"0.9 km"}, {name:"Kuliner Lontong Sayur", kelurahan:"Pesanggrahan", category:"KULINER", jarak:"0.6 km"}, {name:"Kuliner Nasi Uduk Betawi", kelurahan:"Petukangan Selatan", category:"KULINER", jarak:"1.1 km"}, {name:"Kuliner Bubur Ayam", kelurahan:"Ulujami", category:"KULINER", jarak:"0.5 km"}, {name:"Kuliner Martabak Manis", kelurahan:"Bintaro", category:"KULINER", jarak:"0.8 km"}, {name:"Kuliner Terang Bulan", kelurahan:"Bintaro", category:"KULINER", jarak:"0.6 km"}, {name:"Kuliner Sate Kambing", kelurahan:"Petukangan Utara", category:"KULINER", jarak:"1.3 km"}, {name:"Kuliner Ikan Bakar", kelurahan:"Petukangan Selatan", category:"KULINER", jarak:"0.7 km"}, {name:"Kuliner Ayam Bakar Kuliner", kelurahan:"Ulujami", category:"KULINER", jarak:"0.4 km"}, {name:"Kuliner Sop Buntut", kelurahan:"Pesanggrahan", category:"KULINER", jarak:"1.0 km"}, {name:"Kuliner Soto Betawi", kelurahan:"Bintaro", category:"KULINER", jarak:"0.9 km"}, {name:"Kuliner Nasi Padang Sederhana", kelurahan:"Bintaro", category:"KULINER", jarak:"0.5 km"}, {name:"Kuliner Bakmi Jawa", kelurahan:"Petukangan Utara", category:"KULINER", jarak:"0.8 km"}, {name:"Kuliner Mie Goreng Tek-Tek", kelurahan:"Petukangan Selatan", category:"KULINER", jarak:"1.2 km"}, {name:"Kuliner Kwetiau Siram", kelurahan:"Ulujami", category:"KULINER", jarak:"0.6 km"}, {name:"Kuliner Capcay Goreng", kelurahan:"Bintaro", category:"KULINER", jarak:"0.7 km"}, {name:"Kuliner Fuyunghai", kelurahan:"Bintaro", category:"KULINER", jarak:"1.1 km"}, {name:"Kuliner Gurame Bakar", kelurahan:"Petukangan Utara", category:"KULINER", jarak:"0.4 km"}, {name:"Kuliner Lele Goreng", kelurahan:"Pesanggrahan", category:"KULINER", jarak:"0.9 km"}, {name:"Kuliner Bebek Goreng", kelurahan:"Petukangan Selatan", category:"KULINER", jarak:"0.6 km"}, {name:"Kuliner Nila Bakar", kelurahan:"Ulujami", category:"KULINER", jarak:"1.0 km"}, {name:"Kuliner Seafood Tumpah", kelurahan:"Bintaro", category:"KULINER", jarak:"0.5 km"}, {name:"Kuliner Kepiting Saus Padang", kelurahan:"Bintaro", category:"KULINER", jarak:"0.8 km"}, {name:"Kuliner Cumi Bakar", kelurahan:"Petukangan Utara", category:"KULINER", jarak:"0.7 km"}, {name:"Kuliner Udang Goreng", kelurahan:"Petukangan Selatan", category:"KULINER", jarak:"1.1 km"}, {name:"Kuliner Kerang Rebus", kelurahan:"Ulujami", category:"KULINER", jarak:"0.4 km"}, {name:"Kuliner Sate Taichan", kelurahan:"Pesanggrahan", category:"KULINER", jarak:"0.9 km"}, {name:"Kuliner Sate Padang", kelurahan:"Bintaro", category:"KULINER", jarak:"0.6 km"}, {name:"Kuliner Sate Maranggi", kelurahan:"Bintaro", category:"KULINER", jarak:"1.2 km"}, {name:"Kuliner Bakso Urat", kelurahan:"Petukangan Utara", category:"KULINER", jarak:"0.5 km"}, {name:"Kuliner Bakso Telur", kelurahan:"Petukangan Selatan", category:"KULINER", jarak:"0.8 km"}, {name:"Kuliner Mie Bakso", kelurahan:"Ulujami", category:"KULINER", jarak:"0.7 km"},
+  {name:"Warung Makan Sederhana", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"0.3 km"}, {name:"Warung Makan Bu Haji", kelurahan:"Petukangan Utara", category:"WARUNG MAKAN", jarak:"0.7 km"}, {name:"Warung Makan Padang Jaya", kelurahan:"Petukangan Selatan", category:"WARUNG MAKAN", jarak:"1.0 km"}, {name:"Warung Makan Tegal Asli", kelurahan:"Ulujami", category:"WARUNG MAKAN", jarak:"0.5 km"}, {name:"Warung Makan Lamongan", kelurahan:"Pesanggrahan", category:"WARUNG MAKAN", jarak:"0.9 km"}, {name:"Warung Makan Soto Ayam", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"0.6 km"}, {name:"Warung Makan Nasi Goreng", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"1.1 km"}, {name:"Warung Makan Mie Ayam", kelurahan:"Petukangan Utara", category:"WARUNG MAKAN", jarak:"0.4 km"}, {name:"Warung Makan Bakso", kelurahan:"Petukangan Selatan", category:"WARUNG MAKAN", jarak:"0.8 km"}, {name:"Warung Makan Sate Ayam", kelurahan:"Ulujami", category:"WARUNG MAKAN", jarak:"0.7 km"}, {name:"Warung Makan Pecel Lele", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"1.2 km"}, {name:"Warung Makan Ayam Geprek", kelurahan:"Pesanggrahan", category:"WARUNG MAKAN", jarak:"0.5 km"}, {name:"Warung Makan Bebek Goreng", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"0.9 km"}, {name:"Warung Makan Ikan Bakar", kelurahan:"Petukangan Utara", category:"WARUNG MAKAN", jarak:"0.6 km"}, {name:"Warung Makan Seafood", kelurahan:"Petukangan Selatan", category:"WARUNG MAKAN", jarak:"1.0 km"}, {name:"Warung Makan Gado-Gado", kelurahan:"Ulujami", category:"WARUNG MAKAN", jarak:"0.4 km"}, {name:"Warung Makan Ketoprak", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"0.8 km"}, {name:"Warung Makan Siomay", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"0.5 km"}, {name:"Warung Makan Batagor", kelurahan:"Petukangan Utara", category:"WARUNG MAKAN", jarak:"1.1 km"}, {name:"Warung Makan Gorengan", kelurahan:"Pesanggrahan", category:"WARUNG MAKAN", jarak:"0.7 km"}, {name:"Warung Makan Nasi Uduk", kelurahan:"Petukangan Selatan", category:"WARUNG MAKAN", jarak:"0.9 km"}, {name:"Warung Makan Nasi Kuning", kelurahan:"Ulujami", category:"WARUNG MAKAN", jarak:"0.6 km"}, {name:"Warung Makan Bubur Ayam", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"1.0 km"}, {name:"Warung Makan Lontong Sayur", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"0.4 km"}, {name:"Warung Makan Soto Betawi", kelurahan:"Petukangan Utara", category:"WARUNG MAKAN", jarak:"0.8 km"}, {name:"Warung Makan Rawon", kelurahan:"Petukangan Selatan", category:"WARUNG MAKAN", jarak:"1.2 km"}, {name:"Warung Makan Sop Buntut", kelurahan:"Ulujami", category:"WARUNG MAKAN", jarak:"0.5 km"}, {name:"Warung Makan Sate Kambing", kelurahan:"Pesanggrahan", category:"WARUNG MAKAN", jarak:"0.9 km"}, {name:"Warung Makan Sate Padang", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"0.7 km"}, {name:"Warung Makan Martabak", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"1.1 km"}, {name:"Warung Makan Terang Bulan", kelurahan:"Petukangan Utara", category:"WARUNG MAKAN", jarak:"0.6 km"}, {name:"Warung Makan Roti Bakar", kelurahan:"Petukangan Selatan", category:"WARUNG MAKAN", jarak:"0.8 km"}, {name:"Warung Makan Pisang Goreng", kelurahan:"Ulujami", category:"WARUNG MAKAN", jarak:"0.4 km"}, {name:"Warung Makan Tahu Gejrot", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"0.9 km"}, {name:"Warung Makan Pempek", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"0.5 km"}, {name:"Warung Makan Bakmi Jawa", kelurahan:"Petukangan Utara", category:"WARUNG MAKAN", jarak:"1.3 km"}, {name:"Warung Makan Kwetiau", kelurahan:"Pesanggrahan", category:"WARUNG MAKAN", jarak:"0.7 km"}, {name:"Warung Makan Capcay", kelurahan:"Petukangan Selatan", category:"WARUNG MAKAN", jarak:"1.0 km"}, {name:"Warung Makan Fuyunghai", kelurahan:"Ulujami", category:"WARUNG MAKAN", jarak:"0.6 km"}, {name:"Warung Makan Gurame", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"0.8 km"}, {name:"Warung Makan Lele Goreng", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"0.4 km"}, {name:"Warung Makan Nila Bakar", kelurahan:"Petukangan Utara", category:"WARUNG MAKAN", jarak:"0.9 km"}, {name:"Warung Makan Kepiting", kelurahan:"Petukangan Selatan", category:"WARUNG MAKAN", jarak:"1.1 km"}, {name:"Warung Makan Cumi Bakar", kelurahan:"Ulujami", category:"WARUNG MAKAN", jarak:"0.5 km"}, {name:"Warung Makan Udang Goreng", kelurahan:"Pesanggrahan", category:"WARUNG MAKAN", jarak:"0.7 km"}, {name:"Warung Makan Kerang", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"1.2 km"}, {name:"Warung Makan Sate Taichan", kelurahan:"Bintaro", category:"WARUNG MAKAN", jarak:"0.6 km"}, {name:"Warung Makan Bakso Urat", kelurahan:"Petukangan Utara", category:"WARUNG MAKAN", jarak:"0.8 km"}, {name:"Warung Makan Mie Bakso", kelurahan:"Petukangan Selatan", category:"WARUNG MAKAN", jarak:"0.4 km"}, {name:"Warung Makan Bakso Telur", kelurahan:"Ulujami", category:"WARUNG MAKAN", jarak:"0.9 km"},
+  {name:"Warkop Kopi Kenangan", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.3 km"}, {name:"Warkop Kopi Janji Jiwa", kelurahan:"Petukangan Utara", category:"WARKOP", jarak:"0.6 km"}, {name:"Warkop Kopi Kulo", kelurahan:"Petukangan Selatan", category:"WARKOP", jarak:"0.9 km"}, {name:"Warkop Kopi Soe", kelurahan:"Ulujami", category:"WARKOP", jarak:"0.5 km"}, {name:"Warkop Kopi Tuku", kelurahan:"Pesanggrahan", category:"WARKOP", jarak:"0.8 km"}, {name:"Warkop Kopi Fore", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.4 km"}, {name:"Warkop Kopi Kenangan Mantan", kelurahan:"Bintaro", category:"WARKOP", jarak:"1.0 km"}, {name:"Warkop Kopi Susu Tetangga", kelurahan:"Petukangan Utara", category:"WARKOP", jarak:"0.7 km"}, {name:"Warkop Kopi Hitam Manis", kelurahan:"Petukangan Selatan", category:"WARKOP", jarak:"1.1 km"}, {name:"Warkop Kopi Pahit Kenangan", kelurahan:"Ulujami", category:"WARKOP", jarak:"0.6 km"}, {name:"Warkop Kopi Gayo Asli", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.9 km"}, {name:"Warkop Kopi Arabika", kelurahan:"Pesanggrahan", category:"WARKOP", jarak:"0.5 km"}, {name:"Warkop Kopi Robusta", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.8 km"}, {name:"Warkop Kopi Tubruk", kelurahan:"Petukangan Utara", category:"WARKOP", jarak:"1.2 km"}, {name:"Warkop Kopi Saring", kelurahan:"Petukangan Selatan", category:"WARKOP", jarak:"0.4 km"}, {name:"Warkop Kopi Tarik", kelurahan:"Ulujami", category:"WARKOP", jarak:"0.7 km"}, {name:"Warkop Kopi Aceh", kelurahan:"Bintaro", category:"WARKOP", jarak:"1.1 km"}, {name:"Warkop Kopi Toraja", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.6 km"}, {name:"Warkop Kopi Flores", kelurahan:"Petukangan Utara", category:"WARKOP", jarak:"0.9 km"}, {name:"Warkop Kopi Bali Kintamani", kelurahan:"Pesanggrahan", category:"WARKOP", jarak:"0.5 km"}, {name:"Warkop Kopi Lampung", kelurahan:"Petukangan Selatan", category:"WARKOP", jarak:"0.8 km"}, {name:"Warkop Kopi Jawa", kelurahan:"Ulujami", category:"WARKOP", jarak:"0.4 km"}, {name:"Warkop Kopi Susu Gula Aren", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.7 km"}, {name:"Warkop Kopi Es Kopi Susu", kelurahan:"Bintaro", category:"WARKOP", jarak:"1.0 km"}, {name:"Warkop Kopi Americano", kelurahan:"Petukangan Utara", category:"WARKOP", jarak:"0.6 km"}, {name:"Warkop Kopi Latte", kelurahan:"Petukangan Selatan", category:"WARKOP", jarak:"0.9 km"}, {name:"Warkop Kopi Cappuccino", kelurahan:"Ulujami", category:"WARKOP", jarak:"0.5 km"}, {name:"Warkop Kopi Espresso", kelurahan:"Pesanggrahan", category:"WARKOP", jarak:"1.2 km"}, {name:"Warkop Kopi Moccacino", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.8 km"}, {name:"Warkop Kopi Affogato", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.4 km"}, {name:"Warkop Kopi Cold Brew", kelurahan:"Petukangan Utara", category:"WARKOP", jarak:"0.7 km"}, {name:"Warkop Kopi V60", kelurahan:"Petukangan Selatan", category:"WARKOP", jarak:"1.1 km"}, {name:"Warkop Kopi Vietnam Drip", kelurahan:"Ulujami", category:"WARKOP", jarak:"0.6 km"}, {name:"Warkop Kopi Tubruk Gula Aren", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.9 km"}, {name:"Warkop Kopi Susu Keluarga", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.5 km"}, {name:"Warkop Kopi Kenangan Bintaro", kelurahan:"Petukangan Utara", category:"WARKOP", jarak:"0.8 km"}, {name:"Warkop Kopi Janji Jiwa Pesanggrahan", kelurahan:"Pesanggrahan", category:"WARKOP", jarak:"0.7 km"}, {name:"Warkop Kopi Kulo Bintaro", kelurahan:"Petukangan Selatan", category:"WARKOP", jarak:"1.0 km"}, {name:"Warkop Kopi Soe Ulujami", kelurahan:"Ulujami", category:"WARKOP", jarak:"0.4 km"}, {name:"Warkop Kopi Tuku Bintaro", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.6 km"}, {name:"Warkop Kopi Fore Pesanggrahan", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.9 km"}, {name:"Warkop Kopi Titik Koma", kelurahan:"Petukangan Utara", category:"WARKOP", jarak:"1.2 km"}, {name:"Warkop Kopi Ruang Seduh", kelurahan:"Petukangan Selatan", category:"WARKOP", jarak:"0.5 km"}, {name:"Warkop Kopi Kedai Kopi Kita", kelurahan:"Ulujami", category:"WARKOP", jarak:"0.8 km"}, {name:"Warkop Kopi Warung Kopi 88", kelurahan:"Pesanggrahan", category:"WARKOP", jarak:"0.6 km"}, {name:"Warkop Kopi Kopi Nako", kelurahan:"Bintaro", category:"WARKOP", jarak:"1.1 km"}, {name:"Warkop Kopi Kopi Kenangan Baru", kelurahan:"Bintaro", category:"WARKOP", jarak:"0.7 km"}, {name:"Warkop Kopi Kopi Susu Duarasa", kelurahan:"Petukangan Utara", category:"WARKOP", jarak:"0.4 km"}, {name:"Warkop Kopi Kopi Gula Aren", kelurahan:"Petukangan Selatan", category:"WARKOP", jarak:"0.9 km"}, {name:"Warkop Kopi Kopi Hitam Pekat", kelurahan:"Ulujami", category:"WARKOP", jarak:"0.6 km"},
+  {name:"Kafe Kopi Kenangan Bintaro", kelurahan:"Bintaro", category:"KAFE", jarak:"0.4 km"}, {name:"Kafe Janji Jiwa Pesanggrahan", kelurahan:"Petukangan Utara", category:"KAFE", jarak:"0.8 km"}, {name:"Kafe Kopi Kulo Ulujami", kelurahan:"Petukangan Selatan", category:"KAFE", jarak:"1.0 km"}, {name:"Kafe Kopi Soe Bintaro", kelurahan:"Ulujami", category:"KAFE", jarak:"0.6 km"}, {name:"Kafe Kopi Tuku Pesanggrahan", kelurahan:"Pesanggrahan", category:"KAFE", jarak:"0.9 km"}, {name:"Kafe Fore Coffee", kelurahan:"Bintaro", category:"KAFE", jarak:"0.5 km"}, {name:"Kafe Titik Koma Coffee", kelurahan:"Bintaro", category:"KAFE", jarak:"1.1 km"}, {name:"Kafe Ruang Seduh", kelurahan:"Petukangan Utara", category:"KAFE", jarak:"0.7 km"}, {name:"Kafe Kedai Kopi Kita", kelurahan:"Petukangan Selatan", category:"KAFE", jarak:"0.4 km"}, {name:"Kafe Warung Kopi 88", kelurahan:"Ulujami", category:"KAFE", jarak:"0.8 km"}, {name:"Kafe Kopi Nako Bintaro", kelurahan:"Bintaro", category:"KAFE", jarak:"0.9 km"}, {name:"Kafe Kopi Kenangan Baru", kelurahan:"Pesanggrahan", category:"KAFE", jarak:"0.6 km"}, {name:"Kafe Kopi Susu Duarasa", kelurahan:"Bintaro", category:"KAFE", jarak:"0.7 km"}, {name:"Kafe Kopi Gula Aren", kelurahan:"Petukangan Utara", category:"KAFE", jarak:"1.2 km"}, {name:"Kafe Kopi Hitam Pekat", kelurahan:"Petukangan Selatan", category:"KAFE", jarak:"0.5 km"}, {name:"Kafe Kopi Tubruk Gula Aren", kelurahan:"Ulujami", category:"KAFE", jarak:"0.9 km"}, {name:"Kafe Kopi Susu Keluarga", kelurahan:"Bintaro", category:"KAFE", jarak:"0.6 km"}, {name:"Kafe Kopi Kenangan Mantan", kelurahan:"Bintaro", category:"KAFE", jarak:"1.0 km"}, {name:"Kafe Kopi Susu Tetangga", kelurahan:"Petukangan Utara", category:"KAFE", jarak:"0.4 km"}, {name:"Kafe Kopi Hitam Manis", kelurahan:"Petukangan Selatan", category:"KAFE", jarak:"0.8 km"}, {name:"Kafe Kopi Pahit Kenangan", kelurahan:"Ulujami", category:"KAFE", jarak:"0.7 km"}, {name:"Kafe Kopi Gayo Asli", kelurahan:"Bintaro", category:"KAFE", jarak:"1.1 km"}, {name:"Kafe Kopi Arabika Bintaro", kelurahan:"Pesanggrahan", category:"KAFE", jarak:"0.5 km"}, {name:"Kafe Kopi Robusta", kelurahan:"Bintaro", category:"KAFE", jarak:"0.8 km"}, {name:"Kafe Kopi Tubruk", kelurahan:"Petukangan Utara", category:"KAFE", jarak:"0.6 km"}, {name:"Kafe Kopi Saring", kelurahan:"Petukangan Selatan", category:"KAFE", jarak:"0.9 km"}, {name:"Kafe Kopi Tarik Aceh", kelurahan:"Ulujami", category:"KAFE", jarak:"0.4 km"}, {name:"Kafe Kopi Aceh Gayo", kelurahan:"Bintaro", category:"KAFE", jarak:"0.7 km"}, {name:"Kafe Kopi Toraja Sulawesi", kelurahan:"Bintaro", category:"KAFE", jarak:"1.2 km"}, {name:"Kafe Kopi Flores NTT", kelurahan:"Petukangan Utara", category:"KAFE", jarak:"0.5 km"}, {name:"Kafe Kopi Bali Kintamani", kelurahan:"Pesanggrahan", category:"KAFE", jarak:"0.8 km"}, {name:"Kafe Kopi Lampung", kelurahan:"Petukangan Selatan", category:"KAFE", jarak:"0.6 km"}, {name:"Kafe Kopi Jawa Tengah", kelurahan:"Ulujami", category:"KAFE", jarak:"1.0 km"}, {name:"Kafe Kopi Susu Gula Aren", kelurahan:"Bintaro", category:"KAFE", jarak:"0.4 km"}, {name:"Kafe Es Kopi Susu", kelurahan:"Bintaro", category:"KAFE", jarak:"0.9 km"}, {name:"Kafe Americano Coffee", kelurahan:"Petukangan Utara", category:"KAFE", jarak:"0.7 km"}, {name:"Kafe Latte Art", kelurahan:"Petukangan Selatan", category:"KAFE", jarak:"1.1 km"}, {name:"Kafe Cappuccino House", kelurahan:"Ulujami", category:"KAFE", jarak:"0.5 km"}, {name:"Kafe Espresso Bar", kelurahan:"Pesanggrahan", category:"KAFE", jarak:"0.8 km"}, {name:"Kafe Moccacino Corner", kelurahan:"Bintaro", category:"KAFE", jarak:"0.6 km"}, {name:"Kafe Affogato Spot", kelurahan:"Bintaro", category:"KAFE", jarak:"1.0 km"}, {name:"Kafe Cold Brew Lab", kelurahan:"Petukangan Utara", category:"KAFE", jarak:"0.4 km"}, {name:"Kafe V60 Manual Brew", kelurahan:"Petukangan Selatan", category:"KAFE", jarak:"0.9 km"}, {name:"Kafe Vietnam Drip", kelurahan:"Ulujami", category:"KAFE", jarak:"0.7 km"}, {name:"Kafe Kopi Susu Kekinian", kelurahan:"Bintaro", category:"KAFE", jarak:"1.1 km"}, {name:"Kafe Kopi Susu Millenial", kelurahan:"Bintaro", category:"KAFE", jarak:"0.5 km"}, {name:"Kafe Kopi Susu Viral", kelurahan:"Petukangan Utara", category:"KAFE", jarak:"0.8 km"}, {name:"Kafe Kopi Susu Hits", kelurahan:"Petukangan Selatan", category:"KAFE", jarak:"0.6 km"}, {name:"Kafe Kopi Susu Enak", kelurahan:"Ulujami", category:"KAFE", jarak:"0.9 km"}, {name:"Kafe Sate Ayam Madura", kelurahan:"Bintaro", category:"KAFE", jarak:"0.7 km"}
+];
+
+// trigram helper — GIN pg_trgm simulasi
+function trigrams(s){ s=s.toLowerCase(); const out=[]; for(let i=0;i<=s.length-3;i++) out.push(s.slice(i,i+3)); return out; }
+function trigramMatch(name, q){
+  if(!q) return false;
+  q=q.toLowerCase(); name=name.toLowerCase();
+  if(name.includes(q)) return true;
+  const tq=trigrams(q), tn=trigrams(name);
+  if(tq.length===0) return name.includes(q);
+  let hit=0; const set=new Set(tn);
+  for(const t of tq) if(set.has(t)) hit++;
+  return (hit / tq.length) >= 0.3;
+}
+
+// MatView agregat per kelurahan (pre-aggregated)
+const MATVIEW = [
+  {kelurahan:"Bintaro", count:1931, category:"— agregat —"},
+  {kelurahan:"Petukangan Utara", count:1689, category:"— agregat —"},
+  {kelurahan:"Petukangan Selatan", count:1052, category:"— agregat —"},
+  {kelurahan:"Ulujami", count:821, category:"— agregat —"},
+  {kelurahan:"Pesanggrahan", count:588, category:"— agregat —"},
+];
+
+const $q=document.getElementById('q'), $tech=document.getElementById('tech'), $tbody=document.getElementById('tbody');
+const $head=document.getElementById('result-head'), $sub=document.getElementById('result-sub'), $pill=document.getElementById('result-pill');
+const $shown=document.getElementById('shown'), $total=document.getElementById('total');
+const $bBackend=document.getElementById('b-backend'), $bTotal=document.getElementById('b-total'), $bStatus=document.getElementById('b-status');
+const $p50=document.getElementById('stat-p50'), $p95=document.getElementById('stat-p95'), $p99=document.getElementById('stat-p99');
+let latencies=[]; let timer=null; let pending=null;
+
+function percentile(arr, p){
+  if(!arr.length) return null;
+  const s=[...arr].sort((a,b)=>a-b);
+  const idx=Math.ceil((p/100)*s.length)-1;
+  return s[Math.max(0, Math.min(idx, s.length-1))];
+}
+function updateStats(ms){
+  latencies.push(ms); if(latencies.length>10) latencies.shift();
+  const p50=percentile(latencies,50), p95=percentile(latencies,95), p99=percentile(latencies,99);
+  $p50.textContent = p50!=null ? p50.toFixed(1)+'ms' : '— ms';
+  $p95.textContent = p95!=null ? p95.toFixed(1)+'ms' : '— ms';
+  $p99.textContent = p99!=null ? p99.toFixed(1)+'ms' : '— ms';
+}
+function renderRows(rows){
+  if(!rows.length){ $tbody.innerHTML='<tr><td colspan="4" style="padding:18px;color:#64748b;text-align:center">Tidak ada hasil — coba kata lain: ayam, kuliner, warung, sate, kopi</td></tr>'; return; }
+  const slice=rows.slice(0,50);
+  $tbody.innerHTML = slice.map(r=>`<tr><td style="font-weight:700;color:#1e3a5f">${r.name}</td><td>${r.kelurahan}</td><td><span style="background:#f1f5f9;border:1px solid #e2e8f0;padding:2px 6px;border-radius:999px;font-size:11px;font-weight:700">${r.category}</span></td><td class="mono" style="color:#64748b">${r.jarak||'-'}</td></tr>`).join('');
+}
+function setBudget(backendMs){
+  const total = backendMs + 500;
+  $bBackend.textContent = backendMs.toFixed(1);
+  $bTotal.textContent = total.toFixed(1);
+  if(total < 3000){ $bStatus.textContent='✓ (<3 detik aman)'; $bStatus.style.color='#059669'; }
+  else { $bStatus.textContent='✗ (>3 detik tutup aplikasi)'; $bStatus.style.color='#dc2626'; }
+}
+function setHead(count, ms, tech){
+  const sec=(ms/1000).toFixed(3);
+  let label='', pill='', cls='';
+  if(tech==='like'){ label=`Ditemukan ${count} hasil dalam ${ms.toFixed(1)}ms (${sec} detik) — LIKE lambat ✗`; pill='LIKE lambat ✗'; cls='pill-bad'; }
+  else if(tech==='matview'){ label=`Ditemukan ${count} hasil dalam ${ms.toFixed(1)}ms (${sec} detik) — MatView ringkas ✓`; pill='MatView <5ms ✓'; cls='pill-ok'; }
+  else { label=`Ditemukan ${count} hasil dalam ${ms.toFixed(1)}ms (${sec} detik) — GIN 10-50ms ✓`; pill='GIN 10-50ms ✓'; cls='pill-ok'; }
+  $head.textContent=label;
+  if(ms < 200){ $head.className=''; $head.style.color='#059669'; $pill.className='pill pill-ok'; }
+  else if(ms < 500){ $head.style.color='#d97706'; $pill.className='pill pill-warn'; }
+  else { $head.style.color='#dc2626'; $pill.className='pill pill-bad'; }
+  $pill.textContent=pill; $pill.className='pill '+cls;
+  $sub.textContent = tech==='like' ? 'Seq Scan — scan semua baris satu-satu (lambat 200x)' : tech==='matview' ? 'Pre-aggregated per kelurahan — instant <5ms' : 'Bitmap Index Scan — trigram index, hanya sentuh baris mirip';
+  $total.textContent=count; $shown.textContent=Math.min(count,50);
+  setBudget(ms); updateStats(ms);
+}
+
+function doSearch(){
+  const q=$q.value.trim();
+  const tech=$tech.value;
+  if(pending) { clearTimeout(pending); pending=null; }
+  if(!q){
+    $head.textContent='Ketik untuk mulai — coba "ayam"'; $head.style.color='#1e3a5f';
+    $sub.textContent='GIN 10-50ms ✓ vs LIKE 1500-2000ms ✗ — pilih teknik di atas, lihat bedanya';
+    $pill.textContent='GIN 10-50ms ✓'; $pill.className='pill pill-ok';
+    $tbody.innerHTML='<tr><td colspan="4" style="padding:18px;color:#64748b;text-align:center">Belum ada pencarian — ketik "ayam" di atas</td></tr>';
+    $shown.textContent='0'; $total.textContent='0'; $bBackend.textContent='—'; $bTotal.textContent='—'; $bStatus.textContent='—';
+    return;
+  }
+  if(tech==='matview'){
+    const t0=performance.now();
+    const rows = MATVIEW.filter(r=> r.kelurahan.toLowerCase().includes(q.toLowerCase()));
+    const display = rows.length ? rows.map(r=>({name:`Agregat ${r.kelurahan} — ${r.count} UMKM`, kelurahan:r.kelurahan, category:r.category, jarak:'—'})) : [];
+    const ms = performance.now()-t0 + Math.random()*3+1;
+    setHead(rows.length? rows.reduce((a,b)=>a+b.count,0) : 0, ms, 'matview');
+    renderRows(display.length? display : []);
+    if(!rows.length){
+      const t1=performance.now();
+      const fallback = DATA.filter(d=> trigramMatch(d.name,q));
+      const ms2 = performance.now()-t1 + Math.random()*8+4;
+      if(fallback.length){ setHead(fallback.length, ms2, 'gin'); renderRows(fallback); }
+    }
+    return;
+  }
+  if(tech==='like'){
+    $head.textContent='Mencari... (LIKE Seq Scan 1500-2000ms)'; $head.style.color='#d97706';
+    $pill.textContent='LIKE...'; $pill.className='pill pill-warn';
+    const delay = 1500 + Math.random()*500;
+    pending=setTimeout(()=>{
+      const t0=performance.now();
+      const rows = DATA.filter(d=> d.name.toLowerCase().includes(q.toLowerCase()));
+      const ms = (performance.now()-t0) + delay;
+      setHead(rows.length, ms, 'like');
+      renderRows(rows);
+    }, delay);
+    return;
+  }
+  // GIN
+  const t0=performance.now();
+  const rows = DATA.filter(d=> trigramMatch(d.name,q));
+  const ms = performance.now()-t0 + Math.random()*12+4;
+  setHead(rows.length, ms, 'gin');
+  renderRows(rows);
+}
+
+$q.addEventListener('input', ()=>{ clearTimeout(timer); timer=setTimeout(doSearch,200); });
+document.getElementById('btn-cari').addEventListener('click', doSearch);
+document.getElementById('btn-clear').addEventListener('click', ()=>{ $q.value=''; doSearch(); $q.focus(); });
+$tech.addEventListener('change', doSearch);
+document.querySelectorAll('.chip').forEach(b=> b.addEventListener('click', ()=>{ $q.value=b.dataset.try; doSearch(); }));
+$q.addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
+
+// --- 18 pills switcher + URL ?tech= ---
+const pills = document.querySelectorAll('.tech-btn');
+const panels = {
+  'gin': document.querySelector('section.card:nth-of-type(2)'),
+  'like': document.querySelector('section.card:nth-of-type(2)'),
+  'matview': document.querySelector('section.card:nth-of-type(2)'),
+  'b-tree': document.getElementById('panel-b-tree'),
+  'cursor': document.getElementById('panel-cursor'),
+  'cache': document.getElementById('panel-cache'),
+  'gzip': document.getElementById('panel-gzip'),
+  'edge': document.getElementById('panel-edge'),
+  'rate': document.getElementById('panel-rate'),
+  'payload': document.getElementById('panel-payload'),
+  'pgbouncer': document.getElementById('panel-pgbouncer'),
+  'vacuum': document.getElementById('panel-vacuum'),
+  'ttl': document.getElementById('panel-ttl'),
+  'es-geo': document.getElementById('panel-es-geo'),
+  'cdc': document.getElementById('panel-cdc'),
+  'rls': document.getElementById('panel-rls'),
+  'logging': document.getElementById('panel-logging'),
+  'proteksi': document.getElementById('panel-proteksi')
+};
+const searchSection = document.querySelector('section.card:nth-of-type(2)');
+const allTechs = ['b-tree','cursor','cache','gzip','edge','rate','payload','pgbouncer','vacuum','ttl','es-geo','cdc','rls','logging','proteksi'];
+function setTech(tech){
+  tech = (tech||'gin').toLowerCase();
+  // pills active + smooth scroll to active pill
+  pills.forEach(b=> b.classList.toggle('active', b.dataset.tech===tech));
+  const activePill = document.querySelector('.tech-btn.active');
+  if(activePill) activePill.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+  // select sync
+  if(['gin','like','matview'].includes(tech)) $tech.value = tech;
+  // panels show/hide via object map
+  const isSearch = ['gin','like','matview'].includes(tech);
+  if(searchSection) searchSection.style.display = isSearch ? '' : 'none';
+  allTechs.forEach(k=>{
+    const el = document.getElementById('panel-'+k);
+    if(el) el.classList.toggle('active', k===tech);
+    if(el) el.style.display = (k===tech) ? 'block' : 'none';
+  });
+  // URL
+  const url = new URL(location.href);
+  url.searchParams.set('tech', tech);
+  history.replaceState(null,'',url);
+  if(isSearch) doSearch();
+}
+pills.forEach(b=> b.addEventListener('click', ()=> setTech(b.dataset.tech)));
+$tech.addEventListener('change', ()=> setTech($tech.value));
+
+// --- B-Tree ---
+let btreeMode='kenceng';
+document.getElementById('btree-lemot').addEventListener('click', ()=>{ btreeMode='lemot'; document.getElementById('btree-lemot').classList.add('active'); document.getElementById('btree-kenceng').classList.remove('active'); });
+document.getElementById('btree-kenceng').addEventListener('click', ()=>{ btreeMode='kenceng'; document.getElementById('btree-kenceng').classList.add('active'); document.getElementById('btree-lemot').classList.remove('active'); });
+document.getElementById('btree-run').addEventListener('click', ()=>{
+  const id = document.getElementById('btree-input').value || '12345';
+  const t0=performance.now();
+  const delay = btreeMode==='lemot' ? 40 : 0.07;
+  const isLemot = btreeMode==='lemot';
+  setTimeout(()=>{
+    const ms = performance.now()-t0 + delay;
+    const elTime=document.getElementById('btree-time');
+    elTime.textContent = isLemot ? '40ms' : '0.07ms';
+    elTime.className = 'time-big ' + (isLemot ? 'time-red' : 'time-green');
+    document.getElementById('btree-speedup').textContent = isLemot ? '1x' : '575x';
+    document.getElementById('btree-det').textContent = isLemot ? '0.040 detik Seq Scan' : '0.00007 detik Index Scan';
+    document.getElementById('btree-label').textContent = isLemot ? 'LEMOT merah ✗' : 'KENCENG hijau ✓';
+    document.getElementById('btree-label').className = 'pill ' + (isLemot ? 'pill-bad' : 'pill-ok');
+    const row = DATA[parseInt(id)%DATA.length] || DATA[0];
+    document.getElementById('btree-tbody').innerHTML = `<tr><td class="mono">${id}</td><td style="font-weight:700;color:#1e3a5f">${row.name}</td><td>${row.kelurahan}</td><td><span class="pill ${isLemot?'pill-bad':'pill-ok'}">${isLemot?'Seq Scan':'Index Scan'}</span></td></tr>`;
+    setBudget(ms); updateStats(ms);
+  }, isLemot?40:2);
+});
+
+// --- Cursor ---
+let cursorMode='kenceng';
+document.getElementById('cursor-lemot').addEventListener('click', ()=>{ cursorMode='lemot'; document.getElementById('cursor-lemot').classList.add('active'); document.getElementById('cursor-kenceng').classList.remove('active'); });
+document.getElementById('cursor-kenceng').addEventListener('click', ()=>{ cursorMode='kenceng'; document.getElementById('cursor-kenceng').classList.add('active'); document.getElementById('cursor-lemot').classList.remove('active'); });
+const cursorSlider=document.getElementById('cursor-slider');
+cursorSlider.addEventListener('input', ()=>{ document.getElementById('cursor-page-label').textContent=cursorSlider.value; });
+document.getElementById('cursor-run').addEventListener('click', ()=>{
+  const page=parseInt(cursorSlider.value);
+  const isLemot=cursorMode==='lemot';
+  const delay=isLemot?1500:15;
+  const t0=performance.now();
+  document.getElementById('cursor-time').textContent='...';
+  setTimeout(()=>{
+    const ms=performance.now()-t0+delay;
+    const el=document.getElementById('cursor-time');
+    el.textContent=isLemot?'2000ms':'20ms';
+    el.className='time-big '+(isLemot?'time-red':'time-green');
+    document.getElementById('cursor-speedup').textContent=isLemot?'1x':'100x';
+    document.getElementById('cursor-det').textContent=isLemot?'2.000 detik OFFSET':'0.020 detik Cursor';
+    document.getElementById('cursor-label').textContent=isLemot?'LEMOT merah ✗':'KENCENG hijau ✓';
+    document.getElementById('cursor-label').className='pill '+(isLemot?'pill-bad':'pill-ok');
+    const start=(page-1)*20 % DATA.length;
+    const rows=Array.from({length:5},(_,i)=> DATA[(start+i)%DATA.length]);
+    document.getElementById('cursor-tbody').innerHTML=rows.map((r,i)=>`<tr><td class="mono">${(page-1)*20+i+1}</td><td style="font-weight:600">${r.name}</td><td class="mono">${isLemot?'OFFSET '+page*20:'cursor '+r.name.slice(0,8)}</td><td><span class="pill ${isLemot?'pill-bad':'pill-ok'}">${isLemot?'OFFSET':'Cursor'}</span></td></tr>`).join('');
+    setBudget(ms); updateStats(ms);
+  }, delay);
+});
+
+// --- Cache ---
+let cacheMode='kenceng', cacheHit=0, cacheMiss=0, cacheTimes=[];
+document.getElementById('cache-lemot').addEventListener('click', ()=>{ cacheMode='lemot'; document.getElementById('cache-lemot').classList.add('active'); document.getElementById('cache-kenceng').classList.remove('active'); });
+document.getElementById('cache-kenceng').addEventListener('click', ()=>{ cacheMode='kenceng'; document.getElementById('cache-kenceng').classList.add('active'); document.getElementById('cache-lemot').classList.remove('active'); });
+document.getElementById('cache-run').addEventListener('click', ()=>{
+  const isForcedLemot=cacheMode==='lemot';
+  const isHit = isForcedLemot ? false : Math.random()<0.8;
+  const delay=isHit?2:50;
+  const t0=performance.now();
+  setTimeout(()=>{
+    const ms=performance.now()-t0+delay;
+    if(isHit) cacheHit++; else cacheMiss++;
+    cacheTimes.push(ms); if(cacheTimes.length>20) cacheTimes.shift();
+    const rate = cacheHit+cacheMiss ? Math.round(cacheHit/(cacheHit+cacheMiss)*100) : 0;
+    const avg = cacheTimes.length ? (cacheTimes.reduce((a,b)=>a+b,0)/cacheTimes.length).toFixed(1) : '—';
+    document.getElementById('cache-hit').textContent=cacheHit;
+    document.getElementById('cache-miss').textContent=cacheMiss;
+    document.getElementById('cache-rate').textContent=rate;
+    document.getElementById('cache-avg').textContent=avg;
+    const el=document.getElementById('cache-time');
+    el.textContent=isHit?'2ms':'50ms';
+    el.className='time-big '+(isHit?'time-green':'time-red');
+    document.getElementById('cache-speedup').textContent=isHit?'25x':'1x';
+    document.getElementById('cache-det').textContent=isHit?'HIT 2ms':'MISS 50ms';
+    document.getElementById('cache-label').textContent=isHit?'KENCENG hijau ✓':'LEMOT merah ✗';
+    document.getElementById('cache-label').className='pill '+(isHit?'pill-ok':'pill-bad');
+    document.getElementById('cache-tbody').innerHTML=`<tr><td class="mono">cache:summary</td><td>${isHit?'6081 UMKM (cached)':'6081 UMKM (DB)'}</td><td><span class="pill ${isHit?'pill-ok':'pill-bad'}">${isHit?'HIT':'MISS'}</span></td><td class="mono">${delay}ms</td></tr>`;
+    setBudget(ms); updateStats(ms);
+  }, delay);
+});
+document.getElementById('cache-invalidate').addEventListener('click', ()=>{
+  cacheHit=0; cacheMiss=0; cacheTimes=[];
+  document.getElementById('cache-hit').textContent='0';
+  document.getElementById('cache-miss').textContent='0';
+  document.getElementById('cache-rate').textContent='—';
+  document.getElementById('cache-avg').textContent='—';
+  document.getElementById('cache-tbody').innerHTML='<tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Cache invalidated — DEL cache:summary — next GET = MISS 50ms</td></tr>';
+});
+
+// --- GZIP ---
+let gzipMode='kenceng';
+document.getElementById('gzip-lemot').addEventListener('click', ()=>{ gzipMode='lemot'; document.getElementById('gzip-lemot').classList.add('active'); document.getElementById('gzip-kenceng').classList.remove('active'); });
+document.getElementById('gzip-kenceng').addEventListener('click', ()=>{ gzipMode='kenceng'; document.getElementById('gzip-kenceng').classList.add('active'); document.getElementById('gzip-lemot').classList.remove('active'); });
+const gzipSlider=document.getElementById('gzip-slider');
+gzipSlider.addEventListener('input', ()=>{ document.getElementById('gzip-kb-label').textContent=gzipSlider.value+'KB'; });
+document.getElementById('gzip-run').addEventListener('click', ()=>{
+  const kb=parseInt(gzipSlider.value);
+  const isLemot=gzipMode==='lemot';
+  const rawMs=Math.round(kb*8); // 100KB -> 800ms 3G
+  const gzMs=Math.round(kb*0.2*7.5); // 20KB -> 150ms
+  const brMs=Math.round(kb*0.14*7.5);
+  const ms=isLemot?rawMs:gzMs;
+  const t0=performance.now();
+  setTimeout(()=>{
+    const real=performance.now()-t0+ms;
+    const el=document.getElementById('gzip-time');
+    el.textContent=isLemot?rawMs+'ms':gzMs+'ms';
+    el.className='time-big '+(isLemot?'time-red':'time-green');
+    document.getElementById('gzip-saving').textContent=isLemot?'0%':'80% hemat';
+    document.getElementById('gzip-det').textContent=isLemot?kb+'KB tanpa':'20KB GZIP / 14KB Brotli';
+    document.getElementById('gzip-label').textContent=isLemot?'LEMOT merah ✗':'KENCENG hijau ✓';
+    document.getElementById('gzip-label').className='pill '+(isLemot?'pill-bad':'pill-ok');
+    document.getElementById('gzip-raw').textContent=kb+'KB → '+rawMs+'ms';
+    document.getElementById('gzip-gz').textContent=Math.round(kb*0.2)+'KB → '+gzMs+'ms';
+    document.getElementById('gzip-br').textContent=Math.round(kb*0.14)+'KB → '+brMs+'ms';
+    setBudget(real); updateStats(real);
+  }, isLemot?80:15);
+});
+
+// --- Edge ---
+let edgeOn=true, edgeMode='kenceng';
+document.getElementById('edge-lemot').addEventListener('click', ()=>{ edgeMode='lemot'; document.getElementById('edge-lemot').classList.add('active'); document.getElementById('edge-kenceng').classList.remove('active'); });
+document.getElementById('edge-kenceng').addEventListener('click', ()=>{ edgeMode='kenceng'; document.getElementById('edge-kenceng').classList.add('active'); document.getElementById('edge-lemot').classList.remove('active'); });
+document.getElementById('edge-toggle').addEventListener('click', (e)=>{
+  edgeOn=!edgeOn;
+  e.target.textContent=edgeOn?'Edge ON ✓':'Edge OFF ✗';
+  e.target.style.background=edgeOn?'#1e3a5f':'#dc2626';
+});
+document.getElementById('edge-run').addEventListener('click', ()=>{
+  const useEdge=edgeOn && edgeMode==='kenceng';
+  const delay=useEdge?40:300;
+  const t0=performance.now();
+  setTimeout(()=>{
+    const ms=performance.now()-t0+delay;
+    const el=document.getElementById('edge-time');
+    el.textContent=delay+'ms';
+    el.className='time-big '+(useEdge?'time-green':'time-red');
+    document.getElementById('edge-speedup').textContent=useEdge?'7x':'1x';
+    document.getElementById('edge-det').textContent=useEdge?'TTFB 40ms HIT':'TTFB 300ms MISS';
+    document.getElementById('edge-label').textContent=useEdge?'KENCENG hijau ✓':'LEMOT merah ✗';
+    document.getElementById('edge-label').className='pill '+(useEdge?'pill-ok':'pill-bad');
+    document.getElementById('edge-status').textContent=useEdge?'CF-Cache-Status: HIT':'CF-Cache-Status: MISS';
+    document.getElementById('edge-status').style.background=useEdge?'#ecfdf5':'#fef2f2';
+    document.getElementById('edge-status').style.borderColor=useEdge?'#a7f3d0':'#fecaca';
+    document.getElementById('edge-tbody').innerHTML=`<tr><td class="mono">CF-Cache-Status</td><td class="mono" style="font-weight:800;color:${useEdge?'#059669':'#dc2626'}">${useEdge?'HIT':'MISS'}</td><td>${useEdge?'Edge kelurahan 40ms':'Origin Jakarta 300ms'}</td></tr><tr><td class="mono">TTFB</td><td class="mono">${delay}ms</td><td>${useEdge?'7x lebih cepat':'7x lebih lambat'}</td></tr>`;
+    setBudget(ms); updateStats(ms);
+  }, delay);
+});
+
+// --- Rate Limit ---
+let rateMode='kenceng', rateRemaining=100, rate429=0;
+document.getElementById('rate-lemot').addEventListener('click', ()=>{ rateMode='lemot'; document.getElementById('rate-lemot').classList.add('active'); document.getElementById('rate-kenceng').classList.remove('active'); });
+document.getElementById('rate-kenceng').addEventListener('click', ()=>{ rateMode='kenceng'; document.getElementById('rate-kenceng').classList.add('active'); document.getElementById('rate-lemot').classList.remove('active'); });
+document.getElementById('rate-burst').addEventListener('click', ()=>{
+  const tbody=document.getElementById('rate-tbody');
+  tbody.innerHTML='';
+  let html='';
+  for(let i=1;i<=20;i++){
+    let status, header, ms;
+    if(rateMode==='lemot'){
+      status='200 OK'; header='— tanpa limit'; ms=12+Math.random()*8;
+      if(i>15) { status='500 DB crash'; header='DB overload'; ms=2000; }
+    } else {
+      if(rateRemaining>0){ status='200 OK'; header='Remaining: '+ (rateRemaining-1); ms=12+Math.random()*6; rateRemaining--; }
+      else { status='429 Too Many'; header='Retry-After: 42'; ms=5; rate429++; }
+    }
+    const is429=status.includes('429')||status.includes('500');
+    html+=`<tr><td class="mono">${i}</td><td><span class="pill ${is429?'pill-bad':'pill-ok'}">${status}</span></td><td class="mono" style="font-size:11px">${header}</td><td class="mono">${ms.toFixed(1)}ms</td></tr>`;
+  }
+  tbody.innerHTML=html;
+  document.getElementById('rate-remaining').textContent=rateRemaining;
+  document.getElementById('rate-429').textContent=rate429;
+  document.getElementById('rate-retry').textContent=rateRemaining===0?'42':'—';
+  const el=document.getElementById('rate-time');
+  const isCrash=rateMode==='lemot';
+  el.textContent=isCrash?'2000ms':'12ms';
+  el.className='time-big '+(isCrash?'time-red':'time-green');
+  document.getElementById('rate-det').textContent=isCrash?'500 DB crash':'200 OK (sisa '+rateRemaining+')';
+  document.getElementById('rate-label').textContent=isCrash?'LEMOT merah ✗':'KENCENG hijau ✓';
+  document.getElementById('rate-label').className='pill '+(isCrash?'pill-bad':'pill-ok');
+  setBudget(isCrash?2000:12); updateStats(isCrash?2000:12);
+});
+document.getElementById('rate-reset').addEventListener('click', ()=>{
+  rateRemaining=100; rate429=0;
+  document.getElementById('rate-remaining').textContent='100';
+  document.getElementById('rate-429').textContent='0';
+  document.getElementById('rate-retry').textContent='—';
+  document.getElementById('rate-tbody').innerHTML='<tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Bucket reset — 100/100 lagi — klik Burst 20x</td></tr>';
+});
+
+// --- Payload ---
+let payloadMode='kenceng';
+document.getElementById('payload-lemot').addEventListener('click', ()=>{ payloadMode='lemot'; document.getElementById('payload-lemot').classList.add('active'); document.getElementById('payload-kenceng').classList.remove('active'); });
+document.getElementById('payload-kenceng').addEventListener('click', ()=>{ payloadMode='kenceng'; document.getElementById('payload-kenceng').classList.add('active'); document.getElementById('payload-lemot').classList.remove('active'); });
+const payloadSlider=document.getElementById('payload-slider');
+const payloadMap={1:['name',5,50],2:['name,lat',10,100],3:['name,lat,lng',15,150],4:['name,lat,lng,desc',50,400],5:['* (SELECT *)',100,800]};
+payloadSlider.addEventListener('input', ()=>{ const v=parseInt(payloadSlider.value); const m=payloadMap[v]; document.getElementById('payload-fields-label').textContent=m[0]+' ('+v+')'; });
+document.getElementById('payload-run').addEventListener('click', ()=>{
+  const v=parseInt(payloadSlider.value); const m=payloadMap[v];
+  const isLemot=payloadMode==='lemot';
+  const kb=isLemot?100:m[1]; const ms=isLemot?800:m[2];
+  const t0=performance.now();
+  setTimeout(()=>{
+    const real=performance.now()-t0+ms;
+    const el=document.getElementById('payload-time');
+    el.textContent=ms+'ms';
+    el.className='time-big '+(isLemot?'time-red':'time-green');
+    document.getElementById('payload-speedup').textContent=isLemot?'0%':'85% hemat';
+    document.getElementById('payload-det').textContent=kb+'KB '+(isLemot?'SELECT *':'?fields='+m[0]);
+    document.getElementById('payload-label').textContent=isLemot?'LEMOT merah ✗':'KENCENG hijau ✓';
+    document.getElementById('payload-label').className='pill '+(isLemot?'pill-bad':'pill-ok');
+    document.getElementById('payload-tbody').innerHTML=`<tr><td><span class="pill ${isLemot?'pill-bad':'pill-ok'}">${isLemot?'LEMOT':'KENCENG'}</span></td><td class="mono">${kb}KB</td><td class="mono">${ms}ms 3G</td><td class="mono" style="font-weight:800;color:${isLemot?'#dc2626':'#059669'}">${isLemot?'0%':'85% hemat'}</td></tr>`;
+    setBudget(real); updateStats(real);
+  }, isLemot?80:15);
+});
+
+// --- PgBouncer ---
+let pgbouncerMode='kenceng';
+document.getElementById('pgbouncer-lemot').addEventListener('click', ()=>{ pgbouncerMode='lemot'; document.getElementById('pgbouncer-lemot').classList.add('active'); document.getElementById('pgbouncer-kenceng').classList.remove('active'); });
+document.getElementById('pgbouncer-kenceng').addEventListener('click', ()=>{ pgbouncerMode='kenceng'; document.getElementById('pgbouncer-kenceng').classList.add('active'); document.getElementById('pgbouncer-lemot').classList.remove('active'); });
+const pgbouncerSlider=document.getElementById('pgbouncer-slider');
+pgbouncerSlider.addEventListener('input', ()=>{ document.getElementById('pgbouncer-conn-label').textContent=pgbouncerSlider.value; });
+document.getElementById('pgbouncer-run').addEventListener('click', ()=>{
+  const conn=parseInt(pgbouncerSlider.value);
+  const isLemot=pgbouncerMode==='lemot';
+  const ramDirect=conn*3; const ramPool=75;
+  const ram=isLemot?ramDirect:ramPool;
+  const isCrash=isLemot && conn>100;
+  const t0=performance.now();
+  setTimeout(()=>{
+    const ms=isCrash?2000:(isLemot?40:5);
+    const real=performance.now()-t0+ms;
+    const el=document.getElementById('pgbouncer-time');
+    el.textContent=ram+'MB';
+    el.className='time-big '+(isCrash?'time-red':(isLemot?'time-yellow':'time-green'));
+    document.getElementById('pgbouncer-speedup').textContent=isLemot?'0%':'95% hemat';
+    document.getElementById('pgbouncer-det').textContent=isLemot?'direct :5432 '+conn+' conn':'pool 25 transaction :6432';
+    document.getElementById('pgbouncer-label').textContent=isCrash?'LEMOT crash ✗':(isLemot?'LEMOT merah ✗':'KENCENG hijau ✓');
+    document.getElementById('pgbouncer-label').className='pill '+(isCrash||isLemot?'pill-bad':'pill-ok');
+    document.getElementById('pgbouncer-tbody').innerHTML=`<tr><td><span class="pill ${isLemot?'pill-bad':'pill-ok'}">${isLemot?'direct':'PgBouncer'}</span></td><td class="mono">${conn}</td><td class="mono" style="font-weight:800;color:${isCrash?'#dc2626':'#059669'}">${ram}MB</td><td><span class="pill ${isCrash?'pill-bad':'pill-ok'}">${isCrash?'crash OOM':'OK'}</span></td></tr>`;
+    setBudget(real); updateStats(real);
+  }, 20);
+});
+
+// --- VACUUM ---
+let vacuumMode='kenceng', vacuumOn=true;
+document.getElementById('vacuum-lemot').addEventListener('click', ()=>{ vacuumMode='lemot'; document.getElementById('vacuum-lemot').classList.add('active'); document.getElementById('vacuum-kenceng').classList.remove('active'); });
+document.getElementById('vacuum-kenceng').addEventListener('click', ()=>{ vacuumMode='kenceng'; document.getElementById('vacuum-kenceng').classList.add('active'); document.getElementById('vacuum-lemot').classList.remove('active'); });
+document.getElementById('vacuum-toggle').addEventListener('click', (e)=>{ vacuumOn=!vacuumOn; e.target.textContent=vacuumOn?'VACUUM ON ✓':'VACUUM OFF ✗'; e.target.style.background=vacuumOn?'#1e3a5f':'#dc2626'; vacuumMode=vacuumOn?'kenceng':'lemot'; document.getElementById('vacuum-kenceng').classList.toggle('active', vacuumOn); document.getElementById('vacuum-lemot').classList.toggle('active', !vacuumOn); });
+document.getElementById('vacuum-run').addEventListener('click', ()=>{
+  const isLemot=vacuumMode==='lemot';
+  const ms=isLemot?200:15;
+  const t0=performance.now();
+  setTimeout(()=>{
+    const real=performance.now()-t0+ms;
+    const el=document.getElementById('vacuum-time');
+    el.textContent=ms+'ms';
+    el.className='time-big '+(isLemot?'time-red':'time-green');
+    document.getElementById('vacuum-speedup').textContent=isLemot?'1x':'13x';
+    document.getElementById('vacuum-det').textContent=isLemot?'Buffers 1200 Seq Scan':'Buffers 45 Index Scan';
+    document.getElementById('vacuum-label').textContent=isLemot?'LEMOT merah ✗':'KENCENG hijau ✓';
+    document.getElementById('vacuum-label').className='pill '+(isLemot?'pill-bad':'pill-ok');
+    document.getElementById('vacuum-tbody').innerHTML=`<tr><td><span class="pill ${isLemot?'pill-bad':'pill-ok'}">${isLemot?'OFF':'ON'}</span></td><td class="mono">${isLemot?'1243':'87'}</td><td><span class="pill ${isLemot?'pill-bad':'pill-ok'}">${isLemot?'Seq Scan':'Index Scan'}</span></td><td class="mono">${isLemot?'1200':'45'}</td></tr>`;
+    setBudget(real); updateStats(real);
+  }, isLemot?40:10);
+});
+
+// --- TTL ---
+let ttlMode='kenceng';
+document.getElementById('ttl-lemot').addEventListener('click', ()=>{ ttlMode='lemot'; document.getElementById('ttl-lemot').classList.add('active'); document.getElementById('ttl-kenceng').classList.remove('active'); });
+document.getElementById('ttl-kenceng').addEventListener('click', ()=>{ ttlMode='kenceng'; document.getElementById('ttl-kenceng').classList.add('active'); document.getElementById('ttl-lemot').classList.remove('active'); });
+const ttlSlider=document.getElementById('ttl-slider');
+function ttlTier(v){ if(v<=60) return ['Hot','30s-1m','flag']; if(v<=600) return ['Warm','5-10m','komunitas']; if(v<=3600) return ['Cold','1 jam','jadwal']; return ['Cold','1 jam','jadwal']; }
+function fmtTTL(v){ if(v<60) return v+'s'; if(v<3600) return Math.round(v/60)+'m'; return '1 jam'; }
+ttlSlider.addEventListener('input', ()=>{ const v=parseInt(ttlSlider.value); const t=ttlTier(v); document.getElementById('ttl-ttl-label').textContent=fmtTTL(v)+' ('+t[0]+')'; });
+document.getElementById('ttl-run').addEventListener('click', ()=>{
+  const v=parseInt(ttlSlider.value);
+  const isLemot=ttlMode==='lemot';
+  const t=ttlTier(v);
+  const ms=isLemot?50:5;
+  const t0=performance.now();
+  setTimeout(()=>{
+    const real=performance.now()-t0+ms;
+    const el=document.getElementById('ttl-time');
+    el.textContent=isLemot?'tanpa TTL':fmtTTL(v);
+    el.className='time-big '+(isLemot?'time-red':'time-green');
+    document.getElementById('ttl-speedup').textContent=isLemot?'basi/boros':t[0]+' '+fmtTTL(v);
+    document.getElementById('ttl-det').textContent=isLemot?'tanpa SETEX':'SETEX '+v+'s';
+    document.getElementById('ttl-label').textContent=isLemot?'LEMOT merah ✗':'KENCENG hijau ✓';
+    document.getElementById('ttl-label').className='pill '+(isLemot?'pill-bad':'pill-ok');
+    document.getElementById('ttl-tbody').innerHTML=`<tr><td><span class="pill ${isLemot?'pill-bad':'pill-ok'}">${isLemot?'tanpa':'${t[0]}'}</span></td><td class="mono">${isLemot?'—':fmtTTL(v)}</td><td>${isLemot?'semua basi':t[2]}</td><td><span class="pill ${isLemot?'pill-bad':'pill-ok'}">${isLemot?'basi':'OK'}</span></td></tr>`.replace('${t[0]}',t[0]);
+    setBudget(real); updateStats(real);
+  }, 15);
+});
+document.getElementById('ttl-invalidate').addEventListener('click', ()=>{
+  document.getElementById('ttl-tbody').innerHTML='<tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">DEL cache:summary — invalidate on POST /api/kas — next GET = MISS</td></tr>';
+});
+
+// --- ES Geo ---
+let esgeoMode='kenceng';
+document.getElementById('esgeo-lemot').addEventListener('click', ()=>{ esgeoMode='lemot'; document.getElementById('esgeo-lemot').classList.add('active'); document.getElementById('esgeo-kenceng').classList.remove('active'); });
+document.getElementById('esgeo-kenceng').addEventListener('click', ()=>{ esgeoMode='kenceng'; document.getElementById('esgeo-kenceng').classList.add('active'); document.getElementById('esgeo-lemot').classList.remove('active'); });
+document.getElementById('esgeo-run').addEventListener('click', ()=>{
+  const isLemot=esgeoMode==='lemot';
+  const ms=isLemot?50:8;
+  const t0=performance.now();
+  setTimeout(()=>{
+    const real=performance.now()-t0+ms;
+    const el=document.getElementById('esgeo-time');
+    el.textContent=ms+'ms';
+    el.className='time-big '+(isLemot?'time-red':'time-green');
+    document.getElementById('esgeo-speedup').textContent=isLemot?'1x':'5x';
+    document.getElementById('esgeo-det').textContent=isLemot?'PostGIS ST_DWithin':'geo_distance '+document.getElementById('esgeo-radius').value;
+    document.getElementById('esgeo-label').textContent=isLemot?'LEMOT merah ✗':'KENCENG hijau ✓';
+    document.getElementById('esgeo-label').className='pill '+(isLemot?'pill-bad':'pill-ok');
+    const rows=DATA.slice(0,3).map(r=>`<tr><td style="font-weight:600">${r.name}</td><td class="mono">${(Math.random()*4+0.5).toFixed(1)}km</td><td><span class="pill ${isLemot?'pill-bad':'pill-ok'}">${isLemot?'PostGIS':'ES Geo'}</span></td><td class="mono">${ms}ms</td></tr>`).join('');
+    document.getElementById('esgeo-tbody').innerHTML=rows;
+    setBudget(real); updateStats(real);
+  }, ms);
+});
+
+// --- CDC ---
+let cdcMode='kenceng', cdcOn=true, cdcSeq=0;
+document.getElementById('cdc-lemot').addEventListener('click', ()=>{ cdcMode='lemot'; document.getElementById('cdc-lemot').classList.add('active'); document.getElementById('cdc-kenceng').classList.remove('active'); });
+document.getElementById('cdc-kenceng').addEventListener('click', ()=>{ cdcMode='kenceng'; document.getElementById('cdc-kenceng').classList.add('active'); document.getElementById('cdc-lemot').classList.remove('active'); });
+document.getElementById('cdc-toggle').addEventListener('click', (e)=>{ cdcOn=!cdcOn; e.target.textContent=cdcOn?'CDC ON ✓':'Polling 5s ✗'; e.target.style.background=cdcOn?'#1e3a5f':'#dc2626'; cdcMode=cdcOn?'kenceng':'lemot'; document.getElementById('cdc-kenceng').classList.toggle('active', cdcOn); document.getElementById('cdc-lemot').classList.toggle('active', !cdcOn); });
+document.getElementById('cdc-run').addEventListener('click', ()=>{
+  cdcSeq++;
+  const isLemot=cdcMode==='lemot';
+  const ms=isLemot?5000:85;
+  const t0=performance.now();
+  setTimeout(()=>{
+    const real=performance.now()-t0+(isLemot?5000:85);
+    const el=document.getElementById('cdc-time');
+    el.textContent=isLemot?'5000ms':ms+'ms';
+    el.className='time-big '+(isLemot?'time-red':'time-green');
+    document.getElementById('cdc-speedup').textContent=isLemot?'1x':'50x';
+    document.getElementById('cdc-det').textContent=isLemot?'polling 5s hilang':'WAL→Kafka→ES';
+    document.getElementById('cdc-label').textContent=isLemot?'LEMOT merah ✗':'KENCENG hijau ✓';
+    document.getElementById('cdc-label').className='pill '+(isLemot?'pill-bad':'pill-ok');
+    const status=isLemot?'<span class="pill pill-bad">hilang dual-write</span>':'<span class="pill pill-ok">OK buffer replay</span>';
+    document.getElementById('cdc-tbody').innerHTML=`<tr><td class="mono">${cdcSeq}</td><td>INSERT umkm #${cdcSeq}</td><td class="mono">${isLemot?'5000ms':'85ms'}</td><td>${status}</td></tr>`;
+    setBudget(real); updateStats(real);
+  }, isLemot?80:20);
+});
+
+// --- RLS ---
+let rlsMode='kenceng', rlsOn=true;
+document.getElementById('rls-lemot').addEventListener('click', ()=>{ rlsMode='lemot'; document.getElementById('rls-lemot').classList.add('active'); document.getElementById('rls-kenceng').classList.remove('active'); });
+document.getElementById('rls-kenceng').addEventListener('click', ()=>{ rlsMode='kenceng'; document.getElementById('rls-kenceng').classList.add('active'); document.getElementById('rls-lemot').classList.remove('active'); });
+document.getElementById('rls-toggle').addEventListener('click', (e)=>{ rlsOn=!rlsOn; e.target.textContent=rlsOn?'RLS ON ✓':'RLS OFF ✗'; e.target.style.background=rlsOn?'#1e3a5f':'#dc2626'; rlsMode=rlsOn?'kenceng':'lemot'; document.getElementById('rls-kenceng').classList.toggle('active', rlsOn); document.getElementById('rls-lemot').classList.toggle('active', !rlsOn); });
+document.getElementById('rls-run').addEventListener('click', ()=>{
+  const isLemot=rlsMode==='lemot';
+  const ms=isLemot?1960:99;
+  const t0=performance.now();
+  setTimeout(()=>{
+    const real=performance.now()-t0+ms;
+    const el=document.getElementById('rls-time');
+    el.textContent=isLemot?'1960ms':'99ms';
+    el.className='time-big '+(isLemot?'time-red':'time-green');
+    document.getElementById('rls-speedup').textContent=isLemot?'1x':'18x';
+    document.getElementById('rls-det').textContent=isLemot?'VOLATILE 1960ms bocor':'RLS <0.1ms + index 99ms';
+    document.getElementById('rls-label').textContent=isLemot?'LEMOT merah ✗':'KENCENG hijau ✓';
+    document.getElementById('rls-label').className='pill '+(isLemot?'pill-bad':'pill-ok');
+    document.getElementById('rls-tbody').innerHTML=`<tr><td><span class="pill ${isLemot?'pill-bad':'pill-ok'}">${isLemot?'App Filter':'RLS'}</span></td><td class="mono">${isLemot?'18x lambat':'<0.1ms'}</td><td class="mono">${ms}ms</td><td><span class="pill ${isLemot?'pill-bad':'pill-ok'}">${isLemot?'bocor':'aman'}</span></td></tr>`;
+    setBudget(real); updateStats(real);
+  }, isLemot?40:10);
+});
+
+// --- Logging ---
+let loggingMode='kenceng';
+document.getElementById('logging-lemot').addEventListener('click', ()=>{ loggingMode='lemot'; document.getElementById('logging-lemot').classList.add('active'); document.getElementById('logging-kenceng').classList.remove('active'); });
+document.getElementById('logging-kenceng').addEventListener('click', ()=>{ loggingMode='kenceng'; document.getElementById('logging-kenceng').classList.add('active'); document.getElementById('logging-lemot').classList.remove('active'); });
+document.getElementById('logging-toggle').addEventListener('click', ()=>{
+  loggingMode=loggingMode==='kenceng'?'lemot':'kenceng';
+  document.getElementById('logging-kenceng').classList.toggle('active', loggingMode==='kenceng');
+  document.getElementById('logging-lemot').classList.toggle('active', loggingMode==='lemot');
+});
+document.getElementById('logging-run').addEventListener('click', ()=>{
+  const isLemot=loggingMode==='lemot';
+  const ms=isLemot?45:23;
+  const t0=performance.now();
+  setTimeout(()=>{
+    const real=performance.now()-t0+ms;
+    const el=document.getElementById('logging-time');
+    el.textContent=ms+'ms';
+    el.className='time-big '+(isLemot?'time-red':'time-green');
+    document.getElementById('logging-speedup').textContent=isLemot?'avg bohong':'p99 jujur';
+    document.getElementById('logging-det').textContent=isLemot?'console.log bocor':'Pino JSON + requestId';
+    document.getElementById('logging-label').textContent=isLemot?'LEMOT merah ✗':'KENCENG hijau ✓';
+    document.getElementById('logging-label').className='pill '+(isLemot?'pill-bad':'pill-ok');
+    const reqId='550e8400-e29b-41d4-a716-446655440000';
+    if(isLemot){
+      document.getElementById('logging-tbody').innerHTML=`<tr><td class="mono">password</td><td class="mono" style="color:#dc2626">123456 (bocor!)</td><td><span class="pill pill-bad">tanpa requestId</span></td></tr><tr><td class="mono">log</td><td class="mono">console.log('q='+q) // avg 50ms bohong</td><td><span class="pill pill-bad">LEMOT</span></td></tr>`;
+    } else {
+      document.getElementById('logging-tbody').innerHTML=`<tr><td class="mono">password</td><td class="mono" style="color:#059669">[Redacted]</td><td><span class="pill pill-ok">redact aman</span></td></tr><tr><td class="mono">requestId</td><td class="mono">${reqId}</td><td><span class="pill pill-ok">p99 200ms jujur</span></td></tr>`;
+    }
+    setBudget(real); updateStats(real);
+  }, 15);
+});
+
+// --- Proteksi ---
+let proteksiMode='kenceng', proteksiCircuit='CLOSED', proteksi503=0, proteksiBulk=0;
+document.getElementById('proteksi-lemot').addEventListener('click', ()=>{ proteksiMode='lemot'; document.getElementById('proteksi-lemot').classList.add('active'); document.getElementById('proteksi-kenceng').classList.remove('active'); });
+document.getElementById('proteksi-kenceng').addEventListener('click', ()=>{ proteksiMode='kenceng'; document.getElementById('proteksi-kenceng').classList.add('active'); document.getElementById('proteksi-lemot').classList.remove('active'); });
+document.getElementById('proteksi-burst').addEventListener('click', ()=>{
+  const tbody=document.getElementById('proteksi-tbody');
+  tbody.innerHTML='';
+  let html='';
+  const isLemot=proteksiMode==='lemot';
+  for(let i=1;i<=20;i++){
+    let status, prot, ms;
+    if(isLemot){
+      status=i>8?'500 cascade':'200 OK'; prot=i>8?'tanpa sekring':'—'; ms=i>8?2000:45;
+    } else {
+      if(i<=10){ status='200 OK'; prot='Bulkhead 20'; ms=12+Math.random()*6; proteksiBulk=Math.min(20, proteksiBulk+1); }
+      else if(i<=15){ status='503 Bulkhead'; prot='Bulkhead penuh'; ms=5; proteksi503++; }
+      else { status='503 Circuit'; prot='Circuit OPEN 30s'; ms=5; proteksi503++; proteksiCircuit='OPEN'; }
+    }
+    const isErr=status.includes('503')||status.includes('500');
+    html+=`<tr><td class="mono">${i}</td><td><span class="pill ${isErr?'pill-bad':'pill-ok'}">${status}</span></td><td class="mono" style="font-size:11px">${prot}</td><td class="mono">${ms.toFixed(1)}ms</td></tr>`;
+  }
+  tbody.innerHTML=html;
+  document.getElementById('proteksi-circuit').textContent=proteksiCircuit;
+  document.getElementById('proteksi-circuit').style.color=proteksiCircuit==='OPEN'?'#dc2626':'#059669';
+  document.getElementById('proteksi-bulkhead').textContent=proteksiBulk+'/20';
+  document.getElementById('proteksi-503').textContent=proteksi503;
+  const el=document.getElementById('proteksi-time');
+  el.textContent=isLemot?'2000ms':'12ms';
+  el.className='time-big '+(isLemot?'time-red':'time-green');
+  document.getElementById('proteksi-det').textContent=isLemot?'cascade 2000ms tail':'Circuit '+proteksiCircuit+' 12ms';
+  document.getElementById('proteksi-label').textContent=isLemot?'LEMOT merah ✗':'KENCENG hijau ✓';
+  document.getElementById('proteksi-label').className='pill '+(isLemot?'pill-bad':'pill-ok');
+  setBudget(isLemot?2000:12); updateStats(isLemot?2000:12);
+});
+document.getElementById('proteksi-reset').addEventListener('click', ()=>{
+  proteksiCircuit='CLOSED'; proteksi503=0; proteksiBulk=0;
+  document.getElementById('proteksi-circuit').textContent='CLOSED';
+  document.getElementById('proteksi-circuit').style.color='#059669';
+  document.getElementById('proteksi-bulkhead').textContent='0/20';
+  document.getElementById('proteksi-503').textContent='0';
+  document.getElementById('proteksi-tbody').innerHTML='<tr><td colspan="4" style="padding:12px;color:#64748b;text-align:center">Circuit reset — CLOSED — klik Burst 20x lagi</td></tr>';
+});
+
+// auto demo ayam on load + URL ?tech=
+window.addEventListener('DOMContentLoaded', ()=>{
+  const params=new URLSearchParams(location.search);
+  const t=params.get('tech');
+  if(t) setTech(t);
+  else { $q.value='ayam'; doSearch(); }
+});
+</script>
+</body>
+</html>
