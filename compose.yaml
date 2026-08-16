@@ -1,16 +1,8 @@
 name: gotongroyong-demo
-# TUNED FOR 5M BULK - Ryzen 13GB NVMe 1.3GB/s - revert synchronous_commit on + wal_level replica/logical setelah load untuk production
-# Infra inti — Rp0, tanpa observability. Jalankan: podman-compose up -d  /  docker compose up -d
-# REVERT KE PRODUCTION (setelah bulk load selesai):
-#   wal_level: minimal -> replica (atau logical jika butuh Debezium/CDC)
-#   synchronous_commit: off -> on
-#   max_wal_size: 10GB -> 1GB
-#   Cara revert: edit compose.yaml (ganti 3 param di atas) lalu docker compose up -d
-#   Alternatif: docker compose -f compose.yaml -f compose.production.yaml up -d  (lihat compose.production.yaml)
-#   Setelah reload: psql -c "SELECT pg_reload_conf(); SHOW shared_buffers; SHOW wal_level; SHOW synchronous_commit;"
-#   Catatan: compose.production.yaml adalah override production (wal_level replica, synchronous_commit on, max_wal_size 1GB).
-#            Jika pakai compose.override.yaml (auto-merge), maka docker compose up -d default jadi PROD;
-#            untuk BULK pakai docker compose -f compose.yaml up -d.
+# Branch 03 Pasar 6.081 — scale: 3 container order-service + nginx LB + hostname
+# Infra: postgres+redis+pgbouncer + 3x order-service + nginx LB
+# Pino tetap (dari 02), tapi scale horizontal — log dari 3 container harus terpusat (next: 04 Alloy→Loki)
+# Jalankan: podman-compose up -d  /  docker compose up -d  (scale 3 via replicas)
 
 services:
   postgres:
@@ -19,8 +11,8 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_DB: gotongroyong_demo
-      POSTGRES_USER: ${POSTGRES_USER:-demo} # demo only - override via .env for production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-demo123} # demo only - override via .env for production
+      POSTGRES_USER: ${POSTGRES_USER:-demo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-demo123}
       POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     ports:
       - "5432:5432"
@@ -57,7 +49,6 @@ services:
       - synchronous_commit=off
       - -c
       - wal_level=replica
-      # wal_level replica agar kompatibel max_wal_senders=4; untuk bulk hemat WAL pakai minimal tapi harus max_wal_senders=0
       - -c
       - effective_io_concurrency=200
       - -c
@@ -122,6 +113,92 @@ services:
       LISTEN_PORT: "6432"
       ADMIN_USERS: demo
       AUTH_TYPE: md5
+    networks:
+      - demo-net
+
+  # ── 03 Pasar Scale: 3 container order-service + hostname ──
+  order-service-1:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: gr-order-1
+    hostname: order-1
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      PAYMENT_URL: http://payment-service-1:3002/charge
+      LOG_LEVEL: info
+      NODE_ENV: production
+      HOSTNAME: order-1
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - demo-net
+
+  order-service-2:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: gr-order-2
+    hostname: order-2
+    restart: unless-stopped
+    ports:
+      - "3002:3001"
+    environment:
+      PORT: 3001
+      PAYMENT_URL: http://payment-service-1:3002/charge
+      LOG_LEVEL: info
+      NODE_ENV: production
+      HOSTNAME: order-2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - demo-net
+
+  order-service-3:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: gr-order-3
+    hostname: order-3
+    restart: unless-stopped
+    ports:
+      - "3003:3001"
+    environment:
+      PORT: 3001
+      PAYMENT_URL: http://payment-service-1:3002/charge
+      LOG_LEVEL: info
+      NODE_ENV: production
+      HOSTNAME: order-3
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - demo-net
+
+  # ── Nginx LB — round-robin ke 3 container ──
+  nginx:
+    image: nginx:alpine
+    container_name: gr-nginx
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - order-service-1
+      - order-service-2
+      - order-service-3
     networks:
       - demo-net
 
