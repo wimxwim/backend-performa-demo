@@ -1,62 +1,73 @@
-// order-service/src/index.ts — Branch 01 ANTI-PATTERN (jangan tiru di produksi)
+// order-service/src/index-proper.ts — Branch 02 PROPER
 // Bahasa komentar: Indonesia
-// Ciri jebakan P99: console.log tanpa level, tanpa requestId, card bocor, tanpa redact, tanpa latency, tanpa JSON
-// Spec: Express POST /checkout -> fetch payment-service tanpa x-request-id propagation
+// Fitur: Pino JSON, requestId propagation, latency_ms, level info/error, fetch payment dengan x-request-id
 
 import express from 'express';
+import logger from './logger.js';
+import { requestIdMiddleware, type RequestWithId } from './middleware/requestId.js';
 
 const app = express();
 const PORT = Number(process.env.PORT || 3001);
 const PAYMENT_URL = process.env.PAYMENT_URL || 'http://localhost:3002/charge';
 
 app.use(express.json());
+app.use(requestIdMiddleware as any);
 
-// ANTI-PATTERN: tanpa middleware requestId, tanpa logger, tanpa latency tracker
-// Semua log pakai console.log string concatenation — tidak bisa di-aggregate di Loki
-
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'order-service', branch: '01-console-log' });
+// Latency middleware — ukur latency_ms tiap request, log saat finish
+app.use((req: RequestWithId, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    req.log.info(
+      { latency_ms: Date.now() - start, status: res.statusCode, method: req.method, path: req.path },
+      'request completed'
+    );
+  });
+  next();
 });
 
-// POST /checkout — simulasi checkout order -> panggil payment-service
-// Body: { userId, amount, card, password, token }
-app.post('/checkout', async (req, res) => {
+app.get('/health', (req: RequestWithId, res) => {
+  req.log.debug('health check');
+  res.json({ status: 'ok', service: 'order-service', branch: '02-proper-logging' });
+});
+
+// POST /checkout — proper logging + requestId propagation
+app.post('/checkout', async (req: RequestWithId, res) => {
   const { userId, amount, card, password, token } = req.body;
 
-  // JEBAKAN 1: console.log tanpa level, tanpa JSON, tanpa requestId
-  // JEBAKAN 2: card + password + token bocor plain di log (PII leak)
-  console.log('user ' + userId + ' checkout ' + amount + ' card ' + card + ' password ' + password + ' token ' + token);
-  console.log('checkout request body:', req.body);
-  console.log('processing payment for user ' + userId + ' amount ' + amount);
+  // PROPER: log structured JSON, card/password akan di-redact jadi [Redacted] oleh Pino
+  req.log.info({ userId, amount, card, password, token }, 'checkout requested');
 
   if (!userId || !amount || !card) {
-    console.log('checkout failed: missing field userId=' + userId + ' amount=' + amount + ' card=' + card);
+    req.log.warn({ userId, amount, hasCard: !!card }, 'checkout validation failed');
     return res.status(400).json({ error: 'userId, amount, card wajib' });
   }
 
-  // ANTI-PATTERN: tanpa validasi card format, tanpa redact, langsung teruskan ke payment
-  // ANTI-PATTERN: tanpa x-request-id propagation — payment tidak bisa di-trace
-  // ANTI-PATTERN: tanpa timeout, tanpa retry, tanpa latency measurement
+  const start = Date.now();
   try {
-    console.log('calling payment service at ' + PAYMENT_URL + ' for user ' + userId);
+    req.log.info({ paymentUrl: PAYMENT_URL }, 'calling payment service');
 
+    // PROPER: propagasi x-request-id ke payment-service — trace utuh
     const resp = await fetch(PAYMENT_URL, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'content-type': 'application/json',
+        'x-request-id': req.requestId,
+      },
       body: JSON.stringify({ userId, amount, card, password, token }),
     });
 
     const data = await resp.json();
+    const latency_ms = Date.now() - start;
 
-    // ANTI-PATTERN: log response tanpa level, card masih kebawa
-    console.log('payment response for user ' + userId + ' card ' + card + ': ' + JSON.stringify(data));
+    // PROPER: log JSON dengan level, requestId, latency_ms — card sudah [Redacted]
+    req.log.info({ latency_ms, status: resp.status, paymentOk: resp.ok }, 'payment response received');
 
     if (!resp.ok) {
-      console.log('payment failed for user ' + userId + ' amount ' + amount + ' card ' + card);
+      req.log.warn({ userId, amount, latency_ms, paymentError: data }, 'payment failed');
       return res.status(402).json({ error: 'payment failed', detail: data });
     }
 
-    console.log('checkout success user ' + userId + ' amount ' + amount + ' card ' + card);
+    req.log.info({ userId, amount, latency_ms, orderId: 'ord_' + Date.now() }, 'checkout success');
 
     return res.json({
       success: true,
@@ -66,23 +77,18 @@ app.post('/checkout', async (req, res) => {
       payment: data,
     });
   } catch (err: any) {
-    // ANTI-PATTERN: console.log error tanpa stack structured, tanpa requestId
-    console.log('checkout error user ' + userId + ' card ' + card + ' error ' + err.message);
-    console.log(err);
+    const latency_ms = Date.now() - start;
+    req.log.error({ err: err.message, stack: err.stack, latency_ms }, 'checkout error');
     return res.status(500).json({ error: 'checkout gagal', detail: err.message });
   }
 });
 
-// GET /api/komunitas/:id — tanpa cache, tanpa index hint, console.log saja
-app.get('/api/komunitas/:id', async (req, res) => {
+app.get('/api/komunitas/:id', (req: RequestWithId, res) => {
   const id = req.params.id;
-  console.log('get komunitas id=' + id);
-  // Simulasi query tanpa cache — tiap request hit DB
-  console.log('query SELECT * FROM communities WHERE id=' + id);
-  res.json({ id, name: 'Komunitas ' + id, note: 'branch 01 tanpa cache Redis' });
+  req.log.info({ komunitasId: id }, 'get komunitas');
+  res.json({ id, name: 'Komunitas ' + id, note: 'branch 02 proper logging' });
 });
 
 app.listen(PORT, () => {
-  console.log('order-service 01 listening on port ' + PORT);
-  console.log('PAYMENT_URL=' + PAYMENT_URL);
+  logger.info({ port: PORT, paymentUrl: PAYMENT_URL }, 'order-service 02 proper listening');
 });
