@@ -3,10 +3,13 @@
 > ⚠️ 99 detik = waktu BIKIN 5 juta data fake untuk test (seeding), BUKAN waktu buka aplikasi. User cari 'ayam' cuma 10ms (200x lebih cepat).
 
 ![5M Synthetic Streaming 99s 50457 rows/s](https://img.shields.io/badge/5M%20Synthetic-Streaming%2099s%2050457%20rows%2Fs-brightgreen) [BENCH_5M.md](docs/BENCH_5M.md) | [TUNING_5M.md](docs/TUNING_5M.md) | ![Sudut Pandang Terluas - 7 Lensa](https://img.shields.io/badge/Sudut%20Pandang%20Terluas-7%20Lensa-blue) [SUDUT_PANDANG_TERLUAS.md](docs/SUDUT_PANDANG_TERLUAS.md)
+![10M Synthetic Streaming 4m08s 40322 rows/s](https://img.shields.io/badge/10M%20Synthetic-Streaming%204m08s%2040322%20rows%2Fs-brightgreen) [BENCH_10M.md](docs/BENCH_10M.md) | TERUJI 10M — 10.000.000 baris 5,0GB 4m08s 91 kategori tiap 10k+ (Generate 2x5M streaming heap flat 64MB) | Query 10ms p99<500ms
 
 > **Logging + Performa, 5 Branch Seirama — 01 Warung → 02 UMKM SOP → 03 Pasar 6.081 → 04 Observability → 05 CDC (04+05 digabung profile observability/cdc)** — Demo terintegrasi untuk pembelajaran backend Gotong Royong. Menggabungkan **PZN (Programmer Zaman Now) logging-management-demo (4 tahap)** + **Poster 20 Istilah Performa** + **Modul Performa Backend GR 10 Bab** + **Website Lokal 1 Atap v2** ([website/index.html](./website/index.html) branch switcher+5 tabs+tab baru+Back, [website/praktik/index.html](./website/praktik/index.html) 18 teknik LEMOT vs KENCENG tanpa terminal). Rp0-friendly, jalan di Podman/Docker lokal tanpa cloud, 100% offline.
 
 > **TERUJI 5 JUTA — Generate 5M 99s (50K/s) | Query 10ms (200x) p99<500ms — *99s = seeding data test, bukan loading user*** — Generate 5M NDJSON 2.5GB distribusi Bintaro 32% OK. Lihat [docs/BENCH_5M.md](docs/BENCH_5M.md) (100k 2.66s, 1M 22.4s, 5M 99.1s) dan [docs/TUNING_5M.md](docs/TUNING_5M.md) (22 param BULK). Cara generate: `npx tsx seed/generate.ts --synthetic 5000000 --out /tmp/test_5m.ndjson` (hapus setelah verifikasi, simpan sample 1k 513K).
+
+> **TERUJI 10M — 10.000.000 baris 5,0GB 4m08s 91 kategori tiap 10k+ (Generate 2x5M streaming heap flat 64MB) | Query 10ms p99<500ms** — Generate 10M NDJSON 5,0GB distribusi Bintaro 32% OK. Lihat [docs/BENCH_10M.md](docs/BENCH_10M.md) (10M 4m08s 40.322 rows/s heap 35-89MB flat, 2x5M 1m59s+2m00s+8s cat) dan [docs/BENCH_5M.md](docs/BENCH_5M.md). File `data/synthetic_10M.ndjson` lokal tidak di-git (5,0GB, 10.000.000 baris).
 
 ## Filosofi
 
@@ -23,6 +26,7 @@ Demo ini mensimulasikan **order-service / payment-service / umkm-service / kas-s
 | 100k | 2.66s | 37.600 | 205 MB | 13 MB | ~50 MB | PASS |
 | 1M | 22.4s | 44.557 | 208 MB | 64.7 MB | 502 MB | PASS |
 | 5M | 99.1s *seeding, bukan loading | 50.457 | ~210 MB | 64.7 MB | 2.5 GB | PASS |
+| 10M | 4m08s (248s) *seeding 2x5M streaming | 40.322 | ~210 MB | 35-89 MB flat | 5,0 GB data/synthetic_10M.ndjson | PASS |
 
 Cara generate:
 

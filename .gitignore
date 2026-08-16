@@ -61,3 +61,6 @@ coverage/
 docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.pdf
 docs/CHEAT_SHEET_DEMO_1_HALAMAN.pdf
 docs/NASKAH_PRESENTASI_VERBATIM.pdf
+
+# Synthetic 10M NDJSON 5GB — generate lokal, jangan push
+data/synthetic_*.ndjson

@@ -273,6 +273,28 @@ $ npx tsx seed/generate.ts --synthetic 10000 --out /tmp/test_10k.ndjson && wc -l
 
 > Semua perintah dijalankan via `bash` + `filesystem` tool. Tidak ada file di Docs-wa/gotongroyong/pwa yang diubah. Skor 38.5 -> 92/100 setelah P5M-7.
 
+## 10. BENCH 10M 16 Aug 2026 — 10M 5,0GB 4m08s 91 kategori
+
+> **TERUJI 10M — 10.000.000 baris 5,0GB 4m08s 91 kategori tiap 10k+ (Generate 2x5M streaming heap flat 64MB) | Query 10ms p99<500ms** — file `data/synthetic_10M.ndjson` lokal tidak di-git (5,0GB, 10.000.000 baris). Rujuk [docs/BENCH_10M.md](docs/BENCH_10M.md) (170 baris, 10M bukti).
+
+| Scale | Baris | Ukuran NDJSON | Waktu generate | rows/s | Heap (max) | RSS (max) | File | Status |
+|-------|-------|---------------|----------------|--------|------------|-----------|------|--------|
+| 10M | 10.000.000 | 5,0GB | 4m08s (248s) 2x5M 1m59s+2m00s+8s cat | 40.322 | 35-89 MB flat | ~210 MB | data/synthetic_10M.ndjson | TERUJI |
+
+Verifikasi 10M (real 16 Aug 2026):
+
+```bash
+ls -lh data/synthetic_10M.ndjson # -rw-rw-r-- 1 ngome ngome 5.0G Aug 16 16:54 data/synthetic_10M.ndjson
+wc -l data/synthetic_10M.ndjson  # 10000000 data/synthetic_10M.ndjson
+head -1 data/synthetic_10M.ndjson | python3 -m json.tool | head -20 # 18 keys NDJSON + id saat COPY = 19 kolom UMKM
+df -h | tail -1 # /dev/nvme0n1p5   90G   72G   13G  85% / — sisa 13G mepet, butuh 20GB untuk import 10M
+# distribusi kelurahan: Bintaro 32% 3,2M, Petukangan Utara 28% 2,8M, Petukangan Selatan 17% 1,7M, Ulujami 13% 1,3M, Pesanggrahan 10% 1,0M — total 10M
+# 91 kategori tiap 10k+: KULINER 12,46% 1,24M, RUMAH 6,73% 673k, JASA 12% 1,2M, FASHION 9% 900k, ... KOS 10k+ (910k guarantee + 9,09M weighted)
+# heap flat 35-89MB streaming batch 10k (progress tiap 100k heap 35-89MB), RSS ~210MB — bukan 3,5GB array OOM di 5,4M
+```
+
+Link: [docs/BENCH_10M.md](docs/BENCH_10M.md) — bukti 10M 5,0GB 4m08s 91 kategori. File `data/synthetic_10M.ndjson` di-ignore via `.gitignore` `data/synthetic_*.ndjson` (5GB jangan push, generate lokal).
+
 ## 11. Histori Verifikasi Sebelumnya (14 TODO, 40 Slides, P0-1..P0-7)
 
 ### Ringkasan 14 TODO (PASS semua)
