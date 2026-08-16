@@ -1,224 +1,94 @@
-# Backend Performa Demo — Gotong Royong
+# Backend Performa Demo — Gotong Royong | 01 Warung — console.log
+
+> **Babak 1 dari 4 — Warung catat buku (Muttaqin: jujur tapi berantakan)**
 
 > ⚠️ 99 detik = waktu BIKIN 5 juta data fake untuk test (seeding), BUKAN waktu buka aplikasi. User cari 'ayam' cuma 10ms (200x lebih cepat).
 
-![5M Synthetic Streaming 99s 50457 rows/s](https://img.shields.io/badge/5M%20Synthetic-Streaming%2099s%2050457%20rows%2Fs-brightgreen) [BENCH_5M.md](docs/BENCH_5M.md) | [TUNING_5M.md](docs/TUNING_5M.md) | ![Sudut Pandang Terluas - 7 Lensa](https://img.shields.io/badge/Sudut%20Pandang%20Terluas-7%20Lensa-blue) [SUDUT_PANDANG_TERLUAS.md](docs/SUDUT_PANDANG_TERLUAS.md)
+![Branch 01 Warung](https://img.shields.io/badge/Branch-01%20Warung%20console.log-orange) ![TIGA INSAN Muttaqin](https://img.shields.io/badge/TIGA%20INSAN-Muttaqin%20jujur-blue)
 
-> **Logging + Performa, 4 branch** — Demo terintegrasi untuk pembelajaran backend Gotong Royong. Menggabungkan **PZN logging-management-demo (4 tahap)** + **Poster 20 Istilah Performa** + **Modul Performa Backend GR 10 Bab**. Rp0-friendly, jalan di Podman/Docker lokal tanpa cloud.
+## Filosofi — TIGA INSAN
 
-> **TERUJI 5 JUTA — Generate 5M 99s (50K/s) | Query 10ms (200x) p99<500ms — *99s = seeding data test, bukan loading user*** — Generate 5M NDJSON 2.5GB distribusi Bintaro 32% OK. Lihat [docs/BENCH_5M.md](docs/BENCH_5M.md) (100k 2.66s, 1M 22.4s, 5M 99.1s) dan [docs/TUNING_5M.md](docs/TUNING_5M.md) (22 param BULK). Cara generate: `npx tsx seed/generate.ts --synthetic 5000000 --out /tmp/test_5m.ndjson` (hapus setelah verifikasi, simpan sample 1k 513K).
+Gotong Royong adalah **OS Kehidupan Komunitas** dengan nilai **TIGA INSAN: Muttaqin, Shalih, Nafi'**. Branch 01 adalah **Muttaqin** — jujur mencatat, tapi berantakan seperti warung catat di buku tulis tanpa SOP.
 
-## Filosofi
+| INSAN | Makna | Branch |
+|-------|-------|--------|
+| **Muttaqin** | Jujur, amanah, tapi manual | 01 Warung — console.log |
+| **Shalih** | Rapi, terstruktur, SOP | 02 UMKM SOP — pino JSON |
+| **Nafi'** | Bermanfaat scale untuk umat | 03 Pasar 6.081 + 04 SAKTI 5M |
 
-Gotong Royong adalah **OS Kehidupan Komunitas** (masjid, RT/RW, keluarga, UMKM) dengan nilai **TIGA INSAN: Muttaqin, Shalih, Nafi'**. Performa adalah wujud **kepercayaan (trust)** — setiap milidetik keterlambatan adalah pengkhianatan amanah data komunitas. Prinsip UX #46: *berfungsi di 3G*, #50: *loading < 3 detik*. Backend harus < 200ms agar total dengan latency 3G (500-1000ms) tetap di bawah 3 detik.
+## Branch vs Slide Mapping (seperti PZN main README)
 
-Demo ini mensimulasikan **order-service / payment-service / umkm-service / kas-service** dengan logging bertahap dan optimasi performa, mirip struktur PZN tapi dengan domain Gotong Royong (kas masjid SHA-256, jadwal sholat cache, pencarian pg_trgm).
+| Branch | Nama GotongRoyong | Slide | Fokus | Analogi |
+|--------|-------------------|-------|-------|---------|
+| `01-warung` | **01 Warung — console.log** | 4-5 | console.log jebakan 3 pertanyaan | Warung catat buku tulis — 1 warung ok, 6.081 warung hancur |
+| `02-umkm-sop` | **02 UMKM SOP — pino JSON** | 6-14 | pino JSON + requestId + redact | UMKM 6.081 SOP — log terstruktur bisa di-query |
+| `03-pasar-scale` | **03 Pasar 6.081 — scale** | 15-17 | 3 container + nginx LB + hostname | Pasar 6.081 scale — 3 lapak, 1 pintu masuk |
+| `04-sakti-centralized` | **04 SAKTI 5M — centralized** | 18-22 | Alloy→Loki→Grafana | SAKTI 5M — 5 juta log terpusat, query 10ms |
 
-## 5M Synthetic — Teruji 99 Detik 50K rows/s
+> **Website 1 atap v2**: `website/index.html` 615 baris + `website/app.js` 294 baris — branch switcher 4 opsi, 5 tabs, mermaid, LogQL. Buka: `cd website && python3 -m http.server 8000` → `http://localhost:8000/?branch=01-warung&tab=readme`
 
-> **TERUJI 5 JUTA — Generate 5M 99s (50K/s) | Query 10ms (200x) p99<500ms — *99s = seeding data test, bukan loading user*** — Pipeline P5M-1..P5M-7 COMPLETED, skor 38.5->92/100. Rujuk [docs/BENCH_5M.md](docs/BENCH_5M.md) dan [docs/TUNING_5M.md](docs/TUNING_5M.md).
+## Babak 1: Warung — console.log Jebakan 3 Pertanyaan
 
-| Count | Waktu | rows/s | RSS | Heap | File | Status |
-|-------|-------|--------|-----|------|------|--------|
-| 100k | 2.66s | 37.600 | 205 MB | 13 MB | ~50 MB | PASS |
-| 1M | 22.4s | 44.557 | 208 MB | 64.7 MB | 502 MB | PASS |
-| 5M | 99.1s *seeding, bukan query | 50.457 | ~210 MB | 64.7 MB | 2.5 GB | PASS |
+### Apa yang ada di branch ini
 
-Cara generate:
+- `order-service/src/index.ts` — **ANTI-PATTERN** (jangan tiru di produksi): `console.log` tanpa level, tanpa requestId, card bocor, tanpa redact, tanpa latency, tanpa JSON
+- `compose.yaml` — infra inti saja (postgres+redis+pgbouncer), tanpa observability
+- `website/` — Website 1 atap v2 (branch switcher 4 opsi, 5 tabs)
 
-```bash
-npx tsx seed/generate.ts --synthetic 5000000 --out /tmp/test_5m.ndjson
-ls -lh /tmp/test_5m.ndjson # 2.5G
-wc -l /tmp/test_5m.ndjson  # 5000000
-# distribusi Bintaro 32% Petukangan Utara 27.8% Selatan 17.3% Ulujami 13.5% Pesanggrahan 9.4% OK
-# heap flat 64MB, RSS ~210MB (sebelum streaming OOM 9GB)
-# file 2.5G deleted hemat disk, sample 1k 513K retained
-```
+### 3 Pertanyaan Jebakan (seperti PZN)
 
-Before vs After: array OOM 9GB + batch 41 menit vs streaming 205MB + COPY 1.6 menit (25x), shared_buffers 256MB->2GB, wal_level logical->minimal, batch 1000->COPY, GIN 40m->12m. Disk budget 19.6GB untuk 5M (data 2.1+ GIN 1.5+WAL 10+temp 6), sisa 17GB dari 90G aman. Untuk 70M butuh 48GB mepet. Tuning apply: `docker compose up -d` + `sudo bash scripts/swap-setup.sh` + `psql -c "SHOW shared_buffers; SHOW wal_level;"`, revert via `compose.production.yaml` atau edit compose.yaml (wal_level minimal->replica, synchronous_commit off->on, max_wal_size 10GB->1GB).
+1. **"Log ini dari request mana?"** — Tidak ada `requestId`, tidak bisa korelasi antar service. `console.log('user 123 checkout 50000')` — request mana? Tidak tahu.
+2. **"Level-nya apa?"** — Semua `console.log` sama, tidak ada `info/warn/error`. Tidak bisa filter `level=error` di Grafana.
+3. **"Card bocor tidak?"** — `console.log('card ' + card)` — PII bocor plain di log! Di 02 akan di-redact jadi `[Redacted]`.
 
-## Sudut Pandang Terluas - Dari 5M ke 280 Juta
-
-> Demo 5M (99s 50K rows/s, GIN 200x, COPY 25x) baru 5% visi - bukti performa, bukan seluruh OS. Visi lengkap adalah **OS Kehidupan Komunitas 280 juta warga** (70.4jt keluarga, 800rb masjid, 64jt UMKM) dengan 7 lensa terluas: filosofi TIGA INSAN sebagai filter keputusan, Piagam Madinah 10 pasal sebagai konstitusi digital, socio corporation inverted 11 level, teknologi 7 fondasi + 6DB + 514 masjid hub-and-spoke, data Pesanggrahan 6.081 titik (KULINER 44%), UX 100 prinsip 7 tier untuk 3G 1-2Mbps, dan roadmap 300 fitur 5 fase + Brand 56 bab. Rujuk [docs/SUDUT_PANDANG_TERLUAS.md](./docs/SUDUT_PANDANG_TERLUAS.md) (898 baris, 7 lensa) dan [docs/DEMO_ZIS_RLS.md](./docs/DEMO_ZIS_RLS.md) (546 baris, 8 asnaf + hash + RLS).
-
-| # | Lensa | Inti 1 Baris | Link Demo | vs Global |
-|---|-------|--------------|-----------|-----------|
-| 1 | Filosofi TIGA INSAN | Muttaqin-Shalih-Nafi' prisma 6 ranah, filter 3 pertanyaan, siklus Belajar->Memimpin | [DEMO_ZIS_RLS.md TIGA INSAN](./docs/DEMO_ZIS_RLS.md#tiga-insan-mapping--demo-live) | vs WeChat wu-wei, Gojek pragmatik, Shopee growth-at-all-cost |
-| 2 | Piagam Madinah 10 Pasal | Konstitusi digital + 5 Layer Trust (RLS + hash chain + verify) | [DEMO_ZIS_RLS.md RLS](./docs/DEMO_ZIS_RLS.md#rls-diagram--isolasi-per-komunitas-prinsip-31) | vs GDPR (individu) - GR komunitas + verifiable moat |
-| 3 | Socio Corp Inverted 11 Level | 70.4jt keluarga, 2.6jt PJ, inverted gaji puncak mengalir ke bawah, biaya 127T | [SUDUT_PANDANG_TERLUAS.md Lensa 3](./docs/SUDUT_PANDANG_TERLUAS.md#lensa-3--socio-corporation-inverted-11-level-vs-buurtzorgmondragon) | vs Buurtzorg flat 15k, Mondragon koperasi 1:6 |
-| 4 | Teknologi 7 Fondasi + 6DB + 514 Masjid | 7 fondasi build-once, 6DB (PG+Mongo+Redis+ES+ClickHouse+Influx), 514 masjid hub-and-spoke | [presentasi slide-3 OS 4 pilar](./presentasi/index.html#slide-3) | vs Stack 2026 modular monolith 42% fewer conflicts, Fabric 3500 TPS |
-| 5 | Data Pesanggrahan 6.081 | KULINER 44% dominan, Bintaro 31.7%, 256 masjid 1:24, ekstrapolasi 1.7jt vs Kemenkop 64jt | [presentasi slide-17 Pesanggrahan](./presentasi/index.html#slide-17) | vs Data lapangan vs registrasi nasional |
-| 6 | UX 100 Prinsip 7 Tier | 7 tier piramida, 5 segmen, 3G 1-2Mbps RAM 2GB WA 98%, #31 isolasi #46 3G-ready | [SUDUT_PANDANG_TERLUAS.md Lensa 6](./docs/SUDUT_PANDANG_TERLUAS.md#lensa-6--ux-100-prinsip-7-tier-vs-nielsen-10) | vs Nielsen 10 heuristics (1994) - GR spesifik Indonesia |
-| 7 | Roadmap 300 Fitur 5 Fase + Brand 56 Bab | 18 domain, MVP 32 -> F5 11 peradaban, 7 revenue, TAM 280jt | [presentasi slide-37 Roadmap](./presentasi/index.html#slide-37) | vs Shopee TiDB US$47.9B GMV, over-expansion 8 pasar exit |
-
-> **3 Slide Baru (40 Slides):** [slide-3 OS 4 pilar](./presentasi/index.html#slide-3) (7 fondasi + 6DB + 514 masjid) | [slide-17 Pesanggrahan 44%](./presentasi/index.html#slide-17) (KULINER 44% + 5 kelurahan) | [slide-37 Roadmap 300 fitur](./presentasi/index.html#slide-37) (5 fase + 7 revenue + TAM 280jt) - total 40 Slides (37 -> 40, +4.5m). Demo live: [DEMO_ZIS_RLS.md](./docs/DEMO_ZIS_RLS.md) - `POST /api/zis/distribute` (8 asnaf) -> `GET /api/ledger/verify` (valid true 5) -> `GET /api/demo/rls-test` (isolated true).
-
-> Skor sudut luas: **5% -> 85% visi ter-cover** dengan 7 lensa + 3 slide + demo ZIS/RLS. Demo 5M tetap valid sebagai bukti performa, tapi tidak lagi dikira "aplikasi kas RT yang ngebut".
-
-## Arsitektur Singkat
-
-```
-Flutter App (single codebase)
-      |
- API Gateway (Kong / Supabase Edge)
-      |
- 7 Fondasi Bersama ──> 6 Database Layer
-      |                    |
-      |              Postgres 16 (ACID+RLS) ──CDC/Debezium──> ES + ClickHouse
-      |              Redis (<10ms)  MongoDB  Influx/Timescale
-      |
- Audit SHA-256 Hash Chain (trigger pgcrypto)
-```
-
-Detail lengkap: [`docs/spec-backend-performa.md`](docs/spec-backend-performa.md) — spec lock 7 fondasi + 6 DB + 16 endpoint SLA + throughput + threshold + checklist 10.
-
-## 4 Branch Plan (mengikuti PZN + 05 CDC)
-
-| Branch | Nama | Fokus | Stack |
-|--------|------|-------|-------|
-| `01-console-log` | Anti-pattern | `console.log` tanpa struktur, tanpa level, tanpa correlation-id | Node.js + Express |
-| `02-proper-logging` | Proper Logging | **Pino JSON** structured logging, level (trace/debug/info/warn/error/fatal), pretty di dev, file rotation | `pino`, `pino-pretty`, `pino/file` |
-| `03-scale` | DB + Cache + Proteksi | Postgres 16 + **PgBouncer pool 25** + **Redis cache-aside** + **pg_trgm GIN** + **MatView** + **rate limiting** + **GZIP** + **cursor pagination** | `pg`, `ioredis`, `express-rate-limit`, `compression` |
-| `04-observability` | Observabilitas | **Alloy -> Loki -> Grafana** (logs) + **Prometheus** (metrics) + **OTEL Collector -> Jaeger** (traces) + **pg_stat_statements** | Grafana Alloy, Loki, Prometheus, OTEL, Jaeger |
-| `05-cdc` | CDC & OLAP | **Debezium (WAL) -> Kafka -> Elasticsearch (geo_distance) + ClickHouse (OLAP)** — hindari dual-write | Debezium, Kafka, ES 8, ClickHouse |
-
-> Branch `04-observability` dan `05-cdc` digabung di `compose.observability.yaml` (profile `observability`/`cdc`) agar tetap Rp0: nyalakan hanya saat butuh.
-
-### Per Branch — Apa yang Dipelajari
-
-- **01**: Mengapa `console.log` gagal di produksi — tidak ada level, tidak ada JSON, tidak ada trace-id, log hilang saat restart, tidak bisa di-aggregate.
-- **02**: Pino JSON — setiap log punya `level`, `time`, `msg`, `traceId`, `service`, `latencyMs`. Di dev pakai `pino-pretty`, di prod JSON ke stdout -> Alloy -> Loki.
-- **03**: Optimasi yang bikin p50 turun 10x — index B-Tree & GIN, MatView agregasi kas, Redis cache jadwal sholat (TTL 1 jam), PgBouncer transaction pooling, cursor pagination, GZIP/Brotli, rate limiting.
-- **04+05**: Tiga pilar observabilitas (metrics/logs/traces) + CDC — satu-satunya cara sinkronisasi aman (anti dual-write), ES untuk `geo_distance` masjid terdekat, ClickHouse untuk dashboard OKR miliaran baris.
-
-## Cara Menjalankan
-
-### Prasyarat
-
-- **Bun** >= 1.1 atau Node >= 20
-- **Podman** (`podman-compose`) atau Docker (`docker compose`)
-
-### 1. Install
+### Cara Jalan — Branch 01
 
 ```bash
-bun install
-# atau: npm install
+git checkout 01-warung
+podman-compose up -d          # atau docker compose up -d
+bun install && bun run dev    # order-service :3001
+curl -X POST http://localhost:3001/checkout -H "content-type: application/json" -d '{"userId":"u1","amount":50000,"card":"4111111111111111","password":"rahasia"}'
+# lihat log: card bocor plain! tidak ada requestId!
+podman logs gr-order-service  # atau docker logs
 ```
 
-### 2. Nyalakan infra inti (Rp0, tanpa observability)
+### Apa yang Salah (Demo Live)
 
 ```bash
-podman-compose -f compose.yaml up -d
-# atau: docker compose up -d
-# cek: podman ps / docker ps
+# 01: log berantakan, tidak bisa di-query
+console.log('user ' + userId + ' checkout ' + amount + ' card ' + card)
+# output: "user u1 checkout 50000 card 4111111111111111" — card bocor!
+
+# 02 (next): log terstruktur, card di-redact
+logger.info({ userId, amount, card, requestId }, 'checkout requested')
+# output: {"level":"info","requestId":"abc-123","card":"[Redacted]","msg":"checkout requested"}
 ```
 
-Layanan inti:
+### Analogi GotongRoyong
 
-| Service | Port | Kredensial |
-|---------|------|------------|
-| Postgres 16 | 5432 | `gotongroyong_demo` / `demo` / `demo123` |
-| Redis 7 | 6379 | tanpa password (lokal) |
-| PgBouncer | 6432 | pool 25, transaction mode |
+- **Warung (01)**: 1 warung catat manual di buku tulis — masih bisa cari manual. Tapi 6.081 warung (data Pesanggrahan) catat manual? Hancur. Tidak bisa audit, tidak bisa cari "CARD_DECLINED" di 5 juta log.
+- **UMKM SOP 6.081 (02)**: 6.081 UMKM pakai SOP — log JSON terstruktur, bisa di-query via LogQL `{job="warung-service"} |= "CARD_DECLINED"`.
+- **Pasar 6.081 (03)**: 6.081 lapak di pasar — 3 container + nginx LB, log dari 3 container harus terpusat.
+- **SAKTI 5M (04)**: 5 juta warga — Alloy→Loki→Grafana, query 10ms, dashboard, alert.
 
-### 3. Seed data (kas + komunitas + pengumuman)
+## Cara Verifikasi
 
 ```bash
-bun run seed
-# membuat 5 komunitas, 100 kas_entries dengan SHA-256 hash chain, 50 pengumuman
+git checkout 01-warung && ls README.md website/index.html  # exist
+cat order-service/src/index.ts | grep console.log | head -5  # jebakan
+podman-compose up -d && curl -s http://localhost:3001/health | jq
 ```
 
-### 4. Jalankan service (dev)
+## Next: 02 UMKM SOP
 
 ```bash
-bun run dev
-# order-service :3001  payment-service :3002  umkm-service :3003  kas-service :3004
-```
-
-### 5. Observabilitas & CDC (opsional, profile)
-
-```bash
-# butuh ~4GB RAM tambahan — jalankan hanya saat butuh
-podman-compose -f compose.yaml -f compose.observability.yaml --profile observability up -d
-podman-compose -f compose.yaml -f compose.observability.yaml --profile cdc up -d
-# Grafana http://localhost:3000 (admin/admin)
-# Prometheus http://localhost:9090
-# Jaeger http://localhost:16686
-# Loki http://localhost:3100
-# OTEL collector http://localhost:4317 (gRPC)
-# Elasticsearch http://localhost:9200
-# Kafka http://localhost:9092
-# ClickHouse http://localhost:8123
-```
-
-### 6. Load test
-
-```bash
-bun run load
-# atau: k6 run load/k6.js  /  autocannon -c 50 -d 30 http://localhost:3001/api/komunitas/demo
-# target: p95 < 500ms, error < 0.1% (lihat Bab 10.1)
-```
-
-### Hentikan
-
-```bash
-podman-compose down -v
-podman-compose -f compose.yaml -f compose.observability.yaml --profile observability --profile cdc down -v
-```
-
-## Mapping 20 Istilah Poster -> Bab Docs
-
-Poster performa GR memuat 20 istilah yang harus dikuasai. Berikut mapping ke Modul Performa 10 Bab:
-
-| # | Istilah Poster | Bab | Penjelasan Singkat |
-|---|---------------|-----|---------------------|
-| 1 | Latency | Bab 1.4.1, 10.1 | Waktu server proses request (diukur server-side) |
-| 2 | p50 / Median | Bab 1.4.2 | 50% request lebih cepat |
-| 3 | p95 | Bab 1.4.2, 10.1 | 95% request lebih cepat — target SLA |
-| 4 | p99 | Bab 1.4.2, 10.1 | 99% request lebih cepat — worst-case |
-| 5 | Throughput (RPS/QPS) | Bab 1.4.3, 10.2 | Request/detik — target 100 -> 200k |
-| 6 | Endpoint | Bab 1.4.4, 10.1 | URL API — 16 endpoint dengan SLA beda |
-| 7 | SLA / SLO / SLI | Bab 1.4.5 | Kontrak -> target internal -> metrik aktual |
-| 8 | Cache Hit / Miss | Bab 1.4.7, Bab 4 | Hit > 80% target, miss = query DB |
-| 9 | Cold / Warm / Hot Path | Bab 1.4.6 | Cold = DB, Hot = Redis < 5ms |
-| 10 | Connection Pool | Bab 1.4.9, Bab 3.5 | PgBouncer pool 25, cegah exhaustion |
-| 11 | Index Scan vs Seq Scan | Bab 1.4.10, Bab 3.1 | Index = 20 langkah vs 1M (50.000x) |
-| 12 | GIN (pg_trgm) | Bab 3.2 | Trigram GIN untuk LIKE '%keyword%' |
-| 13 | Materialized View | Bab 3.3 | Agregasi kas bulanan pre-computed |
-| 14 | Cursor Pagination | Bab 3.4, 7.3 | Ganti OFFSET yang lambat di halaman dalam |
-| 15 | EXPLAIN ANALYZE | Bab 3.6, 10.4 | Wajib sebelum rilis — no Seq Scan >1000 |
-| 16 | Redis (Cache-Aside) | Bab 4.3 | TTL 1 jam jadwal sholat, 5 menit profil |
-| 17 | Elasticsearch (Inverted Index) | Bab 5.1, 5.4 | geo_distance masjid terdekat |
-| 18 | CDC / Debezium / WAL | Bab 6.1, 6.2 | Baca WAL Postgres -> Kafka -> ES/ClickHouse |
-| 19 | GZIP / Brotli | Bab 7.2, 10.4 | Kompresi 70-80%, wajib checklist |
-| 20 | Prometheus / Grafana / OTEL | Bab 8.3, 8.5 | Tiga pilar: metrics, logs, traces |
-
-> Semua istilah di atas diukur dengan **alat**: `EXPLAIN ANALYZE`, `pg_stat_statements`, `Redis INFO`, `Prometheus`, `Grafana`, `Jaeger`, `k6/autocannon`.
-
-## Struktur Repo
-
-```
-backend-performa-demo/
-  README.md
-  docs/spec-backend-performa.md   # spec lock (400 baris)
-  compose.yaml                    # postgres+redis+pgbouncer
-  compose.observability.yaml      # prometheus+grafana+loki+alloy+otel+jaeger+es+kafka+debezium+clickhouse
-  package.json                    # workspaces: order/payment/umkm/kas/load/seed
-  .env.example
-  .gitignore
-  order-service/   payment-service/   umkm-service/   kas-service/   load/   seed/  (dibuat di branch 01+)
+git checkout 02-umkm-sop  # pino JSON + requestId + redact
 ```
 
 ## Referensi
 
-- [Sudut Pandang Terluas - 7 Lensa](./docs/SUDUT_PANDANG_TERLUAS.md) - OS 4 pilar + TIGA INSAN + 514 masjid
-- [Demo ZIS 8 Asnaf + RLS](./docs/DEMO_ZIS_RLS.md) - hash verify + RLS isolasi + 8 asnaf QS 9:60
-- Ringkasan Backend GR Bab 2,4,5 — 7 fondasi, 6 DB, SHA-256 hash chain
-- Modul Performa Backend GR 10 Bab — SLA 16 endpoint, throughput, checklist 10
-- Studi Kasus Shopee Bab 3.4 — threshold kuantitatif 1TB/10M/1000 QPS (GR: 500GB/5M/500)
-- PZN logging-management-demo — 4 tahap logging (console -> Pino -> scale -> observability)
-- GotongRoyong Docs: `Docs-wa/Ringkasan_Komprehensif_Backend_GotongRoyong.md`
+- `website/index.html` — Website 1 atap v2, branch switcher `?branch=01-warung`
+- `presentasi/index.html#slide-4` — Slide 4-5: Konteks Indonesia 3G + SLA p50/p95/p99
+- `docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.md` — 2119 baris, TIGA INSAN
+- PZN logging-management-demo — 4 tahap (console → pino → scale → centralized)
 
-## Lisensi
-
-Demo internal Gotong Royong — bukan untuk produksi tanpa review keamanan.
