@@ -56,8 +56,8 @@ services:
       - -c
       - synchronous_commit=off
       - -c
-      - wal_level=minimal
-      # ganti ke logical setelah load jika butuh replica/CDC Debezium, karena minimal hemat WAL 34GB
+      - wal_level=replica
+      # wal_level replica agar kompatibel max_wal_senders=4; untuk bulk hemat WAL pakai minimal tapi harus max_wal_senders=0
       - -c
       - effective_io_concurrency=200
       - -c
@@ -89,7 +89,7 @@ services:
     container_name: gr-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - redisdata:/data
     command: ["redis-server", "--appendonly", "yes", "--save", "60", "1"]
@@ -102,7 +102,8 @@ services:
       - demo-net
 
   pgbouncer:
-    image: edoburu/pgbouncer:1.22.1
+    image: edoburu/pgbouncer:latest
+    profiles: ["full"]
     container_name: gr-pgbouncer
     restart: unless-stopped
     depends_on:
