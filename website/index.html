@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gotong Royong — Backend Performa Demo | Website Lokal 1 Atap v2</title>
-<meta name="description" content="Website Lokal 1 Atap v2 — 4 branch, 5 tabs, code viewer, diagram mermaid, live demo health, LogQL playground. Tanpa hosting, cukup laptop.">
+<meta name="description" content="Website Lokal 1 Atap v2 — 5 branch seirama, 5 tabs, 18 teknik LEMOT vs KENCENG, 40 Slides 60 Menit. Tanpa hosting, cukup laptop, 100% offline.">
 <link rel="stylesheet" href="./style.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -50,7 +50,7 @@ a{color:inherit;text-decoration:none}
       <div style="width:32px;height:32px;border-radius:8px;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px">GR</div>
       <div style="min-width:0">
         <div style="color:#fff;font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Gotong Royong — Backend Performa Demo</div>
-        <div style="color:#bfdbfe;font-size:11px">Website Lokal 1 Atap v2 — TIGA INSAN • 4 branch • 5 tabs • branch sync URL</div>
+        <div style="color:#bfdbfe;font-size:11px">Website Lokal 1 Atap v2 — TIGA INSAN • 5 branch seirama • 5 tabs • branch sync URL</div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -61,14 +61,14 @@ a{color:inherit;text-decoration:none}
           <option value="01-console-log">01 Warung — console.log</option>
           <option value="02-proper-logging">02 UMKM SOP — pino JSON</option>
           <option value="03-scale">03 Pasar 6.081 — scale</option>
-          <option value="04-centralized">04 SAKTI 5M — centralized</option>
+          <option value="04-centralized">04 SAKTI 5M — Observability + CDC</option>
         </select>
         <span id="branch-chip" class="branch-chip" title="branch terpilih — shareable via ?branch=">01 • Warung</span>
       </div>
       <span style="background:#f59e0b;color:#fff;font-weight:800;font-size:11px;padding:4px 10px;border-radius:999px">TERUJI 5 JUTA — 99s 50K/s | Query 10ms p99&lt;500ms</span>
       <nav style="display:flex;gap:6px">
         <a href="./praktik/index.html" target="_blank" rel="noopener" style="background:#f59e0b;color:#fff;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px">Praktik ↗</a>
-        <a href="./presentasi/index.html" target="_blank" rel="noopener" style="color:#dbeafe;font-size:12px;font-weight:600;padding:4px 8px;border:1px solid rgba(255,255,255,.15);border-radius:999px">40 Slides ↗</a>
+        <a href="./presentasi/index.html" target="_blank" rel="noopener" title="40 Slides 60 Menit — +3 slide baru: OS 4 pilar (slide 36), Pesanggrahan 44% (slide 37), Roadmap 300 fitur (slide 38)" style="color:#dbeafe;font-size:12px;font-weight:600;padding:4px 8px;border:1px solid rgba(255,255,255,.15);border-radius:999px">40 Slides ↗</a>
         <a href="./docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.pdf" target="_blank" rel="noopener" style="color:#dbeafe;font-size:12px;font-weight:600;padding:4px 8px;border:1px solid rgba(255,255,255,.15);border-radius:999px">Buku ↗</a>
       </nav>
     </div>
@@ -523,12 +523,12 @@ loki.write "grafana" {
         <h2 style="margin-top:8px;color:#fff;font-size:20px;font-weight:800;letter-spacing:-.02em">PRAKTIK — Coba Sendiri (Tanpa Terminal)</h2>
         <p style="margin-top:4px;color:#bfdbfe;font-size:13px;font-weight:600">Ketik 'ayam' -&gt; lihat 10ms — Tidak perlu buka terminal, tidak perlu docker, cukup ketik di website</p>
       </div>
-      <span style="background:#fff;color:#1e3a5f;font-weight:800;font-size:11px;padding:6px 10px;border-radius:999px;white-space:nowrap">PRAKTIK live — 250 UMKM • GIN 10ms vs LIKE 2000ms</span>
+      <span style="background:#fff;color:#1e3a5f;font-weight:800;font-size:11px;padding:6px 10px;border-radius:999px;white-space:nowrap" title="18 teknik LEMOT vs KENCENG tanpa terminal — GIN, B-Tree, Cursor, Cache, GZIP, Edge, Rate, Payload, PgBouncer, VACUUM, TTL, ES Geo, CDC, RLS, Logging, Proteksi">PRAKTIK live — 250 UMKM • 18 teknik • GIN 10ms vs LIKE 2000ms</span>
     </div>
     <div style="padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#fff">
       <div style="min-width:0">
         <div style="font-size:16px;font-weight:800;color:#1e3a5f">Ketik 'ayam' -&gt; lihat 10ms</div>
-        <div style="font-size:13px;color:#475569;margin-top:2px">Tidak perlu buka terminal, tidak perlu docker, cukup ketik di website — seperti PZN, langsung kelihatan waktunya. Bandingkan GIN pg_trgm (cepat) vs LIKE (lambat) vs MatView (ringkas).</div>
+        <div style="font-size:13px;color:#475569;margin-top:2px">Tidak perlu buka terminal, tidak perlu docker, cukup ketik di website — seperti PZN (Programmer Zaman Now), langsung kelihatan waktunya. Bandingkan 18 teknik LEMOT vs KENCENG tanpa terminal — GIN, B-Tree, Cursor, Cache, GZIP, Edge, Rate, Payload, PgBouncer, VACUUM, TTL, ES Geo, CDC, RLS, Logging, Proteksi — live di browser.</div>
         <div style="margin-top:6px;font-size:11px;color:#64748b">250 sample Pesanggrahan (AYAM 453 • KULINER 948 • WARUNG 648) — full 6.081 di DB • 5M synthetic 99s</div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -548,7 +548,7 @@ loki.write "grafana" {
       <div class="glass-strong card" style="padding:16px">
         <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#f59e0b">BUKU BELAJAR — <span class="branch-label">01 Warung</span></div>
         <div style="font-weight:800;color:#1e3a5f;margin-top:4px">BUKU_BELAJAR_GOTONGROYONG_LENGKAP</div>
-        <div style="font-size:12px;color:#64748b;margin-top:2px">2119 baris • PDF 896K • MD pandoc-compatible</div>
+        <div style="font-size:12px;color:#64748b;margin-top:2px">2119 baris • 102 hal • PDF 896K • MD pandoc-compatible</div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
           <a href="./docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.pdf" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px">Buka PDF ↗</a>
           <a href="./docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.md" target="_blank" rel="noopener" style="background:#fff;color:#1e3a5f;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px;border:1px solid #cbd5e1">Buka MD ↗</a>
@@ -557,7 +557,7 @@ loki.write "grafana" {
       <div class="glass-strong card" style="padding:16px">
         <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#f59e0b">NASKAH VERBATIM — <span class="branch-label">01 Warung</span></div>
         <div style="font-weight:800;color:#1e3a5f;margin-top:4px">NASKAH_PRESENTASI_VERBATIM</div>
-        <div style="font-size:12px;color:#64748b;margin-top:2px">2355 baris • PDF 942K • 40 slides anti-grogi</div>
+        <div style="font-size:12px;color:#64748b;margin-top:2px">2355 baris • 88 hal • PDF 942K • 40 slides anti-grogi</div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
           <a href="./docs/NASKAH_PRESENTASI_VERBATIM.pdf" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px">Buka PDF ↗</a>
           <a href="./docs/NASKAH_PRESENTASI_VERBATIM.md" target="_blank" rel="noopener" style="background:#fff;color:#1e3a5f;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px;border:1px solid #cbd5e1">Buka MD ↗</a>
@@ -566,7 +566,7 @@ loki.write "grafana" {
       <div class="glass-strong card" style="padding:16px">
         <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#f59e0b">CHEAT SHEET — <span class="branch-label">01 Warung</span></div>
         <div style="font-weight:800;color:#1e3a5f;margin-top:4px">CHEAT_SHEET_DEMO_1_HALAMAN</div>
-        <div style="font-size:12px;color:#64748b;margin-top:2px">1 halaman • PDF 67K • MD ringkas</div>
+        <div style="font-size:12px;color:#64748b;margin-top:2px">1 hal • PDF 67K • MD ringkas</div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
           <a href="./docs/CHEAT_SHEET_DEMO_1_HALAMAN.pdf" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px">Buka PDF ↗</a>
           <a href="./docs/CHEAT_SHEET_DEMO_1_HALAMAN.md" target="_blank" rel="noopener" style="background:#fff;color:#1e3a5f;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px;border:1px solid #cbd5e1">Buka MD ↗</a>

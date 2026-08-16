@@ -4,15 +4,15 @@
 
 ![5M Synthetic Streaming 99s 50457 rows/s](https://img.shields.io/badge/5M%20Synthetic-Streaming%2099s%2050457%20rows%2Fs-brightgreen) [BENCH_5M.md](docs/BENCH_5M.md) | [TUNING_5M.md](docs/TUNING_5M.md) | ![Sudut Pandang Terluas - 7 Lensa](https://img.shields.io/badge/Sudut%20Pandang%20Terluas-7%20Lensa-blue) [SUDUT_PANDANG_TERLUAS.md](docs/SUDUT_PANDANG_TERLUAS.md)
 
-> **Logging + Performa, 4 branch** — Demo terintegrasi untuk pembelajaran backend Gotong Royong. Menggabungkan **PZN logging-management-demo (4 tahap)** + **Poster 20 Istilah Performa** + **Modul Performa Backend GR 10 Bab**. Rp0-friendly, jalan di Podman/Docker lokal tanpa cloud.
+> **Logging + Performa, 5 Branch Seirama — 01 Warung → 02 UMKM SOP → 03 Pasar 6.081 → 04 Observability → 05 CDC (04+05 digabung profile observability/cdc)** — Demo terintegrasi untuk pembelajaran backend Gotong Royong. Menggabungkan **PZN (Programmer Zaman Now) logging-management-demo (4 tahap)** + **Poster 20 Istilah Performa** + **Modul Performa Backend GR 10 Bab** + **Website Lokal 1 Atap v2** ([website/index.html](./website/index.html) branch switcher+5 tabs+tab baru+Back, [website/praktik/index.html](./website/praktik/index.html) 18 teknik LEMOT vs KENCENG tanpa terminal). Rp0-friendly, jalan di Podman/Docker lokal tanpa cloud, 100% offline.
 
 > **TERUJI 5 JUTA — Generate 5M 99s (50K/s) | Query 10ms (200x) p99<500ms — *99s = seeding data test, bukan loading user*** — Generate 5M NDJSON 2.5GB distribusi Bintaro 32% OK. Lihat [docs/BENCH_5M.md](docs/BENCH_5M.md) (100k 2.66s, 1M 22.4s, 5M 99.1s) dan [docs/TUNING_5M.md](docs/TUNING_5M.md) (22 param BULK). Cara generate: `npx tsx seed/generate.ts --synthetic 5000000 --out /tmp/test_5m.ndjson` (hapus setelah verifikasi, simpan sample 1k 513K).
 
 ## Filosofi
 
-Gotong Royong adalah **OS Kehidupan Komunitas** (masjid, RT/RW, keluarga, UMKM) dengan nilai **TIGA INSAN: Muttaqin, Shalih, Nafi'**. Performa adalah wujud **kepercayaan (trust)** — setiap milidetik keterlambatan adalah pengkhianatan amanah data komunitas. Prinsip UX #46: *berfungsi di 3G*, #50: *loading < 3 detik*. Backend harus < 200ms agar total dengan latency 3G (500-1000ms) tetap di bawah 3 detik.
+Gotong Royong adalah **OS Kehidupan Komunitas** (masjid, RT/RW, keluarga, UMKM) dengan nilai **TIGA INSAN: Muttaqin (jujur — kepercayaan yang bisa diverifikasi via hash chain & RLS), Shalih (amal — rapi & ihsan, setiap fitur memudahkan ibadah/transaksi), Nafi' (kebermanfaatan — memberdayakan komunitas, bukan ekstraksi)**. Performa adalah wujud **kepercayaan (trust)** — setiap milidetik keterlambatan adalah pengkhianatan amanah data komunitas. Prinsip UX #46: *berfungsi di 3G*, #50: *loading < 3 detik*. Backend harus < 200ms agar total dengan latency 3G (500-1000ms) tetap di bawah 3 detik. **Generate 99s seeding vs Query 10ms** selalu bersama — 99s = bikin data test (seeding, bukan loading user), Query 10ms = narik data real — tanpa hosting, cukup **Website Lokal 1 Atap v2** offline 100%.
 
-Demo ini mensimulasikan **order-service / payment-service / umkm-service / kas-service** dengan logging bertahap dan optimasi performa, mirip struktur PZN tapi dengan domain Gotong Royong (kas masjid SHA-256, jadwal sholat cache, pencarian pg_trgm).
+Demo ini mensimulasikan **order-service / payment-service / umkm-service / kas-service** dengan logging bertahap dan optimasi performa, mirip struktur **PZN (Programmer Zaman Now)** tapi dengan domain Gotong Royong (kas masjid SHA-256, jadwal sholat cache, pencarian pg_trgm). Coba langsung tanpa terminal: [website/praktik/index.html](./website/praktik/index.html) 18 teknik LEMOT vs KENCENG.
 
 ## 5M Synthetic — Teruji 99 Detik 50K rows/s
 
@@ -22,7 +22,7 @@ Demo ini mensimulasikan **order-service / payment-service / umkm-service / kas-s
 |-------|-------|--------|-----|------|------|--------|
 | 100k | 2.66s | 37.600 | 205 MB | 13 MB | ~50 MB | PASS |
 | 1M | 22.4s | 44.557 | 208 MB | 64.7 MB | 502 MB | PASS |
-| 5M | 99.1s *seeding, bukan query | 50.457 | ~210 MB | 64.7 MB | 2.5 GB | PASS |
+| 5M | 99.1s *seeding, bukan loading | 50.457 | ~210 MB | 64.7 MB | 2.5 GB | PASS |
 
 Cara generate:
 
@@ -72,24 +72,24 @@ Flutter App (single codebase)
 
 Detail lengkap: [`docs/spec-backend-performa.md`](docs/spec-backend-performa.md) — spec lock 7 fondasi + 6 DB + 16 endpoint SLA + throughput + threshold + checklist 10.
 
-## 4 Branch Plan (mengikuti PZN + 05 CDC)
+## 5 Branch Seirama — 01 Warung → 02 UMKM SOP → 03 Pasar 6.081 → 04 Observability → 05 CDC (04+05 digabung profile observability/cdc)
 
 | Branch | Nama | Fokus | Stack |
 |--------|------|-------|-------|
-| `01-console-log` | Anti-pattern | `console.log` tanpa struktur, tanpa level, tanpa correlation-id | Node.js + Express |
-| `02-proper-logging` | Proper Logging | **Pino JSON** structured logging, level (trace/debug/info/warn/error/fatal), pretty di dev, file rotation | `pino`, `pino-pretty`, `pino/file` |
-| `03-scale` | DB + Cache + Proteksi | Postgres 16 + **PgBouncer pool 25** + **Redis cache-aside** + **pg_trgm GIN** + **MatView** + **rate limiting** + **GZIP** + **cursor pagination** | `pg`, `ioredis`, `express-rate-limit`, `compression` |
-| `04-observability` | Observabilitas | **Alloy -> Loki -> Grafana** (logs) + **Prometheus** (metrics) + **OTEL Collector -> Jaeger** (traces) + **pg_stat_statements** | Grafana Alloy, Loki, Prometheus, OTEL, Jaeger |
-| `05-cdc` | CDC & OLAP | **Debezium (WAL) -> Kafka -> Elasticsearch (geo_distance) + ClickHouse (OLAP)** — hindari dual-write | Debezium, Kafka, ES 8, ClickHouse |
+| `01-console-log` | 01 Warung (console.log) | `console.log` tanpa struktur, tanpa level, tanpa correlation-id | Node.js + Express |
+| `02-proper-logging` | 02 UMKM SOP 6.081 (pino) | **Pino JSON** structured logging, level (trace/debug/info/warn/error/fatal), pretty di dev, file rotation | `pino`, `pino-pretty`, `pino/file` |
+| `03-scale` | 03 Pasar 6.081 (scale) | Postgres 16 + **PgBouncer pool 25** + **Redis cache-aside** + **pg_trgm GIN** + **MatView** + **rate limiting** + **GZIP** + **cursor pagination** | `pg`, `ioredis`, `express-rate-limit`, `compression` |
+| `04-observability` | 04 SAKTI 5M (Alloy→Loki→Grafana) | **Alloy -> Loki -> Grafana** (logs) + **Prometheus** (metrics) + **OTEL Collector -> Jaeger** (traces) + **pg_stat_statements** | Grafana Alloy, Loki, Prometheus, OTEL, Jaeger |
+| `05-cdc` | 05 CDC (Debezium) | **Debezium (WAL) -> Kafka -> Elasticsearch (geo_distance) + ClickHouse (OLAP)** — hindari dual-write | Debezium, Kafka, ES 8, ClickHouse |
 
-> Branch `04-observability` dan `05-cdc` digabung di `compose.observability.yaml` (profile `observability`/`cdc`) agar tetap Rp0: nyalakan hanya saat butuh.
+> Branch `04-observability` (04 SAKTI 5M) dan `05-cdc` (05 CDC Debezium) digabung di `compose.observability.yaml` (profile `observability`/`cdc`) agar tetap Rp0: nyalakan hanya saat butuh — 5 branch seirama Warung→SAKTI 5M.
 
 ### Per Branch — Apa yang Dipelajari
 
-- **01**: Mengapa `console.log` gagal di produksi — tidak ada level, tidak ada JSON, tidak ada trace-id, log hilang saat restart, tidak bisa di-aggregate.
-- **02**: Pino JSON — setiap log punya `level`, `time`, `msg`, `traceId`, `service`, `latencyMs`. Di dev pakai `pino-pretty`, di prod JSON ke stdout -> Alloy -> Loki.
-- **03**: Optimasi yang bikin p50 turun 10x — index B-Tree & GIN, MatView agregasi kas, Redis cache jadwal sholat (TTL 1 jam), PgBouncer transaction pooling, cursor pagination, GZIP/Brotli, rate limiting.
-- **04+05**: Tiga pilar observabilitas (metrics/logs/traces) + CDC — satu-satunya cara sinkronisasi aman (anti dual-write), ES untuk `geo_distance` masjid terdekat, ClickHouse untuk dashboard OKR miliaran baris.
+- **01 Warung (console.log)**: Mengapa `console.log` gagal di produksi — tidak ada level, tidak ada JSON, tidak ada trace-id, log hilang saat restart, tidak bisa di-aggregate.
+- **02 UMKM SOP 6.081 (pino)**: Pino JSON — setiap log punya `level`, `time`, `msg`, `traceId`, `service`, `latencyMs`. Di dev pakai `pino-pretty`, di prod JSON ke stdout -> Alloy -> Loki.
+- **03 Pasar 6.081 (scale)**: Optimasi yang bikin p50 turun 10x — index B-Tree & GIN, MatView agregasi kas, Redis cache jadwal sholat (TTL 1 jam), PgBouncer transaction pooling, cursor pagination, GZIP/Brotli, rate limiting.
+- **04 SAKTI 5M (Alloy→Loki→Grafana) + 05 CDC (Debezium)**: Tiga pilar observabilitas (metrics/logs/traces) + CDC — satu-satunya cara sinkronisasi aman (anti dual-write), ES untuk `geo_distance` masjid terdekat, ClickHouse untuk dashboard OKR miliaran baris. 04+05 digabung profile observability/cdc.
 
 ## Cara Menjalankan
 
@@ -195,28 +195,37 @@ Poster performa GR memuat 20 istilah yang harus dikuasai. Berikut mapping ke Mod
 
 > Semua istilah di atas diukur dengan **alat**: `EXPLAIN ANALYZE`, `pg_stat_statements`, `Redis INFO`, `Prometheus`, `Grafana`, `Jaeger`, `k6/autocannon`.
 
-## Struktur Repo
+## Struktur Repo — Website Lokal 1 Atap v2
 
 ```
 backend-performa-demo/
   README.md
+  website/index.html              # Website Lokal 1 Atap v2 — branch switcher+5 tabs+tab baru+Back, 100% offline
+  website/praktik/index.html      # 18 teknik LEMOT vs KENCENG tanpa terminal (GIN, B-Tree, Cursor, Cache, GZIP, Edge, Rate, Payload, PgBouncer, VACUUM, TTL, ES Geo, CDC, RLS, Logging, Proteksi)
+  presentasi/index.html           # 40 Slides 60 Menit (102 hal 896K buku, 88 hal 942K naskah, 1 hal 67K cheat)
+  docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.md  # 2119 baris 102 hal 896K — v2.1
+  docs/NASKAH_PRESENTASI_VERBATIM.md         # 2355 baris 88 hal 942K
+  docs/CHEAT_SHEET_DEMO_1_HALAMAN.md         # 1 hal 67K
   docs/spec-backend-performa.md   # spec lock (400 baris)
   compose.yaml                    # postgres+redis+pgbouncer
-  compose.observability.yaml      # prometheus+grafana+loki+alloy+otel+jaeger+es+kafka+debezium+clickhouse
-  package.json                    # workspaces: order/payment/umkm/kas/load/seed
+  compose.observability.yaml      # prometheus+grafana+loki+alloy+otel+jaeger+es+kafka+debezium+clickhouse (profile observability/cdc)
+  package.json                    # workspaces: order/payment/umkm/kas/load/seed — 40 Slides 60 Menit
   .env.example
-  .gitignore
+  .gitignore                      # PDF ignored — generate lokal via pandoc
   order-service/   payment-service/   umkm-service/   kas-service/   load/   seed/  (dibuat di branch 01+)
 ```
 
-## Referensi
+## Referensi — Website Lokal 1 Atap v2 + Praktik 18 Teknik + Buku
 
+- [Website Lokal 1 Atap v2](./website/index.html) — branch switcher+5 tabs+tab baru+Back, 100% offline, 5 branch seirama
+- [Praktik 18 Teknik LEMOT vs KENCENG](./website/praktik/index.html) — tanpa terminal, tanpa docker, cukup ketik (GIN, B-Tree, Cursor, Cache, GZIP, Edge, Rate, Payload, PgBouncer, VACUUM, TTL, ES Geo, CDC, RLS, Logging, Proteksi)
+- [Buku Belajar v2.1 2119 baris 102 hal](./docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.md) — 40 Slides 60 Menit, 18 teknik, Generate 99s seeding vs Query 10ms
 - [Sudut Pandang Terluas - 7 Lensa](./docs/SUDUT_PANDANG_TERLUAS.md) - OS 4 pilar + TIGA INSAN + 514 masjid
 - [Demo ZIS 8 Asnaf + RLS](./docs/DEMO_ZIS_RLS.md) - hash verify + RLS isolasi + 8 asnaf QS 9:60
 - Ringkasan Backend GR Bab 2,4,5 — 7 fondasi, 6 DB, SHA-256 hash chain
 - Modul Performa Backend GR 10 Bab — SLA 16 endpoint, throughput, checklist 10
 - Studi Kasus Shopee Bab 3.4 — threshold kuantitatif 1TB/10M/1000 QPS (GR: 500GB/5M/500)
-- PZN logging-management-demo — 4 tahap logging (console -> Pino -> scale -> observability)
+- PZN (Programmer Zaman Now) logging-management-demo — 4 tahap logging (console -> Pino -> scale -> observability)
 - GotongRoyong Docs: `Docs-wa/Ringkasan_Komprehensif_Backend_GotongRoyong.md`
 
 ## Lisensi

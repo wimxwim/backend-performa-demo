@@ -10,8 +10,8 @@
 | **Subtitle** | Bahan Belajar Pribadi Anti-Grogi — 40 Slides 7 Lensa 5M 99s |
 | **Penulis** | Wafi — Founder Gotong Royong |
 | **Tanggal** | 15 Aug 2026 |
-| **Versi** | Part 1 (Cover + Bab 0-4) — 600-700 baris dari total 2000+ baris |
-| **Badge** | TERUJI 5 JUTA 99.1s 50.457 rows/s — RSS 210MB heap 64MB flat — COPY 25x GIN 200x |
+| **Versi** | v2.1 — 2119 baris 102 hal 896K — 40 Slides 60 Menit, 18 teknik LEMOT vs KENCENG, Generate 99s seeding vs Query 10ms |
+| **Badge** | TERUJI 5 JUTA 99.1s 50.457 rows/s — RSS 210MB heap 64MB flat — COPY 25x GIN 200x — 18 teknik — 40 Slides |
 | **Lokasi** | `backend-performa-demo/docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.md` |
 | **Format** | Markdown pandoc-compatible — heading `## ###`, tabel pipe `| col |`, code ```bash, callout `> ⚠️` `> ✅` `> 🔒` |
 
@@ -21,18 +21,18 @@
 
 ---
 
-## Daftar Isi — 12 Bab + Lampiran (Part 1: Cover + Bab 0-4)
+## Daftar Isi — 12 Bab + Lampiran (v2.1 — 2119 baris 102 hal)
 
-| No | Bab | Judul | Hal | Status Part 1 |
-|----|-----|-------|-----|---------------|
-| — | **COVER** | Cover + Badge + Identitas Buku | 1 | ✅ Part 1 |
-| 0 | **Bab 0** | Cara Pakai Buku Ini — Anti-Grogi 90m vs 30m | 2-3 | ✅ Part 1 |
-| 1 | **Bab 1** | Diagnosis Kenapa Demo Sempit — 7 Dimensi Hilang | 4-5 | ✅ Part 1 |
-| 2 | **Bab 2** | Angka Kunci 5M Maximal — 100k 1M 5M + Distribusi + TOP 15 | 6-8 | ✅ Part 1 |
-| 3 | **Bab 3** | Before vs After 8 Baris — 25x 200x 10x | 9-10 | ✅ Part 1 |
-| 4 | **Bab 4** | Konsep Bahasa Warung 8 Konsep — Teknikal vs Warung | 11-12 | ✅ Part 1 |
-| 5 | **Bab 5** | Tuning 22 Param Ringkas — BULK vs Production | 13-14 | ⏳ Part 2 |
-| 6 | **Bab 6** | Bukti Benchmark — GIN 2000->10ms + p50/p99 | 15-16 | ⏳ Part 2 |
+| No | Bab | Judul | Hal | Status |
+|----|-----|-------|-----|--------|
+| — | **COVER** | Cover + Badge + Identitas Buku | 1 | ✅ v2.1 |
+| 0 | **Bab 0** | Cara Pakai Buku Ini — Anti-Grogi 90m vs 30m | 2-3 | ✅ v2.1 |
+| 1 | **Bab 1** | Diagnosis Kenapa Demo Sempit — 7 Dimensi Hilang | 4-5 | ✅ v2.1 |
+| 2 | **Bab 2** | Angka Kunci 5M Maximal — 100k 1M 5M + Distribusi + TOP 15 | 6-8 | ✅ v2.1 |
+| 3 | **Bab 3** | Before vs After 8 Baris — 25x 200x 10x | 9-10 | ✅ v2.1 |
+| 4 | **Bab 4** | Konsep Bahasa Warung 8 Konsep — Teknikal vs Warung | 11-12 | ✅ v2.1 |
+| 5 | **Bab 5** | Tuning 22 Param Ringkas — BULK vs Production | 13-14 | ✅ v2.1 |
+| 6 | **Bab 6** | Bukti Benchmark — GIN 2000->10ms + p50/p99 | 15-16 | ✅ v2.1 |
 | 7 | **Bab 7** | Pelajaran Penting 7 Poin — Streaming COPY GIN | 17 | ⏳ Part 2 |
 | 8 | **Bab 8** | Perintah Reproducible 10 Perintah — Copy-Paste | 18 | ⏳ Part 2 |
 | 9 | **Bab 9** | Sudut Pandang Terluas 7 Lensa — Dari 5M ke 280 Juta | 19-21 | ⏳ Part 3 |

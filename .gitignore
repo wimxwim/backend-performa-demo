@@ -57,11 +57,7 @@ coverage/
 # Temp
 /tmp/
 
-# Buku belajar PDF — jangan push, kirim via Telegram saja
+# PDF ignored — generate lokal via pandoc, website pakai relative ./docs/*.pdf 100% offline, kirim via Telegram
 docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.pdf
-
-# Cheat sheet PDF — jangan push, kirim via Telegram saja
 docs/CHEAT_SHEET_DEMO_1_HALAMAN.pdf
-
-# Naskah verbatim PDF — jangan push
 docs/NASKAH_PRESENTASI_VERBATIM.pdf

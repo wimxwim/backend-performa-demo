@@ -2,7 +2,9 @@
   "name": "backend-performa-demo",
   "private": true,
   "version": "0.1.0",
-  "description": "Backend Performa Demo \u2014 Gotong Royong (Logging + Performa, 4 branch + 05 CDC). Rp0-friendly, Podman/Docker lokal.",
+  "description": "40 Slides 60 Menit, 5 branch seirama, 18 teknik LEMOT vs KENCENG tanpa terminal, Website Lokal 1 Atap v2",
+  "homepage": "https://github.com/wimxwim/backend-performa-demo#readme",
+  "repository": { "type": "git", "url": "https://github.com/wimxwim/backend-performa-demo.git" },
   "type": "module",
   "workspaces": [
     "order-service",
@@ -66,7 +68,7 @@
   "directories": {
     "doc": "docs"
   },
-  "keywords": [],
+  "keywords": ["gotong-royong", "backend-performa", "40-slides", "5-branch-seirama", "18-teknik", "lemot-vs-kenceng", "website-lokal-1-atap-v2", "pino", "postgres", "redis", "pg-trgm", "offline"],
   "author": "",
   "license": "ISC"
 }
