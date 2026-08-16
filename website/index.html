@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gotong Royong — Backend Performa Demo | Website Lokal 1 Atap v2</title>
+<meta name="description" content="Website Lokal 1 Atap v2 — 4 branch, 5 tabs, code viewer, diagram mermaid, live demo health, LogQL playground. Tanpa hosting, cukup laptop.">
+<link rel="stylesheet" href="./style.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:ui-sans,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:#f1f5f9;color:#0f172a;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.glass-strong{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border:1px solid rgba(226,232,240,.9)}
+.card{border-radius:16px;transition:transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,23,42,.08)}
+/* branch switcher chip + tabs underline — also in style.css for cascade */
+.branch-chip{display:inline-flex;align-items:center;gap:6px;background:#f59e0b;color:#fff;font-weight:800;font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.2)}
+.branch-select{appearance:none;background:#0f2742;color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:7px 28px 7px 10px;font-size:12px;font-weight:700;cursor:pointer;min-width:220px}
+.branch-select:focus{outline:2px solid #f59e0b;outline-offset:2px}
+.tabs-underline{display:flex;gap:4px;border-bottom:2px solid #e2e8f0;overflow-x:auto;scrollbar-width:none}
+.tabs-underline::-webkit-scrollbar{display:none}
+.tab-btn{appearance:none;background:transparent;border:0;border-bottom:2px solid transparent;margin-bottom:-2px;padding:10px 14px;font-size:13px;font-weight:600;color:#64748b;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s}
+.tab-btn[aria-selected="true"]{color:#1e3a5f;font-weight:800;border-bottom-color:#f59e0b}
+.tab-btn:focus-visible{outline:2px solid #f59e0b;outline-offset:2px;border-radius:6px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.copy-btn{appearance:none;background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:5px 8px;font-size:11px;font-weight:700;color:#1e3a5f;cursor:pointer;transition:background .15s}
+.copy-btn:hover{background:#f1f5f9}
+.copy-btn:active{transform:scale(.97)}
+.health-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;border:1px solid #e2e8f0;background:#fff}
+.health-badge.healthy{color:#059669;border-color:#a7f3d0;background:#ecfdf5}
+.health-badge.checking{color:#64748b}
+.mermaid-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;overflow:auto}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f172a;color:#fff;font-size:13px;font-weight:700;padding:10px 16px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transition:transform .25s,opacity .25s;z-index:60;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.hl-requestId{background:rgba(245,158,11,.18);border-left:3px solid #f59e0b;padding-left:6px}
+.file-tree{font-size:12px;line-height:1.7}
+.file-tree b{color:#1e3a5f}
+.branch-highlight{outline:2px solid #f59e0b;outline-offset:2px;box-shadow:0 0 0 4px rgba(245,158,11,.15)}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>try{mermaid.initialize({startOnLoad:true,theme:'base',themeVariables:{primaryColor:'#1e3a5f',primaryTextColor:'#fff',lineColor:'#64748b'}})}catch(e){}</script>
+</head>
+<body>
+<!-- HEADER navy #1e3a5f + orange #f59e0b — branch switcher dropdown -->
+<header style="background:#1e3a5f;border-bottom:3px solid #f59e0b;position:sticky;top:0;z-index:40">
+  <div style="max-width:1120px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:10px;min-width:0">
+      <div style="width:32px;height:32px;border-radius:8px;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px">GR</div>
+      <div style="min-width:0">
+        <div style="color:#fff;font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Gotong Royong — Backend Performa Demo</div>
+        <div style="color:#bfdbfe;font-size:11px">Website Lokal 1 Atap v2 — TIGA INSAN • 4 branch • 5 tabs • branch sync URL</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <!-- branch switcher dropdown — branch sync via pushState + localStorage -->
+      <label for="branch-select" style="color:#bfdbfe;font-size:11px;font-weight:700;letter-spacing:.04em">BRANCH</label>
+      <div style="position:relative;display:flex;align-items:center;gap:8px">
+        <select id="branch-select" class="branch-select" aria-label="Pilih branch">
+          <option value="01-console-log">01 Warung — console.log</option>
+          <option value="02-proper-logging">02 UMKM SOP — pino JSON</option>
+          <option value="03-scale">03 Pasar 6.081 — scale</option>
+          <option value="04-centralized">04 SAKTI 5M — centralized</option>
+        </select>
+        <span id="branch-chip" class="branch-chip" title="branch terpilih — shareable via ?branch=">01 • Warung</span>
+      </div>
+      <span style="background:#f59e0b;color:#fff;font-weight:800;font-size:11px;padding:4px 10px;border-radius:999px">TERUJI 5 JUTA — 99s 50K/s | Query 10ms p99&lt;500ms</span>
+      <nav style="display:flex;gap:6px">
+        <a href="./presentasi/index.html" target="_blank" rel="noopener" style="color:#dbeafe;font-size:12px;font-weight:600;padding:4px 8px;border:1px solid rgba(255,255,255,.15);border-radius:999px">40 Slides ↗</a>
+        <a href="./docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.pdf" target="_blank" rel="noopener" style="color:#dbeafe;font-size:12px;font-weight:600;padding:4px 8px;border:1px solid rgba(255,255,255,.15);border-radius:999px">Buku ↗</a>
+      </nav>
+    </div>
+  </div>
+  <!-- branch meta bar — recent di atas + deep link shareable -->
+  <div style="background:rgba(255,255,255,.06);border-top:1px solid rgba(255,255,255,.08)">
+    <div style="max-width:1120px;margin:0 auto;padding:6px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;color:#bfdbfe">
+      <span id="branch-recent" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);padding:3px 8px;border-radius:999px">Recent: —</span>
+      <span class="mono" style="opacity:.9">URL sync: <span id="branch-url-preview" style="color:#fde68a">?branch=01-console-log&tab=readme</span> — deep link shareable</span>
+      <span style="margin-left:auto;display:flex;gap:6px">
+        <a id="branch-deep-presentasi" href="./presentasi/index.html#slide-4" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;font-weight:700">Buka slide branch ini ↗</a>
+        <a id="branch-copy-link" href="#" style="background:#fff;color:#1e3a5f;font-weight:800;padding:3px 8px;border-radius:999px">Copy link</a>
+      </span>
+    </div>
+  </div>
+</header>
+
+<main style="max-width:1120px;margin:0 auto;padding:20px 16px 40px">
+  <!-- Breadcrumbs + Back — custom Back di atas konten, visible underlined -->
+  <nav aria-label="Breadcrumb" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:#64748b;margin-bottom:10px">
+    <a id="back-link" href="#" style="color:#1e3a5f;font-weight:800;text-decoration:underline;text-underline-offset:3px">&lt; Kembali ke Daftar Babak</a>
+    <span aria-hidden="true">/</span>
+    <a href="./presentasi/index.html" target="_blank" rel="noopener" style="text-decoration:underline">Presentasi</a>
+    <span aria-hidden="true">/</span>
+    <span id="breadcrumb-branch" style="font-weight:700;color:#1e3a5f">01 Warung — console.log</span>
+    <span aria-hidden="true">/</span>
+    <span id="breadcrumb-tab" style="font-weight:700">README</span>
+    <span style="margin-left:auto;display:flex;gap:6px">
+      <a href="./presentasi/index.html" target="_blank" rel="noopener" style="background:#fff;border:1px solid #cbd5e1;padding:4px 8px;border-radius:999px;font-weight:700;color:#1e3a5f">Buka di tab baru ↗</a>
+    </span>
+  </nav>
+
+  <!-- HERO — branch-aware CTA -->
+  <section class="glass-strong card" style="border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#1e3a5f 0%,#1e3a5f 55%,#0f2742 100%);color:#fff;padding:28px 24px;position:relative">
+    <div style="position:absolute;top:-60px;right:-60px;width:320px;height:320px;border-radius:50%;background:rgba(245,158,11,.12);filter:blur(24px)"></div>
+    <div style="position:relative">
+      <div style="display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:4px 10px;font-size:11px;font-weight:700;letter-spacing:.04em"><span style="background:#f59e0b;color:#fff;padding:2px 6px;border-radius:999px">LIVE</span> Tanpa Vercel • Tanpa Hosting • Cukup Laptop • branch-aware</div>
+      <h1 style="margin-top:14px;font-size:28px;line-height:1.05;font-weight:800;letter-spacing:-.02em">Modul Performa Backend GR Demo — Logging + Performa 4 Branch + 5 CDC — TIGA INSAN — 40 Slides 60 Menit Rp0</h1>
+      <p style="margin-top:10px;color:#bfdbfe;font-size:14px;font-weight:600">Cukup laptop, tanpa Vercel, tanpa hosting — 10 Bab • 16 Endpoint • p50 &lt;50ms • TERUJI 5 JUTA — Generate 5M 99s (50K/s) | Query 10ms p99&lt;500ms</p>
+      <p style="margin-top:6px;color:#fde68a;font-size:12px;font-weight:600">99 detik = bikin data test, bukan narik data — narik data cuma 10ms • GotongRoyong analogi: Warung → UMKM SOP 6.081 → Pasar 6.081 scale → SAKTI 5M centralized</p>
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <a id="hero-cta" href="./presentasi/index.html#slide-4" target="_blank" rel="noopener" style="background:#f59e0b;color:#fff;font-weight:800;font-size:14px;padding:12px 18px;border-radius:12px;display:inline-flex;align-items:center;gap:6px">Buka Babak Ini → <span id="hero-cta-branch" style="background:rgba(255,255,255,.2);padding:2px 6px;border-radius:999px;font-size:11px">01 Warung</span></a>
+        <a id="hero-cta-2" href="./presentasi/index.html#slide-2" target="_blank" rel="noopener" style="background:#fff;color:#1e3a5f;font-weight:800;font-size:14px;padding:12px 18px;border-radius:12px;border:1px solid #e2e8f0">Daftar Isi</a>
+        <span style="color:#93c5fd;font-size:12px">Keyboard: Arrow / Space / PageDown • f fullscreen • branch sync ?branch=</span>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <span class="branch-chip" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.18)">TIGA INSAN: Muttaqin • Shalih • Nafi'</span>
+        <span style="color:#bfdbfe;font-size:11px;align-self:center">Warung (01 console.log) → UMKM SOP 6.081 (02 pino) → Pasar 6.081 scale (03 3 container) → SAKTI 5M centralized (04 Alloy→Loki→Grafana)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRANCH SWITCHER TABS — UnderlinePanels pattern, role tablist/tab/tabpanel, keyboard Left/Right + Enter, URL sync ?branch & ?tab -->
+  <section style="margin-top:18px" class="glass-strong card" style="padding:0;overflow:hidden">
+    <div style="padding:14px 16px 0">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <h2 style="font-size:14px;font-weight:800;color:#1e3a5f">Babak branch — 5 tabs per branch</h2>
+        <span style="font-size:11px;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;padding:4px 8px;border-radius:999px">UnderlinePanels • ARIA tablist • URL sync ?branch & ?tab • Back via popstate</span>
+      </div>
+      <div role="tablist" aria-label="Branch tabs" class="tabs-underline" style="margin-top:10px" id="branch-tablist">
+        <button role="tab" id="tab-readme" class="tab-btn" aria-selected="true" aria-controls="panel-readme" data-tab="readme" tabindex="0">README</button>
+        <button role="tab" id="tab-code" class="tab-btn" aria-selected="false" aria-controls="panel-code" data-tab="code" tabindex="-1">Code</button>
+        <button role="tab" id="tab-diagram" class="tab-btn" aria-selected="false" aria-controls="panel-diagram" data-tab="diagram" tabindex="-1">Diagram</button>
+        <button role="tab" id="tab-live" class="tab-btn" aria-selected="false" aria-controls="panel-live" data-tab="live" tabindex="-1">Live Demo</button>
+        <button role="tab" id="tab-logql" class="tab-btn" aria-selected="false" aria-controls="panel-logql" data-tab="logql" tabindex="-1">LogQL</button>
+      </div>
+    </div>
+
+    <!-- TAB PANELS -->
+    <div style="padding:16px">
+      <!-- README panel — branch-aware -->
+      <div role="tabpanel" id="panel-readme" class="tab-panel active" aria-labelledby="tab-readme" tabindex="0">
+        <div style="display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:12px">
+          <style>@media(min-width:768px){#readme-grid{grid-template-columns:1.2fr .8fr!important}}</style>
+          <div id="readme-grid" style="display:contents">
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px">
+            <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#f59e0b">README — <span class="branch-label">01 Warung — console.log</span></div>
+            <h3 id="readme-title" style="font-size:16px;font-weight:800;color:#1e3a5f;margin-top:4px">01 Warung — console.log (Muttaqin: jujur tapi berantakan)</h3>
+            <p id="readme-desc" style="font-size:13px;color:#475569;margin-top:6px;line-height:1.6">Analogi Warung: catat manual di buku tulis — console.log tanpa struktur, tanpa requestId, tanpa level. Cocok untuk 1 warung, hancur saat 6.081 warung. branch ini menunjukkan masalah: log tidak bisa di-query, tidak bisa di-aggregate, tidak ada korelasi antar service.</p>
+            <ul style="margin-top:10px;font-size:12px;color:#334155;line-height:1.7;list-style:none;padding:0">
+              <li>• <b>Masalah:</b> console.log("order created") — tidak ada timestamp ISO, tidak ada level, tidak ada requestId</li>
+              <li>• <b>Dampak:</b> grep manual, tidak bisa filter CARD_DECLINED di Grafana</li>
+              <li>• <b>Solusi next branch:</b> 02 UMKM SOP — pino JSON + requestId</li>
+            </ul>
+            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+              <a href="./presentasi/index.html#slide-4" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px">Buka slide 04 ↗</a>
+              <button class="copy-btn" data-copy="git checkout 01-console-log">copy: git checkout 01-console-log</button>
+              <a href="./presentasi/index.html#slide-4" target="_blank" rel="noopener" style="background:#fff;border:1px solid #cbd5e1;padding:8px 12px;border-radius:10px;font-size:12px;font-weight:700">Buka di tab baru ↗</a>
+            </div>
+          </div>
+          <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:14px">
+            <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#f59e0b">BRANCH MAP — GotongRoyong analogi</div>
+            <div class="mono" style="margin-top:8px;font-size:11px;line-height:1.7">
+              <div><span style="color:#f59e0b">01</span> Warung — console.log <span style="color:#64748b">→ slide 4-5</span></div>
+              <div><span style="color:#f59e0b">02</span> UMKM SOP 6.081 — pino JSON <span style="color:#64748b">→ slide 6-14</span></div>
+              <div><span style="color:#f59e0b">03</span> Pasar 6.081 — scale 3 container+LB <span style="color:#64748b">→ slide 15-17</span></div>
+              <div><span style="color:#f59e0b">04</span> SAKTI 5M — Alloy→Loki→Grafana <span style="color:#64748b">→ slide 18-22</span></div>
+            </div>
+            <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+              <span style="background:rgba(245,158,11,.2);color:#fde68a;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700">TIGA INSAN</span>
+              <span style="font-size:11px;color:#94a3b8">Muttaqin (jujur) • Shalih (rapi) • Nafi' (bermanfaat scale)</span>
+            </div>
+          </div>
+          </div>
+        </div>
+        <!-- branch cards — tiap card punya Buka di tab baru -->
+        <div style="margin-top:12px;display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:10px">
+          <style>@media(min-width:640px){#branch-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}}@media(min-width:1024px){#branch-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important}}</style>
+          <div id="branch-cards" style="display:contents">
+            <div class="glass-strong card" data-branch-card="01-console-log" style="padding:12px;border:1px solid #e2e8f0">
+              <div style="font-size:11px;font-weight:800;color:#f59e0b">01 WARUNG</div>
+              <div style="font-weight:800;color:#1e3a5f;font-size:13px">console.log</div>
+              <div style="font-size:11px;color:#64748b">Tanpa struktur • grep manual</div>
+              <div style="margin-top:8px;display:flex;gap:6px"><a href="./presentasi/index.html#slide-4" target="_blank" rel="noopener" style="font-size:11px;font-weight:700;color:#1e3a5f;text-decoration:underline">Buka di tab baru ↗</a><span style="font-size:11px;color:#94a3b8">branch=01</span></div>
+            </div>
+            <div class="glass-strong card" data-branch-card="02-proper-logging" style="padding:12px;border:1px solid #e2e8f0">
+              <div style="font-size:11px;font-weight:800;color:#f59e0b">02 UMKM SOP</div>
+              <div style="font-weight:800;color:#1e3a5f;font-size:13px">pino JSON</div>
+              <div style="font-size:11px;color:#64748b">requestId • level • JSON</div>
+              <div style="margin-top:8px;display:flex;gap:6px"><a href="./presentasi/index.html#slide-6" target="_blank" rel="noopener" style="font-size:11px;font-weight:700;color:#1e3a5f;text-decoration:underline">Buka di tab baru ↗</a><span style="font-size:11px;color:#94a3b8">branch=02</span></div>
+            </div>
+            <div class="glass-strong card" data-branch-card="03-scale" style="padding:12px;border:1px solid #e2e8f0">
+              <div style="font-size:11px;font-weight:800;color:#f59e0b">03 PASAR 6.081</div>
+              <div style="font-weight:800;color:#1e3a5f;font-size:13px">scale</div>
+              <div style="font-size:11px;color:#64748b">3 container + LB • pino tetap</div>
+              <div style="margin-top:8px;display:flex;gap:6px"><a href="./presentasi/index.html#slide-15" target="_blank" rel="noopener" style="font-size:11px;font-weight:700;color:#1e3a5f;text-decoration:underline">Buka di tab baru ↗</a><span style="font-size:11px;color:#94a3b8">branch=03</span></div>
+            </div>
+            <div class="glass-strong card" data-branch-card="04-centralized" style="padding:12px;border:1px solid #e2e8f0">
+              <div style="font-size:11px;font-weight:800;color:#f59e0b">04 SAKTI 5M</div>
+              <div style="font-weight:800;color:#1e3a5f;font-size:13px">centralized</div>
+              <div style="font-size:11px;color:#64748b">Alloy→Loki→Grafana</div>
+              <div style="margin-top:8px;display:flex;gap:6px"><a href="./presentasi/index.html#slide-18" target="_blank" rel="noopener" style="font-size:11px;font-weight:700;color:#1e3a5f;text-decoration:underline">Buka di tab baru ↗</a><span style="font-size:11px;color:#94a3b8">branch=04</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CODE panel — Shiki-style static highlight + copy button + diff -->
+      <div role="tabpanel" id="panel-code" class="tab-panel" aria-labelledby="tab-code" tabindex="0" hidden>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+          <h3 style="font-size:14px;font-weight:800;color:#1e3a5f">Code viewer — <span class="branch-label">01 Warung — console.log</span></h3>
+          <div style="display:flex;gap:6px">
+            <button id="btn-diff" class="copy-btn" style="background:#1e3a5f;color:#fff;border-color:#1e3a5f">Compare 01 vs 02</button>
+            <button class="copy-btn" data-copy="git checkout 01-console-log && podman-compose up -d">copy: checkout + up</button>
+          </div>
+        </div>
+        <!-- file tree -->
+        <div style="margin-top:10px;display:grid;grid-template-columns:220px 1fr;gap:12px">
+          <style>@media(max-width:640px){#code-layout{grid-template-columns:1fr!important}}</style>
+          <div id="code-layout" style="display:contents">
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:10px">
+            <div style="font-size:11px;font-weight:800;color:#64748b;letter-spacing:.06em">FILE TREE</div>
+            <div class="file-tree mono" style="margin-top:8px">
+              <div><b>order-service/</b></div>
+              <div style="padding-left:12px">├─ <a href="#" data-file="index.ts" style="text-decoration:underline">index.ts</a> <a href="./presentasi/index.html#slide-6" target="_blank" rel="noopener" style="font-size:10px">↗</a></div>
+              <div style="padding-left:12px">├─ <a href="#" data-file="logger.ts" style="text-decoration:underline">logger.ts</a> <a href="./presentasi/index.html#slide-6" target="_blank" rel="noopener" style="font-size:10px">↗</a></div>
+              <div style="padding-left:12px">├─ <a href="#" data-file="compose.yaml" style="text-decoration:underline">compose.yaml</a> <a href="./presentasi/index.html#slide-15" target="_blank" rel="noopener" style="font-size:10px">↗</a></div>
+              <div style="padding-left:12px">└─ <a href="#" data-file="config.alloy" style="text-decoration:underline">config.alloy</a> <a href="./presentasi/index.html#slide-18" target="_blank" rel="noopener" style="font-size:10px">↗</a></div>
+              <div style="margin-top:8px;font-size:11px;color:#64748b">branch: <span class="branch-label mono">01-console-log</span></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <!-- block 1: index.ts -->
+            <div style="position:relative;background:#0f172a;border-radius:12px;overflow:hidden;border:1px solid #1e293b">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#1e293b;color:#94a3b8;font-size:11px">
+                <span class="mono">order-service/index.ts — <span class="branch-label">01 Warung</span></span>
+                <button class="copy-btn" data-copy='console.log("order created", order.id)' style="padding:3px 8px;font-size:11px">copy</button>
+              </div>
+              <pre style="margin:0;padding:12px;overflow:auto;color:#e2e8f0;font-size:12px;line-height:1.6"><code class="language-ts">// 01 Warung — console.log (tanpa requestId, tanpa level)
+app.post("/orders", (req,res) => {
+  console.log("order created", order.id);
+  console.log("payment", payment.status);
+  res.json(order);
+});
+
+// 02 UMKM SOP — pino JSON + requestId (highlight)
+<span class="hl-requestId">logger.info({ requestId: req.id, orderId: order.id }, "order created");</span>
+<span class="hl-requestId">logger.warn({ requestId: req.id, reason: "CARD_DECLINED" }, "payment failed");</span></code></pre>
+            </div>
+            <!-- block 2: logger.ts -->
+            <div style="position:relative;background:#0f172a;border-radius:12px;overflow:hidden;border:1px solid #1e293b">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#1e293b;color:#94a3b8;font-size:11px">
+                <span class="mono">order-service/logger.ts</span>
+                <button class="copy-btn" data-copy='import pino from "pino"; export const logger = pino({ level: "info" });' style="padding:3px 8px;font-size:11px">copy</button>
+              </div>
+              <pre style="margin:0;padding:12px;overflow:auto;color:#e2e8f0;font-size:12px;line-height:1.6"><code class="language-ts">// 01: no logger.ts — console.log langsung
+// 02: pino JSON SOP
+import pino from "pino";
+export const logger = pino({
+  level: process.env.LOG_LEVEL || "info",
+  formatters: { level: (l) => ({ level: l }) },
+  timestamp: pino.stdTimeFunctions.isoTime,
+});
+// usage: logger.info({ requestId, orderId }, "order created")</code></pre>
+            </div>
+            <!-- block 3: compose.yaml -->
+            <div style="position:relative;background:#0f172a;border-radius:12px;overflow:hidden;border:1px solid #1e293b">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#1e293b;color:#94a3b8;font-size:11px">
+                <span class="mono">compose.yaml — scale 03 vs centralized 04</span>
+                <button class="copy-btn" data-copy="podman-compose up -d --scale order-service=3" style="padding:3px 8px;font-size:11px">copy</button>
+              </div>
+              <pre style="margin:0;padding:12px;overflow:auto;color:#e2e8f0;font-size:12px;line-height:1.6"><code class="language-yaml"># 03 Pasar 6.081 — scale
+services:
+  order-service:
+    deploy: { replicas: 3 }
+  nginx: { image: nginx, ports: ["3000:80"] }
+
+# 04 SAKTI 5M — centralized
+services:
+  alloy: { image: grafana/alloy, volumes: ["./config.alloy:/etc/alloy/config.alloy"] }
+  loki: { image: grafana/loki }
+  grafana: { image: grafana/grafana, ports: ["3001:3000"] }</code></pre>
+            </div>
+            <!-- block 4: config.alloy -->
+            <div style="position:relative;background:#0f172a;border-radius:12px;overflow:hidden;border:1px solid #1e293b">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#1e293b;color:#94a3b8;font-size:11px">
+                <span class="mono">config.alloy — Alloy → Loki</span>
+                <button class="copy-btn" data-copy='loki.source.file "warung" { targets = [{__path__ = "/var/log/*.log"}] }' style="padding:3px 8px;font-size:11px">copy</button>
+              </div>
+              <pre style="margin:0;padding:12px;overflow:auto;color:#e2e8f0;font-size:12px;line-height:1.6"><code class="language-hcl">loki.source.file "warung" {
+  targets = [{ __path__ = "/var/log/warung/*.log", job = "warung-service" }]
+  forward_to = [loki.write.grafana.receiver]
+}
+loki.write "grafana" {
+  endpoint { url = "http://loki:3100/loki/api/v1/push" }
+}</code></pre>
+            </div>
+            <!-- diff view -->
+            <div id="diff-view" style="display:none;background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden">
+              <div style="padding:8px 10px;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-size:12px;font-weight:800;color:#1e3a5f">Diff: 01 Warung vs 02 UMKM SOP — side-by-side</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;font-size:11px" class="mono">
+                <pre style="margin:0;padding:10px;background:#fef2f2;border-right:1px solid #e2e8f0;overflow:auto">- console.log("order created", id)
+// no requestId
+// no level
+// grep manual</pre>
+                <pre style="margin:0;padding:10px;background:#ecfdf5;overflow:auto">+ logger.info({ requestId, orderId }, "order created")
++ level: info
++ JSON queryable
++ {job="warung-service"} |= "CARD_DECLINED"</pre>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIAGRAM panel — Mermaid + Excalidraw -->
+      <div role="tabpanel" id="panel-diagram" class="tab-panel" aria-labelledby="tab-diagram" tabindex="0" hidden>
+        <h3 style="font-size:14px;font-weight:800;color:#1e3a5f">Diagram — Mermaid living docs + Excalidraw sketch</h3>
+        <p style="font-size:12px;color:#64748b;margin-top:4px">Mermaid flowchart per branch — flow 01: 2 kotak, 02: +pino, 03: +3 container+LB, 04: +Alloy/Loki/Grafana. Render via &lt;pre class="mermaid"&gt; + mermaid CDN fallback local.</p>
+        <div style="margin-top:12px;display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:12px">
+          <style>@media(min-width:768px){#diagram-grid{grid-template-columns:1fr 1fr!important}}</style>
+          <div id="diagram-grid" style="display:contents">
+          <div class="mermaid-wrap">
+            <div style="font-size:11px;font-weight:800;color:#1e3a5f;margin-bottom:8px">Mermaid — branch <span class="branch-label">01 Warung</span> (2 kotak)</div>
+            <pre class="mermaid" id="mermaid-01">flowchart LR
+  A[Client] --> B[order-service\nconsole.log]
+  B --> C[stdout\nno Loki]</pre>
+            <pre class="mermaid" id="mermaid-02" style="display:none">flowchart LR
+  A[Client] --> B[order-service\npino JSON + requestId]
+  B --> C[stdout JSON]
+  C --> D[grep / jq]</pre>
+            <pre class="mermaid" id="mermaid-03" style="display:none">flowchart LR
+  A[Client] --> LB[nginx LB]
+  LB --> S1[order-service x3\npino JSON]
+  LB --> S2[order-service]
+  LB --> S3[order-service]
+  S1 --> LOG[stdout JSON]</pre>
+            <pre class="mermaid" id="mermaid-04" style="display:none">flowchart LR
+  A[Client] --> LB[nginx]
+  LB --> S[order-service x3\npino JSON]
+  S --> Alloy[Grafana Alloy]
+  Alloy --> Loki[Loki]
+  Loki --> Grafana[Grafana\nLogQL]</pre>
+            <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+              <button class="copy-btn" data-copy="flowchart LR; Client --> order-service --> Alloy --> Loki --> Grafana">copy mermaid</button>
+              <a href="./presentasi/index.html#slide-13" target="_blank" rel="noopener" style="font-size:11px;font-weight:700;color:#1e3a5f;text-decoration:underline">Buka di tab baru ↗</a>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px">
+            <div style="font-size:11px;font-weight:800;color:#1e3a5f">Excalidraw sketch — placeholder SVG (hand-drawn)</div>
+            <svg viewBox="0 0 320 180" style="width:100%;height:auto;margin-top:8px;background:#fffbeb;border:1px dashed #f59e0b;border-radius:10px">
+              <rect x="12" y="18" width="80" height="44" rx="10" fill="#fff" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="6 4"/>
+              <text x="52" y="36" text-anchor="middle" font-size="10" font-weight="800" fill="#1e3a5f">Client</text>
+              <text x="52" y="48" text-anchor="middle" font-size="8" fill="#64748b">tap order</text>
+              <path d="M92 40 L118 40" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow)"/>
+              <rect x="118" y="18" width="90" height="44" rx="10" fill="#fff" stroke="#1e3a5f" stroke-width="2"/>
+              <text x="163" y="36" text-anchor="middle" font-size="9" font-weight="800" fill="#1e3a5f">order-service</text>
+              <text x="163" y="48" text-anchor="middle" font-size="7" fill="#64748b">pino + requestId</text>
+              <path d="M208 40 L234 40" stroke="#f59e0b" stroke-width="2"/>
+              <rect x="234" y="18" width="74" height="44" rx="10" fill="#1e3a5f" stroke="#1e3a5f" stroke-width="2"/>
+              <text x="271" y="36" text-anchor="middle" font-size="9" font-weight="800" fill="#fff">Loki</text>
+              <text x="271" y="48" text-anchor="middle" font-size="7" fill="#bfdbfe">LogQL</text>
+              <rect x="90" y="90" width="140" height="36" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.5" stroke-dasharray="6 4"/>
+              <text x="160" y="112" text-anchor="middle" font-size="9" font-weight="700" fill="#065f46">Grafana — {job="warung-service"} |= "CARD_DECLINED"</text>
+              <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b"/></marker></defs>
+            </svg>
+            <div style="margin-top:8px;font-size:11px;color:#64748b">Sketch style — living docs: ubah mermaid di atas, diagram ikut update. branch-aware highlight.</div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE DEMO panel — health badge + copy commands -->
+      <div role="tabpanel" id="panel-live" class="tab-panel" aria-labelledby="tab-live" tabindex="0" hidden>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <h3 style="font-size:14px;font-weight:800;color:#1e3a5f">Live Demo — <span class="branch-label">01 Warung</span></h3>
+          <span id="health-badge" class="health-badge checking">○ Checking — /healthz tiap 5 detik (hanya saat Live Demo tab aktif)</span>
+          <span style="font-size:11px;color:#64748b">poll /healthz tiap 5 detik, hanya saat Live Demo tab aktif</span>
+        </div>
+        <div style="margin-top:12px;display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:12px">
+          <style>@media(min-width:768px){#live-grid{grid-template-columns:1fr 1fr!important}}</style>
+          <div id="live-grid" style="display:contents">
+          <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:14px">
+            <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#f59e0b">ONE-CLICK COPY — branch <span class="branch-label mono">01-console-log</span></div>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:8px;background:#1e293b;border-radius:10px;padding:8px 10px">
+                <code class="mono" style="flex:1;font-size:11px;overflow:auto">git checkout 01-console-log</code>
+                <button class="copy-btn" data-copy="git checkout 01-console-log" style="background:#fff;color:#0f172a">copy</button>
+                <a href="https://github.com/wimxwim/backend-performa-demo" target="_blank" rel="noopener" style="font-size:11px;color:#93c5fd;text-decoration:underline">↗</a>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;background:#1e293b;border-radius:10px;padding:8px 10px">
+                <code class="mono" style="flex:1;font-size:11px;overflow:auto">podman-compose up -d</code>
+                <button class="copy-btn" data-copy="podman-compose up -d" style="background:#fff;color:#0f172a">copy</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;background:#1e293b;border-radius:10px;padding:8px 10px">
+                <code class="mono" style="flex:1;font-size:11px;overflow:auto">curl -s http://localhost:3000/healthz | jq</code>
+                <button class="copy-btn" data-copy="curl -s http://localhost:3000/healthz | jq" style="background:#fff;color:#0f172a">copy</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;background:#1e293b;border-radius:10px;padding:8px 10px">
+                <code class="mono" style="flex:1;font-size:11px;overflow:auto">curl -s http://localhost:3000/orders -H "x-request-id: demo-123" | jq</code>
+                <button class="copy-btn" data-copy='curl -s http://localhost:3000/orders -H "x-request-id: demo-123" | jq' style="background:#fff;color:#0f172a">copy</button>
+              </div>
+            </div>
+            <div style="margin-top:10px;font-size:11px;color:#94a3b8">Health badge poll /healthz tiap 5 detik — hanya saat Live Demo tab aktif (hemat baterai). Jika offline, badge tetap ○ Checking.</div>
+          </div>
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px">
+            <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#1e3a5f">LOGQL PLAYGROUND — Builder / Code dual mode</div>
+            <div style="margin-top:10px;display:flex;gap:6px">
+              <button id="logql-mode-builder" class="copy-btn" style="background:#1e3a5f;color:#fff;border-color:#1e3a5f">Builder</button>
+              <button id="logql-mode-code" class="copy-btn">Code</button>
+              <span style="font-size:11px;color:#64748b;align-self:center">sync Builder ↔ Code • preset UMKM</span>
+            </div>
+            <div id="logql-builder" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+              <label style="font-size:11px;font-weight:700;color:#334155">Job <select id="logql-job" style="margin-left:6px;border:1px solid #cbd5e1;border-radius:8px;padding:4px 8px;font-size:12px"><option value="warung-service">warung-service</option><option value="order-service">order-service</option><option value="loki">loki</option></select></label>
+              <label style="font-size:11px;font-weight:700;color:#334155">Filter <select id="logql-filter" style="margin-left:6px;border:1px solid #cbd5e1;border-radius:8px;padding:4px 8px;font-size:12px"><option value='|= "CARD_DECLINED"'>|= "CARD_DECLINED"</option><option value='|= "order created"'>|= "order created"</option><option value='| json | level="error"'>| json | level="error"</option><option value='|~ "requestId"'>|~ "requestId"</option></select></label>
+              <div style="display:flex;gap:6px">
+                <button class="copy-btn" data-copy='{job="warung-service"} |= "CARD_DECLINED"'>copy preset UMKM</button>
+                <a href="./presentasi/index.html#slide-18" target="_blank" rel="noopener" style="font-size:11px;font-weight:700;color:#1e3a5f;text-decoration:underline">Buka di tab baru ↗</a>
+              </div>
+            </div>
+            <div id="logql-code" style="margin-top:10px;display:none">
+              <textarea id="logql-textarea" class="mono" style="width:100%;min-height:72px;border:1px solid #cbd5e1;border-radius:10px;padding:8px;font-size:12px" placeholder='{job="warung-service"} |= "CARD_DECLINED"'>{job="warung-service"} |= "CARD_DECLINED"</textarea>
+              <div style="margin-top:6px;display:flex;gap:6px"><button class="copy-btn" data-copy='{job="warung-service"} |= "CARD_DECLINED"'>copy LogQL</button><span style="font-size:11px;color:#64748b">Builder ↔ Code sync</span></div>
+            </div>
+            <div style="margin-top:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px">
+              <div style="font-size:11px;font-weight:700;color:#1e3a5f">Preview LogQL</div>
+              <code id="logql-preview" class="mono" style="display:block;margin-top:4px;font-size:12px;color:#0f172a;overflow:auto">{job="warung-service"} |= "CARD_DECLINED"</code>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOGQL panel — dedicated playground -->
+      <div role="tabpanel" id="panel-logql" class="tab-panel" aria-labelledby="tab-logql" tabindex="0" hidden>
+        <h3 style="font-size:14px;font-weight:800;color:#1e3a5f">LogQL — Builder / Code dual mode</h3>
+        <p style="font-size:12px;color:#64748b;margin-top:4px">Preset UMKM: <span class="mono" style="background:#fff;border:1px solid #e2e8f0;padding:2px 6px;border-radius:6px">{job="warung-service"} |= "CARD_DECLINED"</span> — Builder dropdown + Code textarea sync, copy button + toast.</p>
+        <div style="margin-top:12px;display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:12px">
+          <style>@media(min-width:768px){#logql-grid{grid-template-columns:1fr 1fr!important}}</style>
+          <div id="logql-grid" style="display:contents">
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px">
+            <div style="font-size:11px;font-weight:800;color:#1e3a5f">BUILDER</div>
+            <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
+              <label style="font-size:12px">Job <select id="logql2-job" style="border:1px solid #cbd5e1;border-radius:8px;padding:6px 8px;font-size:12px"><option>warung-service</option><option>order-service</option><option>loki</option></select></label>
+              <label style="font-size:12px">Level <select id="logql2-level" style="border:1px solid #cbd5e1;border-radius:8px;padding:6px 8px;font-size:12px"><option value="">(any)</option><option>info</option><option>warn</option><option>error</option></select></label>
+              <label style="font-size:12px">Contains <input id="logql2-contains" value="CARD_DECLINED" style="border:1px solid #cbd5e1;border-radius:8px;padding:6px 8px;font-size:12px;width:160px"></label>
+              <button class="copy-btn" data-copy='{job="warung-service"} |= "CARD_DECLINED"' style="align-self:flex-start">copy preset UMKM</button>
+            </div>
+          </div>
+          <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:14px">
+            <div style="font-size:11px;font-weight:800;color:#f59e0b">CODE</div>
+            <textarea id="logql2-textarea" class="mono" style="margin-top:8px;width:100%;min-height:90px;background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:10px;padding:8px;font-size:12px">{job="warung-service"} |= "CARD_DECLINED"</textarea>
+            <div style="margin-top:8px;display:flex;gap:6px"><button class="copy-btn" data-copy='{job="warung-service"} |= "CARD_DECLINED"' style="background:#fff;color:#0f172a">copy LogQL</button><button class="copy-btn" data-copy='{job="warung-service"} | json | level="error"' style="background:#fff;color:#0f172a">copy json+level</button></div>
+            <div style="margin-top:8px;font-size:11px;color:#94a3b8">Dual mode sync — ubah Builder, Code ikut; ubah Code, Builder ikut (jika match preset).</div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GRID 40 SLIDES — branch-aware highlight, klik buka tab baru + back -->
+  <section style="margin-top:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <h2 style="font-size:18px;font-weight:800;color:#1e3a5f">40 Slides — Klik langsung ke slide (branch-aware highlight)</h2>
+      <span style="font-size:11px;color:#64748b;background:#fff;border:1px solid #e2e8f0;padding:4px 8px;border-radius:999px">Hint: Arrow / Space / PageDown • f fullscreen • 1–40 hash • target _blank + Back</span>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:#64748b">Highlight: <span style="background:#fef3c7;padding:2px 6px;border-radius:999px">01 highlight slide 4-5</span> <span style="background:#dbeafe;padding:2px 6px;border-radius:999px">02 highlight 6-14</span> <span style="background:#dcfce7;padding:2px 6px;border-radius:999px">03 highlight 15-17</span> <span style="background:#ede9fe;padding:2px 6px;border-radius:999px">04 highlight 18-22</span> — klik buka di tab baru, Back browser kembali ke tab/branch sebelumnya.</div>
+    <div style="margin-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+      <style>@media(min-width:640px){#grid40{grid-template-columns:repeat(4,minmax(0,1fr))!important}}@media(min-width:1024px){#grid40{grid-template-columns:repeat(5,minmax(0,1fr))!important}}</style>
+      <div id="grid40" style="display:contents">
+      <a href="./presentasi/index.html#slide-1" target="_blank" rel="noopener" class="glass-strong card" data-slide="1" style="padding:12px;display:block"><b style="color:#1e3a5f">01</b> <span style="font-size:13px;font-weight:600">Cover — Modul Performa Backend GR Demo</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-2" target="_blank" rel="noopener" class="glass-strong card" data-slide="2" style="padding:12px;display:block"><b style="color:#1e3a5f">02</b> <span style="font-size:13px;font-weight:600">Daftar Isi — 10 Bab + 40 Slides Map</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-3" target="_blank" rel="noopener" class="glass-strong card" data-slide="3" style="padding:12px;display:block"><b style="color:#1e3a5f">03</b> <span style="font-size:13px">Kecepatan = Kepercayaan (Muttaqin)</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-4" target="_blank" rel="noopener" class="glass-strong card" data-slide="4" data-branch="01" style="padding:12px;display:block"><b style="color:#1e3a5f">04</b> <span style="font-size:13px">Konteks Indonesia: 3G, 2-3GB RAM</span> <span style="font-size:10px;color:#f59e0b">01 ↗</span></a>
+      <a href="./presentasi/index.html#slide-5" target="_blank" rel="noopener" class="glass-strong card" data-slide="5" data-branch="01" style="padding:12px;display:block"><b style="color:#1e3a5f">05</b> <span style="font-size:13px">Target SLA: p50 / p95 / p99</span> <span style="font-size:10px;color:#f59e0b">01 ↗</span></a>
+      <a href="./presentasi/index.html#slide-6" target="_blank" rel="noopener" class="glass-strong card" data-slide="6" data-branch="02" style="padding:12px;display:block"><b style="color:#1e3a5f">06</b> <span style="font-size:13px">Poster #1 — Apa itu 200ms</span> <span style="font-size:10px;color:#2563eb">02 ↗</span></a>
+      <a href="./presentasi/index.html#slide-7" target="_blank" rel="noopener" class="glass-strong card" data-slide="7" data-branch="02" style="padding:12px;display:block"><b style="color:#1e3a5f">07</b> <span style="font-size:13px">Poster #2 — Semakin kecil ms</span> <span style="font-size:10px;color:#2563eb">02 ↗</span></a>
+      <a href="./presentasi/index.html#slide-8" target="_blank" rel="noopener" class="glass-strong card" data-slide="8" data-branch="02" style="padding:12px;display:block"><b style="color:#1e3a5f">08</b> <span style="font-size:13px">Poster #3 — Apa itu P99</span> <span style="font-size:10px;color:#2563eb">02 ↗</span></a>
+      <a href="./presentasi/index.html#slide-9" target="_blank" rel="noopener" class="glass-strong card" data-slide="9" data-branch="02" style="padding:12px;display:block"><b style="color:#1e3a5f">09</b> <span style="font-size:13px">Poster #4 — P50 / P95 / P99 / P99.9</span> <span style="font-size:10px;color:#2563eb">02 ↗</span></a>
+      <a href="./presentasi/index.html#slide-10" target="_blank" rel="noopener" class="glass-strong card" data-slide="10" data-branch="02" style="padding:12px;display:block"><b style="color:#1e3a5f">10</b> <span style="font-size:13px">Poster #5 — Skala rasa cepat/lambat</span> <span style="font-size:10px;color:#2563eb">02 ↗</span></a>
+      <a href="./presentasi/index.html#slide-11" target="_blank" rel="noopener" class="glass-strong card" data-slide="11" data-branch="02" style="padding:12px;display:block"><b style="color:#1e3a5f">11</b> <span style="font-size:13px">Poster #6.1 — 10 Metrik Wajib</span> <span style="font-size:10px;color:#2563eb">02 ↗</span></a>
+      <a href="./presentasi/index.html#slide-12" target="_blank" rel="noopener" class="glass-strong card" data-slide="12" data-branch="02" style="padding:12px;display:block"><b style="color:#1e3a5f">12</b> <span style="font-size:13px">Poster #7 — Glossary Sederhana</span> <span style="font-size:10px;color:#2563eb">02 ↗</span></a>
+      <a href="./presentasi/index.html#slide-13" target="_blank" rel="noopener" class="glass-strong card" data-slide="13" data-branch="02" style="padding:12px;display:block"><b style="color:#1e3a5f">13</b> <span style="font-size:13px">Data Flow: Flutter → Gateway → 6 DB</span> <span style="font-size:10px;color:#2563eb">02 ↗</span></a>
+      <a href="./presentasi/index.html#slide-14" target="_blank" rel="noopener" class="glass-strong card" data-slide="14" data-branch="02" style="padding:12px;display:block"><b style="color:#1e3a5f">14</b> <span style="font-size:13px">B-Tree: 50.000x lebih cepat</span> <span style="font-size:10px;color:#2563eb">02 ↗</span></a>
+      <a href="./presentasi/index.html#slide-15" target="_blank" rel="noopener" class="glass-strong card" data-slide="15" data-branch="03" style="padding:12px;display:block"><b style="color:#1e3a5f">15</b> <span style="font-size:13px">pg_trgm GIN: 10-50ms vs LIKE</span> <span style="font-size:10px;color:#059669">03 ↗</span></a>
+      <a href="./presentasi/index.html#slide-16" target="_blank" rel="noopener" class="glass-strong card" data-slide="16" data-branch="03" style="padding:12px;display:block"><b style="color:#1e3a5f">16</b> <span style="font-size:13px">MatView + Cursor vs OFFSET</span> <span style="font-size:10px;color:#059669">03 ↗</span></a>
+      <a href="./presentasi/index.html#slide-17" target="_blank" rel="noopener" class="glass-strong card" data-slide="17" data-branch="03" style="padding:12px;display:block"><b style="color:#1e3a5f">17</b> <span style="font-size:13px">PgBouncer, EXPLAIN, RLS, VACUUM</span> <span style="font-size:10px;color:#059669">03 ↗</span></a>
+      <a href="./presentasi/index.html#slide-18" target="_blank" rel="noopener" class="glass-strong card" data-slide="18" data-branch="04" style="padding:12px;display:block"><b style="color:#1e3a5f">18</b> <span style="font-size:13px">Caching L1/L2/L3 + TTL</span> <span style="font-size:10px;color:#7c3aed">04 ↗</span></a>
+      <a href="./presentasi/index.html#slide-19" target="_blank" rel="noopener" class="glass-strong card" data-slide="19" data-branch="04" style="padding:12px;display:block"><b style="color:#1e3a5f">19</b> <span style="font-size:13px">Tiering Hot/Warm/Cold + Redis</span> <span style="font-size:10px;color:#7c3aed">04 ↗</span></a>
+      <a href="./presentasi/index.html#slide-20" target="_blank" rel="noopener" class="glass-strong card" data-slide="20" data-branch="04" style="padding:12px;display:block"><b style="color:#1e3a5f">20</b> <span style="font-size:13px">ES Inverted Index + Geospasial</span> <span style="font-size:10px;color:#7c3aed">04 ↗</span></a>
+      <a href="./presentasi/index.html#slide-21" target="_blank" rel="noopener" class="glass-strong card" data-slide="21" data-branch="04" style="padding:12px;display:block"><b style="color:#1e3a5f">21</b> <span style="font-size:13px">pg_trgm vs Elasticsearch</span> <span style="font-size:10px;color:#7c3aed">04 ↗</span></a>
+      <a href="./presentasi/index.html#slide-22" target="_blank" rel="noopener" class="glass-strong card" data-slide="22" data-branch="04" style="padding:12px;display:block"><b style="color:#1e3a5f">22</b> <span style="font-size:13px">CDC: WAL → Kafka → ES/CH</span> <span style="font-size:10px;color:#7c3aed">04 ↗</span></a>
+      <a href="./presentasi/index.html#slide-23" target="_blank" rel="noopener" class="glass-strong card" data-slide="23" style="padding:12px;display:block"><b style="color:#1e3a5f">23</b> <span style="font-size:13px">API Delivery: GZIP, Cursor, Edge</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-24" target="_blank" rel="noopener" class="glass-strong card" data-slide="24" style="padding:12px;display:block"><b style="color:#1e3a5f">24</b> <span style="font-size:13px">Rate Limiting + Edge Caching</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-25" target="_blank" rel="noopener" class="glass-strong card" data-slide="25" style="padding:12px;display:block"><b style="color:#1e3a5f">25</b> <span style="font-size:13px">Observability: pg_stat + Slow Log</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-26" target="_blank" rel="noopener" class="glass-strong card" data-slide="26" style="padding:12px;display:block"><b style="color:#1e3a5f">26</b> <span style="font-size:13px">3 Pilar: Metrics / Logs / Traces</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-27" target="_blank" rel="noopener" class="glass-strong card" data-slide="27" style="padding:12px;display:block"><b style="color:#1e3a5f">27</b> <span style="font-size:13px">Roadmap 5 Fase: MVP Rp0 → 99.99%</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-28" target="_blank" rel="noopener" class="glass-strong card" data-slide="28" style="padding:12px;display:block"><b style="color:#1e3a5f">28</b> <span style="font-size:13px">SLA 16 Endpoint p50/p95/p99</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-29" target="_blank" rel="noopener" class="glass-strong card" data-slide="29" style="padding:12px;display:block"><b style="color:#1e3a5f">29</b> <span style="font-size:13px">Throughput + Biaya per Fase</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-30" target="_blank" rel="noopener" class="glass-strong card" data-slide="30" style="padding:12px;display:block"><b style="color:#1e3a5f">30</b> <span style="font-size:13px">Checklist 10 Definition of Done</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-31" target="_blank" rel="noopener" class="glass-strong card" data-slide="31" style="padding:12px;display:block"><b style="color:#1e3a5f">31</b> <span style="font-size:13px">Demo 01 vs 02: console.log vs Pino</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-32" target="_blank" rel="noopener" class="glass-strong card" data-slide="32" style="padding:12px;display:block"><b style="color:#1e3a5f">32</b> <span style="font-size:13px">Demo 03: GIN / Cursor / MatView</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-33" target="_blank" rel="noopener" class="glass-strong card" data-slide="33" style="padding:12px;display:block"><b style="color:#1e3a5f">33</b> <span style="font-size:13px">Demo 04-05: Observability + CDC</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-34" target="_blank" rel="noopener" class="glass-strong card" data-slide="34" style="padding:12px;display:block"><b style="color:#1e3a5f">34</b> <span style="font-size:13px">Appendix: Proteksi + 10 Layer</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-35" target="_blank" rel="noopener" class="glass-strong card" data-slide="35" style="padding:12px;display:block"><b style="color:#1e3a5f">35</b> <span style="font-size:13px">Penutup — Kecepatan = Amanah • Q&A</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./presentasi/index.html#slide-36" target="_blank" rel="noopener" class="glass-strong card" data-slide="36" style="padding:12px;display:block;border:2px solid #10b981;background:#ecfdf5"><b style="color:#059669">36</b> <span style="font-size:13px;font-weight:700;color:#065f46">OS Kehidupan Komunitas — 4 Pilar + TIGA INSAN</span> <span style="font-size:10px;color:#059669">↗</span></a>
+      <a href="./presentasi/index.html#slide-37" target="_blank" rel="noopener" class="glass-strong card" data-slide="37" style="padding:12px;display:block;border:2px solid #10b981;background:#ecfdf5"><b style="color:#059669">37</b> <span style="font-size:13px;font-weight:700;color:#065f46">Pesanggrahan 6.081 — 256 Masjid Hub</span> <span style="font-size:10px;color:#059669">↗</span></a>
+      <a href="./presentasi/index.html#slide-38" target="_blank" rel="noopener" class="glass-strong card" data-slide="38" style="padding:12px;display:block;border:2px solid #10b981;background:#ecfdf5"><b style="color:#059669">38</b> <span style="font-size:13px;font-weight:700;color:#065f46">Roadmap 300 Fitur 5 Fase — 5M ke 280 Juta</span> <span style="font-size:10px;color:#059669">↗</span></a>
+      <a href="./presentasi/index.html#slide-39" target="_blank" rel="noopener" class="glass-strong card" data-slide="39" style="padding:12px;display:block;border:2px solid #10b981;background:#ecfdf5"><b style="color:#059669">39</b> <span style="font-size:13px;font-weight:700;color:#065f46">Diagnosis Sempit — 7 Dimensi Hilang</span> <span style="font-size:10px;color:#059669">↗</span></a>
+      <a href="./presentasi/index.html#slide-40" target="_blank" rel="noopener" class="glass-strong card" data-slide="40" style="padding:12px;display:block;border:2px solid #f59e0b;background:#fffbeb"><b style="color:#d97706">40</b> <span style="font-size:13px;font-weight:800;color:#92400e">Demo ZIS Live — 8 Asnaf + Hash + RLS</span> <span style="font-size:10px;color:#d97706">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dokumen 3 kolom — branch-aware -->
+  <section style="margin-top:20px">
+    <h2 style="font-size:18px;font-weight:800;color:#1e3a5f">Dokumen — PDF + MD (offline) — branch-aware</h2>
+    <p style="font-size:11px;color:#64748b;margin-top:4px">Dokumen tetap 3 kolom Buku/Naskah/Cheat, tapi badge branch-aware — klik Buka di tab baru preserve ?branch.</p>
+    <div style="margin-top:12px;display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:12px">
+      <style>@media(min-width:768px){#doc3{grid-template-columns:repeat(3,minmax(0,1fr))!important}}</style>
+      <div id="doc3" style="display:contents">
+      <div class="glass-strong card" style="padding:16px">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#f59e0b">BUKU BELAJAR — <span class="branch-label">01 Warung</span></div>
+        <div style="font-weight:800;color:#1e3a5f;margin-top:4px">BUKU_BELAJAR_GOTONGROYONG_LENGKAP</div>
+        <div style="font-size:12px;color:#64748b;margin-top:2px">2119 baris • PDF 896K • MD pandoc-compatible</div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <a href="./docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.pdf" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px">Buka PDF ↗</a>
+          <a href="./docs/BUKU_BELAJAR_GOTONGROYONG_LENGKAP.md" target="_blank" rel="noopener" style="background:#fff;color:#1e3a5f;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px;border:1px solid #cbd5e1">Buka MD ↗</a>
+        </div>
+      </div>
+      <div class="glass-strong card" style="padding:16px">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#f59e0b">NASKAH VERBATIM — <span class="branch-label">01 Warung</span></div>
+        <div style="font-weight:800;color:#1e3a5f;margin-top:4px">NASKAH_PRESENTASI_VERBATIM</div>
+        <div style="font-size:12px;color:#64748b;margin-top:2px">2355 baris • PDF 942K • 40 slides anti-grogi</div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <a href="./docs/NASKAH_PRESENTASI_VERBATIM.pdf" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px">Buka PDF ↗</a>
+          <a href="./docs/NASKAH_PRESENTASI_VERBATIM.md" target="_blank" rel="noopener" style="background:#fff;color:#1e3a5f;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px;border:1px solid #cbd5e1">Buka MD ↗</a>
+        </div>
+      </div>
+      <div class="glass-strong card" style="padding:16px">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:#f59e0b">CHEAT SHEET — <span class="branch-label">01 Warung</span></div>
+        <div style="font-weight:800;color:#1e3a5f;margin-top:4px">CHEAT_SHEET_DEMO_1_HALAMAN</div>
+        <div style="font-size:12px;color:#64748b;margin-top:2px">1 halaman • PDF 67K • MD ringkas</div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <a href="./docs/CHEAT_SHEET_DEMO_1_HALAMAN.pdf" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px">Buka PDF ↗</a>
+          <a href="./docs/CHEAT_SHEET_DEMO_1_HALAMAN.md" target="_blank" rel="noopener" style="background:#fff;color:#1e3a5f;font-weight:700;font-size:12px;padding:8px 12px;border-radius:10px;border:1px solid #cbd5e1">Buka MD ↗</a>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dokumen lain -->
+  <section style="margin-top:16px">
+    <h3 style="font-size:14px;font-weight:800;color:#1e3a5f">Dokumen lain</h3>
+    <div style="margin-top:10px;display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:8px">
+      <style>@media(min-width:640px){#doc2{grid-template-columns:repeat(2,minmax(0,1fr))!important}}</style>
+      <div id="doc2" style="display:contents">
+      <a href="./docs/SUDUT_PANDANG_TERLUAS.md" target="_blank" rel="noopener" class="glass-strong card" style="padding:12px;display:block;font-size:13px"><b>SUDUT_PANDANG_TERLUAS.md</b> <span style="color:#64748b">— 898 baris • 7 lensa terluas</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./docs/DEMO_ZIS_RLS.md" target="_blank" rel="noopener" class="glass-strong card" style="padding:12px;display:block;font-size:13px"><b>DEMO_ZIS_RLS.md</b> <span style="color:#64748b">— 546 baris • 8 Asnaf + RLS</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./docs/BENCH_5M.md" target="_blank" rel="noopener" class="glass-strong card" style="padding:12px;display:block;font-size:13px"><b>BENCH_5M.md</b> <span style="color:#64748b">— 5 Juta 99s benchmark</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./docs/TUNING_5M.md" target="_blank" rel="noopener" class="glass-strong card" style="padding:12px;display:block;font-size:13px"><b>TUNING_5M.md</b> <span style="color:#64748b">— tuning Postgres + Redis</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./docs/PANDUAN_PRESENTASI.md" target="_blank" rel="noopener" class="glass-strong card" style="padding:12px;display:block;font-size:13px"><b>PANDUAN_PRESENTASI.md</b> <span style="color:#64748b">— 798 baris panduan 60 menit</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./docs/RANGKUMAN_PELAJARAN_5M.md" target="_blank" rel="noopener" class="glass-strong card" style="padding:12px;display:block;font-size:13px"><b>RANGKUMAN_PELAJARAN_5M.md</b> <span style="color:#64748b">— 629 baris rangkuman</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      <a href="./docs/VERIFIKASI.md" target="_blank" rel="noopener" class="glass-strong card" style="padding:12px;display:block;font-size:13px"><b>VERIFIKASI.md</b> <span style="color:#64748b">— 351 baris pipeline 5M 92/100</span> <span style="font-size:10px;color:#64748b">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PPTX -->
+  <section style="margin-top:16px" class="glass-strong card" style="padding:16px">
+    <div style="font-size:13px;font-weight:800;color:#1e3a5f">PPTX — Download offline</div>
+    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+      <a href="./presentasi/Modul_Performa_Backend_GR_Demo.pptx" target="_blank" rel="noopener" style="background:#1e3a5f;color:#fff;font-weight:700;font-size:13px;padding:10px 14px;border-radius:10px">Download Demo.pptx (145K) ↗</a>
+      <a href="./presentasi/Modul_Performa_Backend_GR_Demo_Light.pptx" target="_blank" rel="noopener" style="background:#fff;color:#1e3a5f;font-weight:700;font-size:13px;padding:10px 14px;border-radius:10px;border:1px solid #cbd5e1">Download Demo_Light.pptx (47K) ↗</a>
+    </div>
+  </section>
+
+  <!-- Cara jalan — code block mono + copy button -->
+  <section style="margin-top:16px" class="glass-strong card" style="padding:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <div style="font-size:13px;font-weight:800;color:#1e3a5f">Cara jalan — tanpa hosting, cukup laptop</div>
+      <button class="copy-btn" data-copy="cd website && python3 -m http.server 8000">copy</button>
+    </div>
+    <pre class="mono" style="margin-top:10px;background:#0f172a;color:#34d399;padding:14px;border-radius:12px;font-size:12px;line-height:1.6;overflow:auto;position:relative">cd website && python3 -m http.server 8000
+# buka: http://localhost:8000/?branch=02-proper-logging&tab=code  -> branch + tab sync
+# deep link shareable: ?branch=02&tab=code  (pushState, localStorage last branch)
+# dari HP (1 WiFi): http://192.168.1.41:8000/?branch=03-scale&tab=live
+# alternatif: npx serve .  |  php -S localhost:8000
+# branch switcher: header dropdown 4 opsi (01 Warung | 02 UMKM SOP | 03 Pasar 6.081 | 04 SAKTI 5M)
+# tabs: 5 tabs per branch (README | Code | Diagram | Live Demo | LogQL) — UnderlinePanels + ARIA + keyboard</pre>
+    <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+      <button class="copy-btn" data-copy="python3 -m http.server 8000">copy: python3 -m http.server 8000</button>
+      <button class="copy-btn" data-copy="npx serve .">copy: npx serve .</button>
+      <button class="copy-btn" data-copy="http://localhost:8000/?branch=02-proper-logging&tab=code">copy: deep link ?branch=02&tab=code</button>
+    </div>
+    <div style="margin-top:8px;font-size:12px;color:#64748b">100% offline — semua link relative <span class="mono">./presentasi/index.html</span> dan <span class="mono">./docs/*.pdf/*.md</span>, tidak ada CDN wajib (mermaid CDN fallback local). branch sync via history.pushState + localStorage last branch.</div>
+  </section>
+</main>
+
+<footer style="border-top:1px solid #e2e8f0;background:#fff;margin-top:8px">
+  <div style="max-width:1120px;margin:0 auto;padding:16px;text-align:center;font-size:12px;color:#64748b">
+    Gotong Royong — OS Kehidupan Komunitas — TIGA INSAN: Muttaqin • Shalih • Nafi' — Website offline v2, tanpa hosting, cukup laptop — branch switcher + tabs + code viewer + mermaid + LogQL<br>
+    <a href="https://github.com/wimxwim/backend-performa-demo" target="_blank" rel="noopener" style="color:#1e3a5f;font-weight:700;text-decoration:underline">GitHub wimxwim/backend-performa-demo</a> • <a href="./presentasi/index.html" target="_blank" rel="noopener" style="color:#1e3a5f;font-weight:700;text-decoration:underline">Buka Presentasi 40 Slides ↗</a> • <span class="mono" style="background:#f1f5f9;padding:2px 6px;border-radius:6px">?branch=02-proper-logging&tab=code</span>
+  </div>
+</footer>
+
+<div id="toast" class="toast" role="status" aria-live="polite">Copied!</div>
+
+<script src="./app.js"></script>
+<!-- branch + tab + copy + health + mermaid — logic di app.js -->
+</body>
+</html>

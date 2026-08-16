@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@source "./**/*.html";
+@source "./**/*.js";
+@theme {
+  --color-navy: #1e3a5f;
+  --color-navydark: #14263e;
+  --color-orange: #f59e0b;
+  --color-oranglight: #fbbf24;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}

@@ -1,0 +1,8 @@
+node_modules/
+bun.lock
+bun.lockb
+*.log
+.DS_Store
+.env
+loki-data/
+grafana-data/
