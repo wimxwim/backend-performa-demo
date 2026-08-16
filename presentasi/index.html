@@ -44,7 +44,7 @@
     <div class="mt-6 grid lg:grid-cols-[1.15fr_0.85fr] gap-8 items-start relative">
       <div>
         <h2 class="text-[32px] sm:text-[40px] lg:text-[44px] font-extrabold leading-[0.95] tracking-tight">Modul Performa<br><span class="text-orange-400">Backend GR Demo</span></h2>
-        <p class="mt-3 text-blue-100/90 text-[14px] sm:text-[15px] font-semibold">Logging + Performa, 4 branch + 5 CDC — TIGA INSAN • 60 menit</p>
+        <p class="mt-3 text-blue-100/90 text-[14px] sm:text-[15px] font-semibold">Logging + Performa, 4 branch + 5 CDC — TIGA INSAN • 60 menit — 99s = seeding 5M (test), Query real 10ms</p>
         <div class="mt-5 flex flex-wrap gap-2">
           <span class="px-3 py-1.5 rounded-full bg-white text-[#1e3a5f] text-xs font-bold">Poster 1+2 + 10 Bab + 16 Endpoint</span>
           <span class="px-3 py-1.5 rounded-full glass text-white text-xs font-semibold">p50 &lt;50ms • p95 &lt;200ms</span>
@@ -1051,9 +1051,10 @@
     <div class="flex flex-wrap gap-2">
       <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">DEMO 03</span>
       <span class="px-2.5 py-1 rounded-full bg-[#1e3a5f] text-white text-[11px] font-bold">SCALE BENCHMARK • 200x / 100x / 16x</span>
-      <span class="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[11px] font-bold">TERUJI 5 JUTA - 99 detik 50K rows/s streaming flat 64MB heap</span>
+      <span class="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[11px] font-bold">TERUJI 5 JUTA — Generate 99s | Query 10ms</span>
     </div>
     <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Demo 03 — Scale Benchmark: GIN / Cursor / MatView / RLS / Cache</h2>
+    <div class="mt-1 text-[11px] text-slate-500">99s bukan loading user — user cuma 10ms</div>
     <div class="mt-4 grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
       <div class="space-y-3">
       <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">

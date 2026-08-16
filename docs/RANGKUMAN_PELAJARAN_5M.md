@@ -103,13 +103,15 @@ Sample 1 baris:
 
 ## Bab 2 — Angka Kunci
 
-### Tabel Generate Streaming — Hasil Real
+### Tabel Generate Streaming — Hasil Real (Generate/Seeding — bukan Query)
 
 | Count | Waktu | rows/s | RSS (max) | Heap | File NDJSON | wc -l | Status |
 |-------|-------|--------|-----------|------|-------------|-------|--------|
 | 100k (P5M-4) | 2.66s | 37.600 | 205 MB | 13 MB | ~50 MB | 100.000 | ✅ PASS |
 | 1M (P5M-6) | 22.4s (wall 24.0s) | 44.557 | 208 MB | 64.7 MB | 502 MB | 1.000.000 | ✅ PASS |
 | 5M (P5M-6) | 99.1s (1m39s) | 50.457 | ~210 MB* | 64.7 MB | 2516 MB (2.5 GB) | 5.000.000 | ✅ PASS |
+
+> Query real: GIN 2000ms->10ms (200x), p50<50ms p99<500ms — user tidak nunggu 99s
 
 * RSS 5M ekstrapolasi dari 1M `/usr/bin/time -v` 208 MB + heap flat 64 MB.
 

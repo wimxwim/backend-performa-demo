@@ -1,10 +1,12 @@
 # Backend Performa Demo — Gotong Royong
 
+> ⚠️ 99 detik = waktu BIKIN 5 juta data fake untuk test (seeding), BUKAN waktu buka aplikasi. User cari 'ayam' cuma 10ms (200x lebih cepat).
+
 ![5M Synthetic Streaming 99s 50457 rows/s](https://img.shields.io/badge/5M%20Synthetic-Streaming%2099s%2050457%20rows%2Fs-brightgreen) [BENCH_5M.md](docs/BENCH_5M.md) | [TUNING_5M.md](docs/TUNING_5M.md) | ![Sudut Pandang Terluas - 7 Lensa](https://img.shields.io/badge/Sudut%20Pandang%20Terluas-7%20Lensa-blue) [SUDUT_PANDANG_TERLUAS.md](docs/SUDUT_PANDANG_TERLUAS.md)
 
 > **Logging + Performa, 4 branch** — Demo terintegrasi untuk pembelajaran backend Gotong Royong. Menggabungkan **PZN logging-management-demo (4 tahap)** + **Poster 20 Istilah Performa** + **Modul Performa Backend GR 10 Bab**. Rp0-friendly, jalan di Podman/Docker lokal tanpa cloud.
 
-> **TERUJI 5 JUTA — 99 detik 50K rows/s streaming flat 64MB heap** — Generate 5M NDJSON 2.5GB distribusi Bintaro 32% OK. Lihat [docs/BENCH_5M.md](docs/BENCH_5M.md) (100k 2.66s, 1M 22.4s, 5M 99.1s) dan [docs/TUNING_5M.md](docs/TUNING_5M.md) (22 param BULK). Cara generate: `npx tsx seed/generate.ts --synthetic 5000000 --out /tmp/test_5m.ndjson` (hapus setelah verifikasi, simpan sample 1k 513K).
+> **TERUJI 5 JUTA — Generate 5M 99s (50K/s) | Query 10ms (200x) p99<500ms — *99s = seeding data test, bukan loading user*** — Generate 5M NDJSON 2.5GB distribusi Bintaro 32% OK. Lihat [docs/BENCH_5M.md](docs/BENCH_5M.md) (100k 2.66s, 1M 22.4s, 5M 99.1s) dan [docs/TUNING_5M.md](docs/TUNING_5M.md) (22 param BULK). Cara generate: `npx tsx seed/generate.ts --synthetic 5000000 --out /tmp/test_5m.ndjson` (hapus setelah verifikasi, simpan sample 1k 513K).
 
 ## Filosofi
 
@@ -14,13 +16,13 @@ Demo ini mensimulasikan **order-service / payment-service / umkm-service / kas-s
 
 ## 5M Synthetic — Teruji 99 Detik 50K rows/s
 
-> **TERUJI 5 JUTA - 99 detik 50K rows/s streaming flat 64MB heap** — Pipeline P5M-1..P5M-7 COMPLETED, skor 38.5->92/100. Rujuk [docs/BENCH_5M.md](docs/BENCH_5M.md) dan [docs/TUNING_5M.md](docs/TUNING_5M.md).
+> **TERUJI 5 JUTA — Generate 5M 99s (50K/s) | Query 10ms (200x) p99<500ms — *99s = seeding data test, bukan loading user*** — Pipeline P5M-1..P5M-7 COMPLETED, skor 38.5->92/100. Rujuk [docs/BENCH_5M.md](docs/BENCH_5M.md) dan [docs/TUNING_5M.md](docs/TUNING_5M.md).
 
 | Count | Waktu | rows/s | RSS | Heap | File | Status |
 |-------|-------|--------|-----|------|------|--------|
 | 100k | 2.66s | 37.600 | 205 MB | 13 MB | ~50 MB | PASS |
 | 1M | 22.4s | 44.557 | 208 MB | 64.7 MB | 502 MB | PASS |
-| 5M | 99.1s | 50.457 | ~210 MB | 64.7 MB | 2.5 GB | PASS |
+| 5M | 99.1s *seeding, bukan query | 50.457 | ~210 MB | 64.7 MB | 2.5 GB | PASS |
 
 Cara generate:
 
