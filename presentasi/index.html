@@ -49,6 +49,7 @@
           <span class="px-3 py-1.5 rounded-full bg-white text-[#1e3a5f] text-xs font-bold">Poster 1+2 + 10 Bab + 16 Endpoint</span>
           <span class="px-3 py-1.5 rounded-full glass text-white text-xs font-semibold">p50 &lt;50ms • p95 &lt;200ms</span>
         </div>
+        <p class="text-[11px] text-blue-100/80 mt-2 leading-relaxed">p50 0.05 detik (separuh request), p95 0.2 detik (kedipan mata) — 95% request lebih cepat dari ini</p>
         <div class="mt-6 grid grid-cols-3 gap-3 text-center">
           <div class="glass-card rounded-xl p-3">
             <div class="text-orange-300 font-extrabold text-lg leading-none">TIGA</div>
@@ -66,6 +67,8 @@
             <div class="text-[10px] text-white/60 mt-1">Postgres+Redis<br>pg_trgm+MatView</div>
           </div>
         </div>
+        <p class="text-[11px] text-blue-100/80 mt-2 leading-relaxed">pg_trgm=cari nama typo, MatView=tabel ringkasan siap pakai, PgBouncer=antrian koneksi hemat RAM, CDC=cermin data otomatis</p>
+        <p class="text-[10px] text-blue-200/60 mt-1">*99s bikin data test, bukan buka aplikasi (user cuma 10ms)</p>
       </div>
       <div class="glass-strong rounded-2xl p-5 text-slate-800 shadow-xl">
         <div class="text-[11px] font-extrabold tracking-widest text-orange-600">APA YANG DIBAHAS</div>
@@ -95,10 +98,10 @@
       <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
         <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 1</span><span>Kecepatan = Kepercayaan (Muttaqin, SLA) → <b>Slides 3–5</b></span></li>
         <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 2</span><span>Data Flow Flutter → Gateway → 7 Fondasi → 6 DB → <b>Slide 13</b></span></li>
-        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 3</span><span>Postgres Scale (B-Tree, pg_trgm, MatView, Cursor, RLS) → <b>Slides 14–17</b></span></li>
-        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 4</span><span>Caching (L1/L2/L3, TTL, tiering) → <b>Slide 18</b> • Bab 5 ES geospasial → <b>Slide 19</b></span></li>
-        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 6</span><span>CDC Streaming (WAL → Kafka → ES/CH, anti dual-write) → <b>Slide 20</b></span></li>
-        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 7–8</span><span>API Delivery (GZIP, cursor, Edge, rate limit) → <b>21</b> • Observability → <b>22</b></span></li>
+        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 3</span><span>Postgres Scale (B-Tree <span class="text-[11px] text-slate-500">(indeks log n)</span>, pg_trgm <span class="text-[11px] text-slate-500">(cari typo)</span>, MatView <span class="text-[11px] text-slate-500">(ringkasan cache)</span>, Cursor <span class="text-[11px] text-slate-500">(halaman stabil)</span>, RLS <span class="text-[11px] text-slate-500">(sekat data)</span>) → <b>Slides 14–17</b></span></li>
+        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 4</span><span>Caching (L1/L2/L3, TTL, tiering) → <b>Slide 18</b> • Bab 5 ES <span class="text-[11px] text-slate-500">(cari + geo)</span> geospasial → <b>Slide 19</b></span></li>
+        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 6</span><span>CDC Streaming (WAL <span class="text-[11px] text-slate-500">(buku log)</span> → Kafka <span class="text-[11px] text-slate-500">(cermin)</span> → ES/CH, anti dual-write) → <b>Slide 20</b></span></li>
+        <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 7–8</span><span>API Delivery (GZIP <span class="text-[11px] text-slate-500">(kompres 70%)</span>, cursor, Edge <span class="text-[11px] text-slate-500">(cache global)</span>, rate limit) → <b>21</b> • Observability → <b>22</b></span></li>
         <li class="flex gap-2"><span class="font-bold text-[#1e3a5f] shrink-0">Bab 9–10</span><span>Roadmap 5 Fase (MVP Rp0 → auto-scale) → <b>23</b> • SLA 16 endpoint + DoD → <b>24–26</b></span></li>
         <li class="flex gap-2"><span class="font-bold text-orange-600 shrink-0">Demo</span><span>01–05 + Appendix A/B/C + Penutup → <b>Slides 27–35</b></span></li>
         <li class="flex gap-2"><span class="font-bold text-emerald-600 shrink-0">OS</span><span>OS Kehidupan Komunitas 4 Pilar + TIGA INSAN → <b>Slide 36</b></span></li>
@@ -180,12 +183,13 @@
         <div class="rounded-xl border border-orange-200 bg-orange-50 p-4">
           <div class="text-[11px] font-extrabold tracking-widest text-orange-700">BUDGET WAKTU</div>
           <div class="mt-2 space-y-1.5 text-[12px]">
-            <div class="flex justify-between"><span class="text-slate-600">Backend p95</span><b class="text-[#1e3a5f]">&lt;200ms</b></div>
-            <div class="flex justify-between"><span class="text-slate-600">RTT 3G</span><b class="text-orange-600">500–1000ms</b></div>
+            <div class="flex justify-between"><span class="text-slate-600">Backend p95 <span class="text-[11px] text-slate-500">(0.2 detik = kedipan mata)</span></span><b class="text-[#1e3a5f]">&lt;200ms</b></div>
+            <div class="flex justify-between"><span class="text-slate-600">RTT 3G <span class="text-[11px] text-slate-500">(0.5–1 detik bolak-balik sinyal)</span></span><b class="text-orange-600">500–1000ms</b></div>
             <div class="h-px bg-orange-200 my-1"></div>
-            <div class="flex justify-between font-bold"><span>Total</span><span class="text-emerald-600">&lt;3 detik ✓</span></div>
+            <div class="flex justify-between font-bold"><span>Total <span class="text-[11px] font-normal text-slate-500">(batas sabar pengguna)</span></span><span class="text-emerald-600">&lt;3 detik ✓</span></div>
           </div>
-          <div class="mt-2 text-[11px] text-slate-500">UX #46 #50: &gt;3 detik = pengguna pergi</div>
+          <div class="mt-2 text-[11px] text-slate-500">UX #46 #50: &gt;3 detik = 40% pengguna tutup aplikasi</div>
+          <p class="text-[11px] leading-relaxed text-slate-600 mt-2 border-t border-orange-200 pt-2">Solusi: kejar backend &lt;0.2 detik + GZIP 70% + cache jadwal 1 jam + jangan SELECT *</p>
         </div>
         <div class="rounded-xl bg-slate-900 text-emerald-300 p-3 mono text-[11px] leading-relaxed">Payload shaping:<br>GET /api/komunitas?fields=name,lat,lng<br>→ hemat 70% bandwidth</div>
       </div>
@@ -411,14 +415,14 @@
           <tbody class="divide-y divide-slate-100">
             <tr class="bg-slate-50"><td class="px-2 py-1">1</td><td class="px-2 py-1 font-semibold">Response Time</td><td class="px-2 py-1">p50 &lt;50ms read</td><td class="px-2 py-1 text-slate-600">prom-client histogram</td></tr>
             <tr><td class="px-2 py-1">2</td><td class="px-2 py-1 font-semibold">P95 / P99</td><td class="px-2 py-1">&lt;200ms / &lt;500ms</td><td class="px-2 py-1 text-slate-600">histogram_quantile</td></tr>
-            <tr class="bg-slate-50"><td class="px-2 py-1">3</td><td class="px-2 py-1 font-semibold">Throughput RPS/QPS</td><td class="px-2 py-1">100 → 200k</td><td class="px-2 py-1 text-slate-600">http_requests_total, k6</td></tr>
-            <tr><td class="px-2 py-1">4</td><td class="px-2 py-1 font-semibold">Latency RTT/TTFB</td><td class="px-2 py-1">&lt;200ms</td><td class="px-2 py-1 text-slate-600">curl time_total</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1">3</td><td class="px-2 py-1 font-semibold">Throughput <span class="text-[11px] text-slate-500">(request/detik)</span> RPS/QPS</td><td class="px-2 py-1">100 → 200k</td><td class="px-2 py-1 text-slate-600">http_requests_total, k6</td></tr>
+            <tr><td class="px-2 py-1">4</td><td class="px-2 py-1 font-semibold">Latency RTT/TTFB <span class="text-[11px] text-slate-500">(bolak-balik)</span></td><td class="px-2 py-1">&lt;200ms</td><td class="px-2 py-1 text-slate-600">curl time_total</td></tr>
             <tr class="bg-slate-50"><td class="px-2 py-1">5</td><td class="px-2 py-1 font-semibold">Error Rate</td><td class="px-2 py-1">&lt;0.1%</td><td class="px-2 py-1 text-slate-600">5xx / total</td></tr>
             <tr><td class="px-2 py-1">6</td><td class="px-2 py-1 font-semibold">Availability</td><td class="px-2 py-1">99.5% → 99.99%</td><td class="px-2 py-1 text-slate-600">up, SLO</td></tr>
             <tr class="bg-slate-50"><td class="px-2 py-1">7</td><td class="px-2 py-1 font-semibold">CPU Usage</td><td class="px-2 py-1">&lt;70% avg</td><td class="px-2 py-1 text-slate-600">node_cpu</td></tr>
             <tr><td class="px-2 py-1">8</td><td class="px-2 py-1 font-semibold">Memory Usage</td><td class="px-2 py-1">&lt;70% avg</td><td class="px-2 py-1 text-slate-600">node_memory</td></tr>
-            <tr class="bg-slate-50"><td class="px-2 py-1">9</td><td class="px-2 py-1 font-semibold">DB Query Time</td><td class="px-2 py-1">&lt;50ms p95</td><td class="px-2 py-1 text-slate-600">pg_stat_statements</td></tr>
-            <tr><td class="px-2 py-1">10</td><td class="px-2 py-1 font-semibold">Cache Hit Rate</td><td class="px-2 py-1">&gt;80%</td><td class="px-2 py-1 text-slate-600">cache_hit_total</td></tr>
+            <tr class="bg-slate-50"><td class="px-2 py-1">9</td><td class="px-2 py-1 font-semibold">DB Query <span class="text-[11px] text-slate-500">(&lt;50ms cepat)</span> Time</td><td class="px-2 py-1">&lt;50ms p95</td><td class="px-2 py-1 text-slate-600">pg_stat_statements</td></tr>
+            <tr><td class="px-2 py-1">10</td><td class="px-2 py-1 font-semibold">Cache Hit <span class="text-[11px] text-slate-500">(&gt;80% dari memori)</span> Rate</td><td class="px-2 py-1">&gt;80%</td><td class="px-2 py-1 text-slate-600">cache_hit_total</td></tr>
           </tbody>
         </table>
       </div>
@@ -470,12 +474,13 @@
     <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 2 — Data Flow: Flutter → Gateway → 7 Fondasi → 6 DB</h2>
     <div class="mt-4 grid lg:grid-cols-[1.15fr_0.85fr] gap-6">
       <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
-        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Flutter single codebase → <b>API Gateway</b> (Kong / Supabase Edge: JWT, rate limit, GZIP) → 7 Fondasi Bersama.</span></li>
-        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>7 Fondasi:</b> Auth, Profil, Payment (HarmoniPay+Xendit), Notifikasi (FCM/Wablas), Storage (S3/R2), Audit SHA-256, Feature Flag.</span></li>
-        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>6 DB:</b> Postgres (ACID+RLS jantung), Redis (&lt;10ms cache), Mongo (kajian), ES (geo+search), ClickHouse (OLAP), Influx/Timescale (IoT).</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>Flutter single codebase → <b>API Gateway</b> (Kong / Supabase Edge: JWT <span class="text-[11px] text-slate-500">(tiket login)</span>, rate limit, GZIP) → 7 Fondasi Bersama.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>7 Fondasi:</b> Auth, Profil, Payment (HarmoniPay+Xendit <span class="text-[11px] text-slate-500">(payment gateway)</span>), Notifikasi (FCM/Wablas), Storage (S3/R2), Audit SHA-256, Feature Flag.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>6 DB:</b> Postgres (ACID <span class="text-[11px] text-slate-500">(transaksi aman)</span>+RLS <span class="text-[11px] text-slate-500">(sekat data per komunitas)</span> jantung), Redis (&lt;10ms cache), Mongo (kajian), ES <span class="text-[11px] text-slate-500">(cari)</span> (geo+search), ClickHouse <span class="text-[11px] text-slate-500">(analitik)</span> (OLAP), Influx/Timescale <span class="text-[11px] text-slate-500">(sensor)</span> (IoT).</span></li>
         <li class="flex gap-2"><span class="text-orange-500">•</span><span><b>Bottleneck per layer:</b> Gateway JWT cache &lt;5ms, Fondasi profil cache 5m, DB index+pool, Network GZIP 70%.</span></li>
         <li class="flex gap-2"><span class="text-orange-500">•</span><span>Hot path read: Flutter → Gateway cache → <b>Redis HIT &lt;5ms</b> → response (tanpa DB).</span></li>
       </ul>
+      <p class="text-[11px] leading-relaxed text-slate-500 mt-2">WAL <span class="text-slate-600">(buku log transaksi)</span> + Debezium+Kafka <span class="text-slate-600">(cermin DB otomatis)</span> — Postgres tulis sekali, yang lain ngikut otomatis</p>
       <div class="space-y-3">
         <div class="ascii rounded-xl p-3 text-[11px] leading-relaxed overflow-x-auto">Flutter --&gt; Gateway(JWT cache &lt;5ms) --&gt; [7 Fondasi] --&gt; Redis HIT &lt;5ms --&gt; response<br>                         \--&gt; Postgres(ACID) --WAL--&gt; Debezium --&gt; Kafka --&gt; ES/ClickHouse (async)<br>                         \--&gt; pg_trgm(MVP) / ES(Fase3) --&gt; cache populer 5m</div>
         <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
@@ -712,7 +717,7 @@
     <div class="mt-4 grid lg:grid-cols-[0.95fr_1.05fr] gap-6">
       <ul class="space-y-2 text-[13px] leading-relaxed text-slate-700">
         <li class="flex gap-2"><span class="text-orange-500">•</span><span>Pilih sesuai fase: jangan over-engineering di awal; pg_trgm gratis & cukup untuk MVP–Fase2.</span></li>
-        <li class="flex gap-2"><span class="text-orange-500">•</span><span>ES untuk skala besar: stemming superior, fuzziness AUTO, highlight, geospasial, tapi butuh server & kompleks.</span></li>
+        <li class="flex gap-2"><span class="text-orange-500">•</span><span>ES untuk skala besar: stemming superior <span class="text-[11px] text-slate-500">(potong imbuhan: mencari→cari)</span>, fuzziness AUTO <span class="text-[11px] text-slate-500">(toleransi typo)</span>, highlight <span class="text-[11px] text-slate-500">(sorot kata)</span>, geospasial, tapi butuh server & kompleks.</span></li>
         <li class="flex gap-2"><span class="text-orange-500">•</span><span>Fallback: jika ES down → otomatis fallback ke pg_trgm GIN 10–50ms (tidak error ke user).</span></li>
         <li class="flex gap-2"><span class="text-orange-500">•</span><span>Biaya & setup jadi penentu: Rp0 vs $10–50/bulan, sederhana vs kompleks.</span></li>
       </ul>
@@ -920,6 +925,7 @@
       <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600 text-[11px] font-semibold">server-side • tanpa RTT</span>
     </div>
     <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 10.1 — SLA 16 Endpoint (p50 / p95 / p99 server-side)</h2>
+    <p class="text-[11px] leading-relaxed text-slate-500 mt-1">p50 0.03 detik median, p95 0.2 detik, p99 0.5 detik — 95% request lebih cepat dari p95, 99% dari p99. SHA-256 <span class="text-slate-600">(sidik jari data)</span> untuk verifikasi kas &lt;1 detik</p>
     <div class="mt-4 grid lg:grid-cols-[1.15fr_0.85fr] gap-6">
       <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">
         <table class="w-full text-[11px]">
@@ -955,6 +961,7 @@
       <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold">THROUGHPUT + BIAYA PER FASE</span>
     </div>
     <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 10.2 — Throughput + Biaya per Fase</h2>
+    <p class="text-[11px] leading-relaxed text-slate-500 mt-1">DAU <span class="text-slate-600">(Daily Active Users)</span> • RPS <span class="text-slate-600">(request/detik)</span> • Podman <span class="text-slate-600">(wadah aplikasi)</span> — hitung throughput = DAU×req / jam sibuk</p>
     <div class="mt-4 grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
       <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">
         <table class="w-full text-[11px]">
@@ -989,6 +996,7 @@
       <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600 text-[11px] font-semibold">wajib sebelum rilis</span>
     </div>
     <h2 class="mt-3 text-[22px] sm:text-[26px] font-extrabold text-[#1e3a5f] leading-tight">Bab 10.4 — Checklist 10 Definition of Done</h2>
+    <p class="text-[11px] leading-relaxed text-slate-500 mt-1">FK <span class="text-slate-600">(Foreign Key)</span> • N+1 <span class="text-slate-600">(query berulang)</span> • n_dead_tup <span class="text-slate-600">(sampah DB)</span> • OTEL <span class="text-slate-600">(alat lacak trace)</span> — cek semua sebelum rilis</p>
     <div class="mt-4 grid lg:grid-cols-[1.15fr_0.85fr] gap-6">
       <div class="rounded-xl border border-slate-200 overflow-hidden hover-table">
         <table class="w-full text-[11px]">
@@ -1142,9 +1150,9 @@
             <thead class="bg-[#1e3a5f] text-white"><tr><th class="px-2 py-1.5 text-left">#</th><th class="px-2 py-1.5 text-left">Proteksi</th><th class="px-2 py-1.5 text-left">Threshold</th><th class="px-2 py-1.5 text-left">Fallback</th></tr></thead>
             <tbody class="divide-y divide-slate-100">
               <tr class="bg-slate-50"><td class="px-2 py-1">1</td><td class="px-2 py-1 font-semibold">Token / Leaky Bucket</td><td class="px-2 py-1">100/10/5 /menit</td><td class="px-2 py-1 text-slate-600">429 Retry-After</td></tr>
-              <tr><td class="px-2 py-1">2</td><td class="px-2 py-1 font-semibold">Circuit Breaker</td><td class="px-2 py-1">50% err 10s → open 30s</td><td class="px-2 py-1 text-slate-600">503 fast-fail</td></tr>
-              <tr class="bg-slate-50"><td class="px-2 py-1">3</td><td class="px-2 py-1 font-semibold">Bulkhead</td><td class="px-2 py-1">pool 20/10/15, queue 50</td><td class="px-2 py-1 text-slate-600">503 bulkhead penuh</td></tr>
-              <tr><td class="px-2 py-1">4</td><td class="px-2 py-1 font-semibold">Backpressure</td><td class="px-2 py-1">lag &gt;1000 → 503</td><td class="px-2 py-1 text-slate-600">Retry-After:10</td></tr>
+              <tr><td class="px-2 py-1">2</td><td class="px-2 py-1 font-semibold">Circuit Breaker <span class="text-[11px] text-slate-500">(sekring listrik)</span></td><td class="px-2 py-1">50% err 10s → open 30s</td><td class="px-2 py-1 text-slate-600">503 fast-fail</td></tr>
+              <tr class="bg-slate-50"><td class="px-2 py-1">3</td><td class="px-2 py-1 font-semibold">Bulkhead <span class="text-[11px] text-slate-500">(sekat kapal)</span></td><td class="px-2 py-1">pool 20/10/15, queue 50</td><td class="px-2 py-1 text-slate-600">503 bulkhead penuh</td></tr>
+              <tr><td class="px-2 py-1">4</td><td class="px-2 py-1 font-semibold">Backpressure <span class="text-[11px] text-slate-500">(antrian penuh)</span></td><td class="px-2 py-1">lag &gt;1000 → 503</td><td class="px-2 py-1 text-slate-600">Retry-After:10</td></tr>
               <tr class="bg-slate-50"><td class="px-2 py-1">5</td><td class="px-2 py-1 font-semibold">Graceful Degradation</td><td class="px-2 py-1">circuit/bulkhead/lag</td><td class="px-2 py-1 text-slate-600">flag OFF, x-degradation</td></tr>
             </tbody>
           </table>
@@ -1176,7 +1184,9 @@
           </div>
           <div class="mt-2 mono text-[11px] bg-slate-900 text-emerald-300 rounded-lg p-2">hash_self = SHA256(amount|desc|recipient|actor|hash_prev)<br>RLS: USING (community_id = current_setting(...))</div>
         </div>
-        <div class="rounded-xl bg-slate-50 border border-slate-200 p-3 text-[11px] leading-relaxed text-slate-600"><b class="text-[#1e3a5f]">HA/DR:</b> RTO &lt;15m, RPO &lt;1m — replica + WAL archive S3 + PITR, Redis Sentinel, 3 broker Kafka RF3</div>
+        <div class="rounded-xl bg-slate-50 border border-slate-200 p-3 text-[11px] leading-relaxed text-slate-600"><b class="text-[#1e3a5f]">HA/DR:</b> RTO <span class="text-slate-500">(waktu pulih)</span> &lt;15m, RPO <span class="text-slate-500">(data hilang max 1 menit)</span> &lt;1m — replica + WAL archive S3 + PITR <span class="text-slate-500">(balik ke detik manapun)</span>, Redis Sentinel, 3 broker Kafka RF3 <span class="text-slate-500">(3 salinan)</span></div>
+        <p class="text-[11px] leading-relaxed text-slate-500 mt-2">Circuit Breaker = sekring listrik: jika 50% error 10 detik, buka 30 detik, kembalikan 503 cepat. Bulkhead = sekat kapal: pool 20/10/15, antrian 50, penuh 503. Backpressure = antrian penuh: lag &gt;1000ms, tolak 503.</p>
+        <p class="text-[11px] leading-relaxed text-slate-500 mt-1">Vault/KMS <span class="text-slate-600">(brankas kunci)</span> • WAF <span class="text-slate-600">(satpam web)</span> • TLS 1.3 <span class="text-slate-600">(gembok)</span> • AES-256 <span class="text-slate-600">(enkripsi)</span> — 10 layer security</p>
       </div>
     </div>
     <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">Gotong Royong — OS Kehidupan Komunitas | 60 menit<span class="font-bold text-slate-500">34 / 40</span></div>
@@ -1213,44 +1223,50 @@
       <div class="glass-strong rounded-xl p-4 text-slate-800">
         <div class="text-[11px] font-extrabold tracking-widest text-orange-600">GLOSSARY 40+ ISTILAH</div>
         <div class="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] leading-relaxed max-h-[280px] overflow-y-auto pr-1">
-          <span><b class="text-[#1e3a5f]">ACID</b> <span class="text-slate-500">transaksi aman</span></span>
-          <span><b class="text-[#1e3a5f]">B-Tree</b> <span class="text-slate-500">index log(n)</span></span>
-          <span><b class="text-[#1e3a5f]">CDC</b> <span class="text-slate-500">tangkap WAL</span></span>
-          <span><b class="text-[#1e3a5f]">Cache</b> <span class="text-slate-500">memori cepat</span></span>
-          <span><b class="text-[#1e3a5f]">Cursor</b> <span class="text-slate-500">keyset pagination</span></span>
-          <span><b class="text-[#1e3a5f]">Dual-Write</b> <span class="text-slate-500">bahaya inkonsisten</span></span>
-          <span><b class="text-[#1e3a5f]">Edge</b> <span class="text-slate-500">CDN 330+ DC</span></span>
-          <span><b class="text-[#1e3a5f]">ES</b> <span class="text-slate-500">Elasticsearch</span></span>
-          <span><b class="text-[#1e3a5f]">ETL</b> <span class="text-slate-500">extract batch</span></span>
+          <span><b class="text-[#1e3a5f]">ACID</b> <span class="text-slate-500">transaksi aman: semua berhasil atau batal</span></span>
+          <span><b class="text-[#1e3a5f]">B-Tree</b> <span class="text-slate-500">indeks seimbang log(n)</span></span>
+          <span><b class="text-[#1e3a5f]">CDC</b> <span class="text-slate-500">tangkap WAL jadi cermin</span></span>
+          <span><b class="text-[#1e3a5f]">Cache</b> <span class="text-slate-500">memori cepat &lt;5ms</span></span>
+          <span><b class="text-[#1e3a5f]">Cursor</b> <span class="text-slate-500">halaman stabil keyset</span></span>
+          <span><b class="text-[#1e3a5f]">Dual-Write</b> <span class="text-slate-500">bahaya inkonsisten 2 DB</span></span>
+          <span><b class="text-[#1e3a5f]">Edge</b> <span class="text-slate-500">CDN 330+ DC cache global</span></span>
+          <span><b class="text-[#1e3a5f]">ES</b> <span class="text-slate-500">Elasticsearch cari+geo</span></span>
+          <span><b class="text-[#1e3a5f]">ETL</b> <span class="text-slate-500">extract batch tengah malam</span></span>
           <span><b class="text-[#1e3a5f]">EXPLAIN</b> <span class="text-slate-500">cek query plan</span></span>
-          <span><b class="text-[#1e3a5f]">FK</b> <span class="text-slate-500">foreign key</span></span>
-          <span><b class="text-[#1e3a5f]">GIN</b> <span class="text-slate-500">index trigram</span></span>
-          <span><b class="text-[#1e3a5f]">GZIP</b> <span class="text-slate-500">kompresi 70%</span></span>
-          <span><b class="text-[#1e3a5f]">Hot Data</b> <span class="text-slate-500">sering diakses</span></span>
-          <span><b class="text-[#1e3a5f]">Index</b> <span class="text-slate-500">daftar cepat</span></span>
-          <span><b class="text-[#1e3a5f]">Inverted</b> <span class="text-slate-500">index kata</span></span>
-          <span><b class="text-[#1e3a5f]">JSONB</b> <span class="text-slate-500">JSON binary</span></span>
-          <span><b class="text-[#1e3a5f]">Kafka</b> <span class="text-slate-500">broker event</span></span>
-          <span><b class="text-[#1e3a5f]">Latency</b> <span class="text-slate-500">waktu tunggu</span></span>
-          <span><b class="text-[#1e3a5f]">MatView</b> <span class="text-slate-500">agregasi cache</span></span>
-          <span><b class="text-[#1e3a5f]">N+1</b> <span class="text-slate-500">query berulang</span></span>
+          <span><b class="text-[#1e3a5f]">FK</b> <span class="text-slate-500">foreign key penghubung</span></span>
+          <span><b class="text-[#1e3a5f]">GIN</b> <span class="text-slate-500">indeks cari kata trigram</span></span>
+          <span><b class="text-[#1e3a5f]">GZIP</b> <span class="text-slate-500">kompresi 70% hemat kuota</span></span>
+          <span><b class="text-[#1e3a5f]">Hot Data</b> <span class="text-slate-500">sering diakses tiap detik</span></span>
+          <span><b class="text-[#1e3a5f]">Index</b> <span class="text-slate-500">daftar cepat log(n)</span></span>
+          <span><b class="text-[#1e3a5f]">Inverted</b> <span class="text-slate-500">index kata ES</span></span>
+          <span><b class="text-[#1e3a5f]">JSONB</b> <span class="text-slate-500">JSON binary cepat</span></span>
+          <span><b class="text-[#1e3a5f]">Kafka</b> <span class="text-slate-500">broker event antrean</span></span>
+          <span><b class="text-[#1e3a5f]">Latency</b> <span class="text-slate-500">waktu tunggu bolak-balik</span></span>
+          <span><b class="text-[#1e3a5f]">MatView</b> <span class="text-slate-500">tabel ringkasan siap pakai</span></span>
+          <span><b class="text-[#1e3a5f]">N+1</b> <span class="text-slate-500">query berulang boros</span></span>
           <span><b class="text-[#1e3a5f]">Observabilitas</b> <span class="text-slate-500">metrics/logs/traces</span></span>
-          <span><b class="text-[#1e3a5f]">Offset</b> <span class="text-slate-500">skip-buang lambat</span></span>
-          <span><b class="text-[#1e3a5f]">OLAP</b> <span class="text-slate-500">analitik kolom</span></span>
-          <span><b class="text-[#1e3a5f]">p50/p95/p99</b> <span class="text-slate-500">percentile</span></span>
-          <span><b class="text-[#1e3a5f]">PgBouncer</b> <span class="text-slate-500">pool 25</span></span>
-          <span><b class="text-[#1e3a5f]">pg_trgm</b> <span class="text-slate-500">trigram GIN</span></span>
-          <span><b class="text-[#1e3a5f]">PK</b> <span class="text-slate-500">primary key</span></span>
+          <span><b class="text-[#1e3a5f]">Offset</b> <span class="text-slate-500">skip-buang lambat 2000ms</span></span>
+          <span><b class="text-[#1e3a5f]">OLAP</b> <span class="text-slate-500">analitik kolom ClickHouse</span></span>
+          <span><b class="text-[#1e3a5f]">p50/p95/p99</b> <span class="text-slate-500">50%/95%/99% cepat</span></span>
+          <span><b class="text-[#1e3a5f]">PgBouncer</b> <span class="text-slate-500">pool 25 hemat RAM</span></span>
+          <span><b class="text-[#1e3a5f]">pg_trgm</b> <span class="text-slate-500">trigram cari typo</span></span>
+          <span><b class="text-[#1e3a5f]">PK</b> <span class="text-slate-500">primary key unik</span></span>
           <span><b class="text-[#1e3a5f]">Prometheus</b> <span class="text-slate-500">metrics 9090</span></span>
-          <span><b class="text-[#1e3a5f]">Redis</b> <span class="text-slate-500">cache 1–5ms</span></span>
-          <span><b class="text-[#1e3a5f]">RLS</b> <span class="text-slate-500">row isolation</span></span>
-          <span><b class="text-[#1e3a5f]">RPS/RTT</b> <span class="text-slate-500">req/detik / round-trip</span></span>
-          <span><b class="text-[#1e3a5f]">Seq Scan</b> <span class="text-slate-500">scan semua</span></span>
+          <span><b class="text-[#1e3a5f]">Redis</b> <span class="text-slate-500">cache 1–5ms memori</span></span>
+          <span><b class="text-[#1e3a5f]">RLS</b> <span class="text-slate-500">sekat data per komunitas</span></span>
+          <span><b class="text-[#1e3a5f]">RPS/RTT</b> <span class="text-slate-500">req/detik / bolak-balik</span></span>
+          <span><b class="text-[#1e3a5f]">Seq Scan</b> <span class="text-slate-500">scan semua lambat</span></span>
           <span><b class="text-[#1e3a5f]">SLA/SLI/SLO</b> <span class="text-slate-500">janji/ukur/target</span></span>
           <span><b class="text-[#1e3a5f]">Supabase</b> <span class="text-slate-500">Postgres managed</span></span>
           <span><b class="text-[#1e3a5f]">Throughput</b> <span class="text-slate-500">kapasitas RPS</span></span>
           <span><b class="text-[#1e3a5f]">TTFB/TTL</b> <span class="text-slate-500">first byte / expire</span></span>
-          <span><b class="text-[#1e3a5f]">WAL</b> <span class="text-slate-500">log transaksi</span></span>
+          <span><b class="text-[#1e3a5f]">WAL</b> <span class="text-slate-500">buku log transaksi</span></span>
+          <span><b class="text-[#1e3a5f]">jitter</b> <span class="text-slate-500">acak delay anti thundering herd</span></span>
+          <span><b class="text-[#1e3a5f]">BRIN</b> <span class="text-slate-500">indeks blok untuk data terurut</span></span>
+          <span><b class="text-[#1e3a5f]">Alloy</b> <span class="text-slate-500">agregator log Grafana</span></span>
+          <span><b class="text-[#1e3a5f]">cardinality</b> <span class="text-slate-500">jumlah variasi label metrics</span></span>
+          <span><b class="text-[#1e3a5f]">PITR</b> <span class="text-slate-500">balik ke detik manapun</span></span>
+          <span><b class="text-[#1e3a5f]">RF3</b> <span class="text-slate-500">3 salinan data aman</span></span>
         </div>
         <div class="mt-2 text-[10px] text-slate-400">40+ istilah • lengkap di Poster #7 + docs/ • TIGA INSAN: Muttaqin • Shalih • Nafi'</div>
       </div>
