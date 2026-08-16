@@ -252,9 +252,9 @@ export function createLedgerRouter(prisma) {
   // ──────────────────────────────────────────
   router.get('/api/kas', async (req, res) => {
     try {
-      const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
-      const offset = parseInt(req.query.offset, 10) || 0;
-      const communityId = req.query.community_id || req.query.communityId || null;
+      const limit = Math.min(parseInt(String(req.query.limit), 10) || 20, 100);
+      const offset = parseInt(String(req.query.offset), 10) || 0;
+      const communityId = (req.query.community_id as string) || (req.query.communityId as string) || null;
 
       let rows;
       let totalRows;

@@ -3,7 +3,7 @@
 // Bahasa komentar: Indonesia
 // Sumber: Modul Performa Bab 4 (Redis) + spec lock 7 Fondasi + SLA 16 endpoint
 
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 import { createLogger } from '../../shared/logger.js';
 
 const logger = createLogger('umkm-cache');
@@ -145,7 +145,7 @@ export async function invalidateExact(key: string): Promise<number> {
 // ──────────────────────────────────────────────
 // createCache — factory untuk shared/cache.ts tiering
 // ──────────────────────────────────────────────
-export function createCache(redisClient: Redis, defaultTtl: number) {
+export function createCache(redisClient: InstanceType<typeof Redis>, defaultTtl: number) {
   return {
     getCached: <T>(key: string, fetcher: () => Promise<T>, ttl = defaultTtl, tier: CacheTier = 'warm') =>
       getCached<T>(key, fetcher, ttl, tier),

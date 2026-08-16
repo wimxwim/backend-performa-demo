@@ -5,7 +5,7 @@
 import express from 'express';
 import pg from 'pg';
 import compression from 'compression';
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 import logger from './logger.js';
 import { requestIdMiddleware, type RequestWithId } from './middleware/requestId.js';
 import { metricsMiddleware, metricsHandler, dbQueryDuration, cacheHitTotal } from '../../shared/metrics.js';

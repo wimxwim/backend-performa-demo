@@ -5,6 +5,8 @@
 
 import express from 'express';
 import compression from 'compression';
+import helmet from 'helmet';
+import cors from 'cors';
 import crypto from 'crypto';
 import client from 'prom-client';
 
@@ -32,6 +34,8 @@ try { initTracing(SERVICE); } catch (e) { logger.warn({ err: e }, 'tracing init 
 
 const app = express();
 app.set('trust proxy', 1); // penting untuk keyGenerator req.ip di belakang nginx
+app.use(helmet());
+app.use(cors({ origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000', credentials: true }));
 
 // ──────────────────────────────────────────────
 // Feature Flag — graceful degradation

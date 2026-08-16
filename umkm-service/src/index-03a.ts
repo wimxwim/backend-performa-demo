@@ -6,11 +6,18 @@
 import express from 'express';
 import pg from 'pg';
 import compression from 'compression';
+import helmet from 'helmet';
+import cors from 'cors';
 import logger from './logger.js';
 import { requestIdMiddleware, type RequestWithId } from './middleware/requestId.js';
+import { limiterGeneral } from '../../shared/rateLimiter.js';
 
 const app = express();
 const PORT = Number(process.env.PORT || 3003);
+
+app.set('trust proxy', 1);
+app.use(helmet());
+app.use(cors({ origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000', credentials: true }));
 
 // ──────────────────────────────────────────────
 // DB — PgBouncer port 6432 (transaction mode, pool 25)
@@ -33,6 +40,7 @@ pool.on('error', (err) => logger.error({ err }, 'pg pool error'));
 app.use(compression({ level: 6, threshold: 1024 }));
 app.use(express.json());
 app.use(requestIdMiddleware as any);
+app.use(limiterGeneral);
 
 // RLS: SET app.community_id & app.kelurahan per-request
 // Client kirim header x-community-id / x-kelurahan, atau query ?community_id=
@@ -95,7 +103,8 @@ app.get('/api/cari', async (req: RequestWithId, res) => {
         latency_ms: latency,
         data: r.rows,
         total: r.rowCount,
-        sql: `SELECT * FROM umkm WHERE name ILIKE '%${q}%' -- Seq Scan ~2000ms`,
+        sql: "SELECT * FROM umkm WHERE name ILIKE '%' || $1 || '%' -- Seq Scan ~2000ms",
+        params: [q],
       });
     }
 
@@ -118,7 +127,8 @@ app.get('/api/cari', async (req: RequestWithId, res) => {
       latency_ms: latency,
       data: r.rows,
       total: r.rowCount,
-      sql: `SELECT * FROM umkm WHERE name % '${q}' ORDER BY similarity(name,'${q}') DESC LIMIT 20 -- GIN ~10ms`,
+      sql: "SELECT * FROM umkm WHERE name % $1 ORDER BY similarity(name,$1) DESC LIMIT 20 -- GIN ~10ms",
+      params: [q],
     });
   } catch (err: any) {
     req.log.error({ err: err.message, q }, 'cari error');

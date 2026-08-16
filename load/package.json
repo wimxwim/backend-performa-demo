@@ -1,0 +1,10 @@
+{
+  "name": "load",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npx tsx src/load.ts",
+    "start": "npx tsx src/load.ts"
+  }
+}

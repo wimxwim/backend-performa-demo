@@ -57,7 +57,7 @@ services:
       - synchronous_commit=off
       - -c
       - wal_level=replica
-      # wal_level replica agar kompatibel max_wal_senders=4; untuk bulk hemat WAL pakai minimal tapi harus max_wal_senders=0
+      # wal_level replica (BULK tuned: replica agar kompatibel max_wal_senders=4; untuk hemat WAL maksimal pakai minimal tapi harus max_wal_senders=0 — lihat compose.production.yaml untuk revert)
       - -c
       - effective_io_concurrency=200
       - -c
@@ -102,8 +102,7 @@ services:
       - demo-net
 
   pgbouncer:
-    image: edoburu/pgbouncer:latest
-    profiles: ["full"]
+    image: edoburu/pgbouncer:1.21.0 # pinned 1.21.0; TODO pin digest: docker pull edoburu/pgbouncer:1.21.0 && docker inspect --format='{{index .RepoDigests 0}}' edoburu/pgbouncer:1.21.0
     container_name: gr-pgbouncer
     restart: unless-stopped
     depends_on:

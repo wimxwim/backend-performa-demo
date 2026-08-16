@@ -11,8 +11,12 @@
     "resolveJsonModule": true,
     "types": ["node"],
     "noEmit": true,
-    "lib": ["ES2022"]
+    "lib": ["ES2022"],
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["shared/*"]
+    }
   },
-  "include": ["seed/**/*.ts", "shared/**/*.ts", "kas-service/src/demo-zis-rls.ts"],
+  "include": ["seed/**/*.ts", "shared/**/*.ts", "kas-service/src/demo-zis-rls.ts", "order-service/src/**/*.ts", "payment-service/src/**/*.ts", "umkm-service/src/**/*.ts", "kas-service/src/**/*.ts", "load/**/*.ts"],
   "exclude": ["node_modules", "presentasi", "dist"]
 }

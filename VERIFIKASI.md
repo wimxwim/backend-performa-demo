@@ -310,7 +310,7 @@ $ npx tsx seed/generate.ts --synthetic 10000 --out /tmp/test_10k.ndjson && wc -l
 
 | Step | Perintah | Verifikasi |
 |------|----------|------------|
-| 1 | `podman-compose -f compose.yaml up -d` atau `docker compose up -d` | `podman ps` -> gr-postgres (5432), gr-redis (6379), gr-pgbouncer (6432) healthy |
+| 1 | `podman-compose -f compose.yaml up -d` atau `docker compose up -d` | `podman ps` -> gr-postgres (5432), gr-redis (6380), gr-pgbouncer (6432) healthy |
 | 2 | `bun run seed` (generate + import) | `psql $DATABASE_URL -c "SELECT count(*) FROM umkm"` -> 6081, `masjid` -> 256, `financial_ledger` -> 100 |
 | 3 | `bun run verify:ledger` | `hash_self = SHA256(amount|desc|recipient|actor|hash_prev)` chain OK, verify <1s |
 | 4 | Run 01 vs 02 | 01: `console.log password=...` bocor, 02: `{"level":"info","requestId":"...","password":"[Redacted]"}` |

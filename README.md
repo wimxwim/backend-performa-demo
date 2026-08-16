@@ -118,7 +118,7 @@ Layanan inti:
 | Service | Port | Kredensial |
 |---------|------|------------|
 | Postgres 16 | 5432 | `gotongroyong_demo` / `demo` / `demo123` |
-| Redis 7 | 6379 | tanpa password (lokal) |
+| Redis 7 | 6380 (host -> 6379 container) | tanpa password (lokal) |
 | PgBouncer | 6432 | pool 25, transaction mode |
 
 ### 3. Seed data (kas + komunitas + pengumuman)

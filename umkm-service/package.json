@@ -1,0 +1,10 @@
+{
+  "name": "umkm-service",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npx tsx src/index-proper.ts",
+    "start": "npx tsx src/index-proper.ts"
+  }
+}

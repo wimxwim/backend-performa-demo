@@ -5,11 +5,18 @@
 import express from 'express';
 import pg from 'pg';
 import compression from 'compression';
+import helmet from 'helmet';
+import cors from 'cors';
 import logger from './logger.js';
 import { requestIdMiddleware, type RequestWithId } from './middleware/requestId.js';
+import { limiterGeneral } from '../../shared/rateLimiter.js';
 
 const app = express();
 const PORT = Number(process.env.PORT || 3004);
+
+app.set('trust proxy', 1);
+app.use(helmet());
+app.use(cors({ origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000', credentials: true }));
 
 const DATABASE_URL = process.env.DATABASE_URL || 'postgres://demo:demo123@localhost:5432/gotongroyong_demo';
 const pool = new pg.Pool({
@@ -23,6 +30,7 @@ pool.on('error', (err) => logger.error({ err }, 'pg pool error'));
 app.use(compression({ level: 6, threshold: 1024 }));
 app.use(express.json());
 app.use(requestIdMiddleware as any);
+app.use(limiterGeneral);
 
 // RLS middleware
 app.use(async (req: RequestWithId, _res, next) => {
@@ -84,7 +92,8 @@ app.get('/api/kas', async (req: RequestWithId, res) => {
         explain: 'Seq Scan financial_ledger WHERE community_id=$1 — 500ms tanpa MatView',
         latency_ms: latency,
         summary: r.rows[0] || null,
-        sql: `SELECT SUM(amount) FROM financial_ledger WHERE community_id='${communityId}' -- Seq Scan`,
+        sql: "SELECT SUM(amount) FROM financial_ledger WHERE community_id=$1 -- Seq Scan",
+        params: [communityId],
       });
     }
 
@@ -105,7 +114,8 @@ app.get('/api/kas', async (req: RequestWithId, res) => {
       explain: fallback ? 'MatView kosong — fallback Seq Scan' : 'Index Scan mv_kas_total WHERE community_id=$1 — 5-30ms',
       latency_ms: latency,
       summary,
-      sql: `SELECT * FROM mv_kas_total WHERE community_id='${communityId}' -- MatView Index Scan`,
+      sql: "SELECT * FROM mv_kas_total WHERE community_id=$1 -- MatView Index Scan",
+      params: [communityId],
     });
   } catch (err: any) {
     // Jika MatView belum ada, fallback ke query langsung

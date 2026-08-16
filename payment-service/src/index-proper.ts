@@ -2,14 +2,21 @@
 // Bahasa komentar: Indonesia
 
 import express from 'express';
+import helmet from 'helmet';
+import cors from 'cors';
 import logger from './logger.js';
 import { requestIdMiddleware, type RequestWithId } from './middleware/requestId.js';
+import { limiterGeneral } from '../../shared/rateLimiter.js';
 
 const app = express();
 const PORT = Number(process.env.PORT || 3002);
 
+app.set('trust proxy', 1);
+app.use(helmet());
+app.use(cors({ origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 app.use(requestIdMiddleware as any);
+app.use(limiterGeneral);
 app.use((req: RequestWithId, res, next) => {
   const start = Date.now();
   res.on('finish', () => {
